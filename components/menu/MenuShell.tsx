@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type Category = {
   id: number | string;
@@ -12,6 +16,9 @@ type Category = {
 type Variant = {
   id: number | string;
   variant_name?: string;
+  name?: string;
+  label?: string;
+  description?: string;
   price?: number | string;
   old_price?: number | string;
   [key: string]: unknown;
@@ -38,31 +45,155 @@ type CategoryAvailability = {
   [key: string]: unknown;
 };
 
+const WHATSAPP_NUMBER = "918657427432";
+
+function canOrder(
+  availability?: CategoryAvailability
+) {
+  if (!availability) return false;
+
+  return Boolean(
+    availability.delivery_type ===
+      "SUBSCRIPTION" ||
+      availability.orderable_now ||
+      availability.status === "OPEN" ||
+      availability.status === "NEXT_DAY"
+  );
+}
+
+function validOldPrice(
+  oldPrice: unknown,
+  price: unknown
+) {
+  const oldValue = Number(oldPrice || 0);
+  const currentValue = Number(price || 0);
+
+  return (
+    oldValue > 0 &&
+    currentValue > 0 &&
+    oldValue > currentValue
+  );
+}
+
+function getDiscount(
+  oldPrice: unknown,
+  price: unknown
+) {
+  if (!validOldPrice(oldPrice, price)) {
+    return 0;
+  }
+
+  return Math.round(
+    ((Number(oldPrice) - Number(price)) /
+      Number(oldPrice)) *
+      100
+  );
+}
+
+function getVariantName(
+  variant: Variant,
+  index: number
+) {
+  return (
+    variant.variant_name ||
+    variant.name ||
+    variant.label ||
+    `Option ${index + 1}`
+  );
+}
+
+function getWhatsAppUrl(
+  productName: string,
+  extra = ""
+) {
+  const message =
+    `Hi Mithora Kitchen,\n\n` +
+    `I want to know when "${productName}" ` +
+    `will be available.${extra}`;
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    message
+  )}`;
+}
+
 export default function MenuShell() {
-  const [sticky, setSticky] = useState(false);
+  const [categories, setCategories] =
+    useState<Category[]>([]);
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] =
+    useState<Product[]>([]);
 
-  const [categoryAvailability, setCategoryAvailability] =
-    useState<Record<string, CategoryAvailability>>({});
+  const [
+    categoryAvailability,
+    setCategoryAvailability,
+  ] = useState<
+    Record<string, CategoryAvailability>
+  >({});
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("all");
+
+  const [searchOpen, setSearchOpen] =
+    useState(false);
+
+  const [searchQuery, setSearchQuery] =
+    useState("");
+
+  const [modalProduct, setModalProduct] =
+    useState<Product | null>(null);
+
+  const [selectedVariantId, setSelectedVariantId] =
+    useState<string>("");
+
+  const [modalQty, setModalQty] =
+    useState(1);
+
+  const [cartVersion, setCartVersion] =
+    useState(0);
+
+  /* =====================================================
+     HEADER HEIGHT
+     ===================================================== */
 
   useEffect(() => {
-    const handleScroll = () => {
-      setSticky(window.scrollY > 140);
+    const updateHeaderHeight = () => {
+      const header =
+        document.querySelector("header");
+
+      const height = header
+        ? header.getBoundingClientRect().height
+        : 68;
+
+      document.documentElement.style.setProperty(
+        "--mithora-header-height",
+        `${height}px`
+      );
     };
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+    updateHeaderHeight();
+
+    window.addEventListener(
+      "resize",
+      updateHeaderHeight
+    );
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener(
+        "resize",
+        updateHeaderHeight
+      );
     };
   }, []);
+
+  /* =====================================================
+     LOAD MENU
+     ===================================================== */
 
   useEffect(() => {
     let cancelled = false;
@@ -75,17 +206,27 @@ export default function MenuShell() {
         const [
           categoriesResponse,
           productsResponse,
+          availabilityResponse,
         ] = await Promise.all([
-          fetch("/api/menu/categories?active=1"),
+          fetch(
+            "/api/menu/categories?active=1"
+          ),
           fetch("/api/menu/products"),
+          fetch(
+            "/api/menu/category-availability"
+          ),
         ]);
 
         if (!categoriesResponse.ok) {
-          throw new Error("Failed to load categories");
+          throw new Error(
+            "Failed to load categories"
+          );
         }
 
         if (!productsResponse.ok) {
-          throw new Error("Failed to load products");
+          throw new Error(
+            "Failed to load products"
+          );
         }
 
         const categoriesData =
@@ -94,54 +235,64 @@ export default function MenuShell() {
         const productsData =
           await productsResponse.json();
 
-        const loadedCategories: Category[] =
-          categoriesData.categories || [];
+        const availabilityData =
+          availabilityResponse.ok
+            ? await availabilityResponse.json()
+            : { categories: [] };
 
-        const loadedProducts: Product[] =
-          productsData.products || [];
+        const loadedCategories =
+          Array.isArray(
+            categoriesData.categories
+          )
+            ? categoriesData.categories
+            : [];
 
-        let loadedAvailability: Record<
+        const loadedProducts =
+          Array.isArray(
+            productsData.products
+          )
+            ? productsData.products
+            : [];
+
+        const availabilityMap: Record<
           string,
           CategoryAvailability
         > = {};
 
-        try {
-          const availabilityResponse = await fetch(
-            "/api/menu/category-availability"
-          );
-
-          if (availabilityResponse.ok) {
-            const availabilityData =
-              await availabilityResponse.json();
-
-            (availabilityData.categories || []).forEach(
-              (category: CategoryAvailability) => {
-                loadedAvailability[
-                  String(category.category_id)
-                ] = category;
-              }
-            );
+        (
+          availabilityData.categories || []
+        ).forEach(
+          (
+            item: CategoryAvailability
+          ) => {
+            availabilityMap[
+              String(item.category_id)
+            ] = item;
           }
-        } catch (availabilityError) {
-          console.error(
-            "Category availability failed:",
-            availabilityError
-          );
-        }
+        );
 
         if (cancelled) return;
 
-        setCategories(loadedCategories);
-        setProducts(loadedProducts);
+        setCategories(
+          loadedCategories
+        );
+
+        setProducts(
+          loadedProducts
+        );
+
         setCategoryAvailability(
-          loadedAvailability
+          availabilityMap
         );
       } catch (err) {
-        console.error("Menu loading failed:", err);
+        console.error(
+          "Menu loading failed:",
+          err
+        );
 
         if (!cancelled) {
           setError(
-            "Unable to load the menu right now."
+            "Unable to load the menu right now. Please try again."
           );
         }
       } finally {
@@ -158,36 +309,328 @@ export default function MenuShell() {
     };
   }, []);
 
-  /*
-   * Group products using the existing category_id
-   * relationship from the Mithora menu data.
-   */
-  const categorySections = useMemo(() => {
-    return categories
-      .map((category) => {
-        const categoryProducts = products.filter(
-          (product) =>
-            String(product.category_id) ===
-            String(category.id)
+  /* =====================================================
+     CATEGORY SECTIONS
+     ===================================================== */
+
+  const categorySections =
+    useMemo(() => {
+      return categories
+        .map((category) => {
+          const categoryProducts =
+            products.filter(
+              (product) =>
+                String(
+                  product.category_id
+                ) === String(category.id)
+            );
+
+          return {
+            category,
+            products:
+              categoryProducts,
+            availability:
+              categoryAvailability[
+                String(category.id)
+              ],
+          };
+        })
+        .filter(
+          (section) =>
+            section.products.length > 0
+        );
+    }, [
+      categories,
+      products,
+      categoryAvailability,
+    ]);
+
+  /* =====================================================
+     FILTERED SECTIONS
+     ===================================================== */
+
+  const visibleSections =
+    useMemo(() => {
+      if (
+        selectedCategory === "all"
+      ) {
+        return categorySections;
+      }
+
+      return categorySections.filter(
+        (section) =>
+          String(section.category.id) ===
+          selectedCategory
+      );
+    }, [
+      categorySections,
+      selectedCategory,
+    ]);
+
+  /* =====================================================
+     SEARCH RESULTS
+     ===================================================== */
+
+  const searchResults =
+    useMemo(() => {
+      const query =
+        searchQuery
+          .trim()
+          .toLowerCase();
+
+      if (!query) {
+        return products;
+      }
+
+      return products.filter(
+        (product) => {
+          const productText = [
+            product.name,
+            product.description,
+            ...(product.variants || []).flatMap(
+              (variant) => [
+                variant.variant_name,
+                variant.name,
+                variant.label,
+                variant.description,
+              ]
+            ),
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+          return productText.includes(
+            query
+          );
+        }
+      );
+    }, [
+      products,
+      searchQuery,
+    ]);
+
+  /* =====================================================
+     OPEN PRODUCT MODAL
+     ===================================================== */
+
+  function openProduct(
+    product: Product
+  ) {
+    const variants =
+      Array.isArray(
+        product.variants
+      )
+        ? product.variants
+        : [];
+
+    setModalProduct(product);
+
+    setSelectedVariantId(
+      variants.length
+        ? String(variants[0].id)
+        : ""
+    );
+
+    setModalQty(1);
+  }
+
+  function closeProduct() {
+    setModalProduct(null);
+    setSelectedVariantId("");
+    setModalQty(1);
+  }
+
+  /* =====================================================
+     CART
+     ===================================================== */
+
+  function addToCart(
+    variantId: number | string
+  ) {
+    try {
+      const raw =
+        localStorage.getItem(
+          "cart"
         );
 
-        return {
-          category,
-          products: categoryProducts,
-          availability:
-            categoryAvailability[
-              String(category.id)
-            ],
+      let cart = raw
+        ? JSON.parse(raw)
+        : {
+            items: [],
+            coupon_code: "",
+          };
+
+      if (
+        !cart ||
+        !Array.isArray(cart.items)
+      ) {
+        cart = {
+          items: [],
+          coupon_code: "",
         };
-      })
-      .filter(
-        (section) => section.products.length > 0
+      }
+
+      const existing =
+        cart.items.find(
+          (item: {
+            variant_id: number | string;
+            qty: number;
+          }) =>
+            String(
+              item.variant_id
+            ) ===
+            String(variantId)
+        );
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.items.push({
+          variant_id:
+            variantId,
+          qty: 1,
+        });
+      }
+
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
       );
-  }, [
-    categories,
-    products,
-    categoryAvailability,
-  ]);
+
+      setCartVersion(
+        (value) => value + 1
+      );
+    } catch (err) {
+      console.error(
+        "Cart update failed:",
+        err
+      );
+    }
+  }
+
+  function getCartQty(
+    variantId: number | string
+  ) {
+    void cartVersion;
+
+    try {
+      const raw =
+        localStorage.getItem(
+          "cart"
+        );
+
+      if (!raw) return 0;
+
+      const cart =
+        JSON.parse(raw);
+
+      if (
+        !cart ||
+        !Array.isArray(
+          cart.items
+        )
+      ) {
+        return 0;
+      }
+
+      const item =
+        cart.items.find(
+          (entry: {
+            variant_id:
+              | number
+              | string;
+            qty: number;
+          }) =>
+            String(
+              entry.variant_id
+            ) ===
+            String(variantId)
+        );
+
+      return item
+        ? Number(item.qty || 0)
+        : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  function addModalVariant() {
+    if (!selectedVariantId) {
+      return;
+    }
+
+    for (
+      let i = 0;
+      i < modalQty;
+      i++
+    ) {
+      addToCart(
+        selectedVariantId
+      );
+    }
+
+    closeProduct();
+  }
+
+  /* =====================================================
+     CATEGORY CLICK
+     ===================================================== */
+
+  function selectCategory(
+    categoryId: string
+  ) {
+    setSelectedCategory(
+      categoryId
+    );
+
+    if (
+      categoryId !== "all"
+    ) {
+      requestAnimationFrame(
+        () => {
+          const element =
+            document.getElementById(
+              `menu-category-${categoryId}`
+            );
+
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }
+      );
+    }
+  }
+
+  /* =====================================================
+     SEARCH
+     ===================================================== */
+
+  function openSearch() {
+    setSearchOpen(true);
+    setSearchQuery("");
+
+    document.body.classList.add(
+      "menu-search-open"
+    );
+  }
+
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearchQuery("");
+
+    document.body.classList.remove(
+      "menu-search-open"
+    );
+  }
+
+  /* =====================================================
+     RENDER
+     ===================================================== */
 
   return (
     <section className="menu-page-shell">
@@ -195,6 +638,7 @@ export default function MenuShell() {
       {/* LOCATION */}
       <div className="menu-location-bar">
         <div className="menu-shell-container">
+
           <button
             type="button"
             className="menu-location-button"
@@ -208,17 +652,20 @@ export default function MenuShell() {
                 Delivering to
               </span>
 
-              <strong>Jaipur</strong>
+              <strong>
+                Jaipur
+              </strong>
             </span>
 
             <span className="menu-location-change">
               Change
             </span>
           </button>
+
         </div>
       </div>
 
-      {/* HEADER */}
+      {/* PAGE INTRO */}
       <div className="menu-header-area">
         <div className="menu-shell-container">
 
@@ -227,63 +674,92 @@ export default function MenuShell() {
               MITHORA KITCHEN
             </span>
 
-            <h1>Our Menu</h1>
+            <h1>
+              Our Menu
+            </h1>
 
             <p>
-              Homemade food, freshly prepared with care.
+              Homemade food, freshly prepared
+              with care.
             </p>
           </div>
-
-          <MenuControls
-            categories={categories}
-          />
 
         </div>
       </div>
 
-      {/* STICKY HEADER */}
-      <div
-        className={`menu-sticky-bar ${
-          sticky
-            ? "menu-sticky-bar-visible"
-            : ""
-        }`}
-      >
-        <div className="menu-shell-container menu-sticky-inner">
+      {/* =================================================
+          STICKY SEARCH + CATEGORIES
+          ================================================= */}
 
-          <div className="menu-sticky-search">
-            <span>⌕</span>
+      <section className="menu-sticky-controls">
+
+        <div className="menu-shell-container">
+
+          <button
+            type="button"
+            className="menu-search-trigger"
+            onClick={openSearch}
+          >
+            <span className="menu-search-trigger-icon">
+              ⌕
+            </span>
 
             <span>
-              Search dishes, snacks, tiffin & more
+              Search dishes, snacks,
+              tiffin & more
             </span>
-          </div>
+          </button>
 
-          <nav className="menu-sticky-categories">
+          <div className="menu-sticky-category-row">
 
             <button
               type="button"
-              className="menu-category active"
+              className={`menu-category ${
+                selectedCategory === "all"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() =>
+                selectCategory("all")
+              }
             >
               All Items
             </button>
 
-            {categories.map((category) => (
-              <button
-                type="button"
-                key={category.id}
-                className="menu-category"
-              >
-                {category.name}
-              </button>
-            ))}
+            {categories.map(
+              (category) => (
+                <button
+                  type="button"
+                  key={category.id}
+                  className={`menu-category ${
+                    selectedCategory ===
+                    String(category.id)
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    selectCategory(
+                      String(
+                        category.id
+                      )
+                    )
+                  }
+                >
+                  {category.name}
+                </button>
+              )
+            )}
 
-          </nav>
+          </div>
 
         </div>
-      </div>
 
-      {/* CONTENT */}
+      </section>
+
+      {/* =================================================
+          MENU CONTENT
+          ================================================= */}
+
       <div className="menu-shell-container menu-content">
 
         {loading && (
@@ -302,19 +778,19 @@ export default function MenuShell() {
 
         {!loading &&
           !error &&
-          categorySections.map(
+          visibleSections.map(
             ({
               category,
-              products,
+              products:
+                categoryProducts,
               availability,
             }) => (
               <section
-                className="menu-category-section"
                 key={category.id}
                 id={`menu-category-${category.id}`}
+                className="menu-category-section"
               >
 
-                {/* CATEGORY HEADER */}
                 <div className="menu-category-header">
 
                   <div className="menu-category-title-wrap">
@@ -324,7 +800,9 @@ export default function MenuShell() {
                         className="menu-category-icon"
                         dangerouslySetInnerHTML={{
                           __html:
-                            category.icon_svg,
+                            String(
+                              category.icon_svg
+                            ),
                         }}
                       />
                     )}
@@ -335,8 +813,11 @@ export default function MenuShell() {
                       </h2>
 
                       <span>
-                        {products.length}{" "}
-                        {products.length === 1
+                        {
+                          categoryProducts.length
+                        }{" "}
+                        {categoryProducts.length ===
+                        1
                           ? "item"
                           : "items"}
                       </span>
@@ -347,7 +828,9 @@ export default function MenuShell() {
                   {availability && (
                     <div
                       className={`menu-availability ${
-                        availability.orderable_now
+                        canOrder(
+                          availability
+                        )
                           ? "available"
                           : "closed"
                       }`}
@@ -356,7 +839,9 @@ export default function MenuShell() {
 
                       <span>
                         {availability.user_message ||
-                          (availability.orderable_now
+                          (canOrder(
+                            availability
+                          )
                             ? "Available now"
                             : "Currently unavailable")}
                       </span>
@@ -365,18 +850,28 @@ export default function MenuShell() {
 
                 </div>
 
-                {/* PRODUCTS */}
                 <div className="menu-product-grid">
 
-                  {products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      availability={
-                        availability
-                      }
-                    />
-                  ))}
+                  {categoryProducts.map(
+                    (product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        availability={
+                          availability
+                        }
+                        onOpen={
+                          openProduct
+                        }
+                        onAdd={
+                          addToCart
+                        }
+                        getCartQty={
+                          getCartQty
+                        }
+                      />
+                    )
+                  )}
 
                 </div>
 
@@ -386,173 +881,427 @@ export default function MenuShell() {
 
       </div>
 
+      {/* =================================================
+          FULL SCREEN SEARCH
+          ================================================= */}
+
+      {searchOpen && (
+        <div className="menu-search-overlay">
+
+          <div className="menu-search-panel">
+
+            <div className="menu-search-topbar">
+
+              <button
+                type="button"
+                className="menu-search-back"
+                onClick={
+                  closeSearch
+                }
+                aria-label="Close search"
+              >
+                ←
+              </button>
+
+              <div className="menu-search-input-wrap">
+
+                <span>
+                  ⌕
+                </span>
+
+                <input
+                  autoFocus
+                  type="search"
+                  value={
+                    searchQuery
+                  }
+                  onChange={(event) =>
+                    setSearchQuery(
+                      event.target.value
+                    )
+                  }
+                  placeholder="Search dishes..."
+                />
+
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSearchQuery(
+                        ""
+                      )
+                    }
+                    className="menu-search-clear"
+                  >
+                    ×
+                  </button>
+                )}
+
+              </div>
+
+            </div>
+
+            <div className="menu-search-body">
+
+              {!searchQuery.trim() && (
+                <div className="menu-search-intro">
+                  <span>
+                    FIND YOUR FAVOURITE
+                  </span>
+
+                  <h2>
+                    What are you craving?
+                  </h2>
+
+                  <p>
+                    Search dishes, ingredients,
+                    snacks, tiffin and more.
+                  </p>
+                </div>
+              )}
+
+              {searchQuery.trim() && (
+                <div className="menu-search-results-header">
+                  <strong>
+                    Search results
+                  </strong>
+
+                  <span>
+                    {searchResults.length}{" "}
+                    {searchResults.length ===
+                    1
+                      ? "item"
+                      : "items"}
+                  </span>
+                </div>
+              )}
+
+              {/* PREDICTIVE */}
+              {searchQuery.trim() && (
+                <div className="menu-search-suggestions">
+
+                  {searchResults
+                    .slice(0, 6)
+                    .map(
+                      (product) => (
+                        <button
+                          type="button"
+                          key={product.id}
+                          className="menu-search-suggestion"
+                          onClick={() =>
+                            openProduct(
+                              product
+                            )
+                          }
+                        >
+
+                          {product.image_path ? (
+                            <img
+                              src={
+                                product.image_path
+                              }
+                              alt={
+                                product.name
+                              }
+                            />
+                          ) : (
+                            <span className="menu-search-suggestion-placeholder">
+                              🍲
+                            </span>
+                          )}
+
+                          <span>
+                            <strong>
+                              {
+                                product.name
+                              }
+                            </strong>
+
+                            <small>
+                              {getSearchPrice(
+                                product
+                              )}
+                            </small>
+                          </span>
+
+                        </button>
+                      )
+                    )}
+
+                </div>
+              )}
+
+              {searchQuery.trim() &&
+                searchResults.length ===
+                  0 && (
+                  <div className="menu-search-empty">
+                    <span>
+                      🍲
+                    </span>
+
+                    <strong>
+                      Nothing found
+                    </strong>
+
+                    <p>
+                      Try another dish,
+                      ingredient or keyword.
+                    </p>
+                  </div>
+                )}
+
+              {searchQuery.trim() &&
+                searchResults.length >
+                  0 && (
+                  <div className="menu-search-result-grid">
+
+                    {searchResults.map(
+                      (product) => (
+                        <ProductCard
+                          key={
+                            product.id
+                          }
+                          product={
+                            product
+                          }
+                          availability={
+                            categoryAvailability[
+                              String(
+                                product.category_id
+                              )
+                            ]
+                          }
+                          onOpen={
+                            openProduct
+                          }
+                          onAdd={
+                            addToCart
+                          }
+                          getCartQty={
+                            getCartQty
+                          }
+                        />
+                      )
+                    )}
+
+                  </div>
+                )}
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* =================================================
+          PRODUCT MODAL
+          ================================================= */}
+
+      {modalProduct && (
+        <ProductModal
+          product={
+            modalProduct
+          }
+          availability={
+            categoryAvailability[
+              String(
+                modalProduct.category_id
+              )
+            ]
+          }
+          selectedVariantId={
+            selectedVariantId
+          }
+          setSelectedVariantId={
+            setSelectedVariantId
+          }
+          quantity={modalQty}
+          setQuantity={
+            setModalQty
+          }
+          onClose={
+            closeProduct
+          }
+          onAdd={
+            addModalVariant
+          }
+        />
+      )}
+
     </section>
   );
 }
 
-function MenuControls({
-  categories,
-}: {
-  categories: Category[];
-}) {
-  return (
-    <div className="menu-controls">
-
-      <div className="menu-search-box">
-
-        <span className="menu-search-icon">
-          ⌕
-        </span>
-
-        <input
-          type="text"
-          placeholder="Search dishes, snacks, tiffin & more"
-        />
-
-        <button
-          type="button"
-          className="menu-filter-button"
-          aria-label="Filter menu"
-        >
-          ☷
-        </button>
-
-      </div>
-
-      <div className="menu-category-row">
-
-        <button
-          type="button"
-          className="menu-category active"
-        >
-          All Items
-        </button>
-
-        {categories.map((category) => (
-          <button
-            type="button"
-            key={category.id}
-            className="menu-category"
-          >
-            {category.name}
-          </button>
-        ))}
-
-      </div>
-
-    </div>
-  );
-}
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
 
 function ProductCard({
   product,
   availability,
+  onOpen,
+  onAdd,
+  getCartQty,
 }: {
   product: Product;
   availability?: CategoryAvailability;
+  onOpen: (
+    product: Product
+  ) => void;
+  onAdd: (
+    variantId: number | string
+  ) => void;
+  getCartQty: (
+    variantId: number | string
+  ) => number;
 }) {
-  const variants = Array.isArray(
-    product.variants
-  )
-    ? product.variants
-    : [];
+  const variants =
+    Array.isArray(
+      product.variants
+    )
+      ? product.variants
+      : [];
 
-  if (variants.length === 0) {
+  if (!variants.length) {
     return null;
   }
 
-  const firstVariant = variants[0];
+  const activeVariant =
+    variants[0];
 
-  const price = firstVariant?.price;
+  const price =
+    activeVariant.price;
 
   const oldPrice =
-    firstVariant?.old_price;
-
-  const rating = Number(
-    product.avg_rating || 0
-  );
-
-  const reviewCount = Number(
-    product.review_count || 0
-  );
-
-  const canOrder = availability
-    ? Boolean(
-        availability.orderable_now ||
-          availability.status ===
-            "OPEN" ||
-          availability.status ===
-            "NEXT_DAY" ||
-          availability.delivery_type ===
-            "SUBSCRIPTION"
-      )
-    : true;
+    activeVariant.old_price;
 
   const discount =
-    oldPrice && Number(oldPrice) > Number(price)
-      ? Math.round(
-          ((Number(oldPrice) -
-            Number(price)) /
-            Number(oldPrice)) *
-            100
-        )
-      : 0;
+    getDiscount(
+      oldPrice,
+      price
+    );
+
+  const rating =
+    Number(
+      product.avg_rating || 0
+    );
+
+  const reviewCount =
+    Number(
+      product.review_count || 0
+    );
+
+  const orderable =
+    canOrder(
+      availability
+    );
+
+  const isMulti =
+    variants.length > 1;
+
+  const quantity =
+    getCartQty(
+      activeVariant.id
+    );
+
+  const notifyUrl =
+    getWhatsAppUrl(
+      product.name
+    );
 
   return (
-    <article className="menu-product-card">
+    <article
+      className="menu-product-card"
+    >
 
-      {/* IMAGE */}
-      <div className="menu-product-image-wrap">
+      <button
+        type="button"
+        className="menu-product-image-button"
+        onClick={() =>
+          onOpen(product)
+        }
+      >
 
-        {product.image_path ? (
-          <img
-            src={product.image_path}
-            alt={product.name}
-            className="menu-product-image"
-          />
-        ) : (
-          <div className="menu-product-image-placeholder">
-            Mithora Kitchen
-          </div>
-        )}
+        <div className="menu-product-image-wrap">
 
-        {discount > 0 && (
-          <span className="menu-discount-badge">
-            {discount}% OFF
-          </span>
-        )}
-
-      </div>
-
-      {/* DETAILS */}
-      <div className="menu-product-details">
-
-        <div className="menu-product-title-row">
-
-          <h3>
-            {product.name}
-          </h3>
-
-          {rating >= 0.5 && (
-            <div className="menu-product-rating">
-              <span>★</span>
-              <strong>
-                {rating.toFixed(1)}
-              </strong>
-
-              {reviewCount > 0 && (
-                <small>
-                  ({reviewCount})
-                </small>
-              )}
+          {product.image_path ? (
+            <img
+              src={
+                product.image_path
+              }
+              alt={
+                product.name
+              }
+              className="menu-product-image"
+              loading="lazy"
+            />
+          ) : (
+            <div className="menu-product-image-placeholder">
+              Mithora Kitchen
             </div>
+          )}
+
+          {discount > 0 && (
+            <span className="menu-discount-badge">
+              {discount}% OFF
+            </span>
           )}
 
         </div>
 
+      </button>
+
+      <div className="menu-product-details">
+
+        <button
+          type="button"
+          className="menu-product-title-button"
+          onClick={() =>
+            onOpen(product)
+          }
+        >
+
+          <div className="menu-product-title-row">
+
+            <h3>
+              {product.name}
+            </h3>
+
+            {rating >= 0.5 && (
+              <div className="menu-product-rating">
+                <span>
+                  ★
+                </span>
+
+                <strong>
+                  {rating.toFixed(
+                    1
+                  )}
+                </strong>
+
+                {reviewCount >
+                  0 && (
+                  <small>
+                    (
+                    {
+                      reviewCount
+                    }
+                    )
+                  </small>
+                )}
+              </div>
+            )}
+
+          </div>
+
+        </button>
+
         {product.description && (
           <p className="menu-product-description">
-            {product.description}
+            {
+              product.description
+            }
           </p>
         )}
 
@@ -564,7 +1313,10 @@ function ProductCard({
               ₹{price}
             </strong>
 
-            {oldPrice && (
+            {validOldPrice(
+              oldPrice,
+              price
+            ) && (
               <del>
                 ₹{oldPrice}
               </del>
@@ -572,20 +1324,147 @@ function ProductCard({
 
           </div>
 
-          <button
-            type="button"
-            className={
-              canOrder
-                ? "menu-add-button"
-                : "menu-notify-button"
-            }
-          >
-            {canOrder
-              ? variants.length > 1
-                ? "VIEW"
-                : "ADD"
-              : "NOTIFY"}
-          </button>
+          <div className="menu-product-action">
+
+            {quantity > 0 ? (
+              <div className="menu-qty-box">
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      const raw =
+                        localStorage.getItem(
+                          "cart"
+                        );
+
+                      if (!raw)
+                        return;
+
+                      const cart =
+                        JSON.parse(
+                          raw
+                        );
+
+                      const item =
+                        cart.items?.find(
+                          (
+                            entry: {
+                              variant_id:
+                                number |
+                                string;
+                            }
+                          ) =>
+                            String(
+                              entry.variant_id
+                            ) ===
+                            String(
+                              activeVariant.id
+                            )
+                        );
+
+                      if (!item)
+                        return;
+
+                      item.qty -= 1;
+
+                      if (
+                        item.qty <=
+                        0
+                      ) {
+                        cart.items =
+                          cart.items.filter(
+                            (
+                              entry: {
+                                variant_id:
+                                  number |
+                                  string;
+                              }
+                            ) =>
+                              String(
+                                entry.variant_id
+                              ) !==
+                              String(
+                                activeVariant.id
+                              )
+                          );
+                      }
+
+                      localStorage.setItem(
+                        "cart",
+                        JSON.stringify(
+                          cart
+                        )
+                      );
+
+                      window.dispatchEvent(
+                        new Event(
+                          "storage"
+                        )
+                      );
+                    } catch {}
+                  }}
+                >
+                  −
+                </button>
+
+                <span>
+                  {quantity}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onAdd(
+                      activeVariant.id
+                    )
+                  }
+                >
+                  +
+                </button>
+
+              </div>
+            ) : !orderable ? (
+              <a
+                href={
+                  notifyUrl
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="menu-notify-button"
+              >
+                <span>
+                  WhatsApp
+                </span>
+                <small>
+                  Notify
+                </small>
+              </a>
+            ) : isMulti ? (
+              <button
+                type="button"
+                className="menu-view-button"
+                onClick={() =>
+                  onOpen(product)
+                }
+              >
+                VIEW OPTIONS
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="menu-add-button"
+                onClick={() =>
+                  onAdd(
+                    activeVariant.id
+                  )
+                }
+              >
+                ADD
+              </button>
+            )}
+
+          </div>
 
         </div>
 
@@ -593,4 +1472,418 @@ function ProductCard({
 
     </article>
   );
+}
+
+/* =========================================================
+   PRODUCT MODAL
+   ========================================================= */
+
+function ProductModal({
+  product,
+  availability,
+  selectedVariantId,
+  setSelectedVariantId,
+  quantity,
+  setQuantity,
+  onClose,
+  onAdd,
+}: {
+  product: Product;
+  availability?: CategoryAvailability;
+  selectedVariantId: string;
+  setSelectedVariantId: (
+    id: string
+  ) => void;
+  quantity: number;
+  setQuantity: (
+    value: number
+  ) => void;
+  onClose: () => void;
+  onAdd: () => void;
+}) {
+  const variants =
+    Array.isArray(
+      product.variants
+    )
+      ? product.variants
+      : [];
+
+  const selectedVariant =
+    variants.find(
+      (variant) =>
+        String(
+          variant.id
+        ) ===
+        selectedVariantId
+    ) || variants[0];
+
+  const price =
+    Number(
+      selectedVariant?.price || 0
+    );
+
+  const oldPrice =
+    selectedVariant?.old_price;
+
+  const discount =
+    getDiscount(
+      oldPrice,
+      price
+    );
+
+  const orderable =
+    canOrder(
+      availability
+    );
+
+  const total =
+    price * quantity;
+
+  const notifyUrl =
+    getWhatsAppUrl(
+      product.name,
+      selectedVariant
+        ? `\n\nOption: ${getVariantName(
+            selectedVariant,
+            0
+          )}`
+        : ""
+    );
+
+  useEffect(() => {
+    const handleEscape =
+      (event: KeyboardEvent) => {
+        if (
+          event.key === "Escape"
+        ) {
+          onClose();
+        }
+      };
+
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
+
+    document.body.classList.add(
+      "menu-modal-open"
+    );
+
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+
+      document.body.classList.remove(
+        "menu-modal-open"
+      );
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="menu-product-modal-overlay"
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+          onClose();
+        }
+      }}
+    >
+
+      <div className="menu-product-modal">
+
+        <button
+          type="button"
+          className="menu-modal-close"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <div className="menu-modal-image">
+
+          {product.image_path ? (
+            <img
+              src={
+                product.image_path
+              }
+              alt={
+                product.name
+              }
+            />
+          ) : (
+            <div>
+              Mithora Kitchen
+            </div>
+          )}
+
+          {discount > 0 && (
+            <span className="menu-modal-discount">
+              {discount}% OFF
+            </span>
+          )}
+
+        </div>
+
+        <div className="menu-modal-body">
+
+          <span className="menu-modal-kicker">
+            YOUR SELECTION
+          </span>
+
+          <h2>
+            {product.name}
+          </h2>
+
+          {product.description && (
+            <p className="menu-modal-description">
+              {
+                product.description
+              }
+            </p>
+          )}
+
+          {variants.length >
+            0 && (
+            <div className="menu-modal-section">
+
+              <div className="menu-modal-section-title">
+                Select option
+              </div>
+
+              <div className="menu-modal-variants">
+
+                {variants.map(
+                  (
+                    variant,
+                    index
+                  ) => {
+                    const selected =
+                      String(
+                        variant.id
+                      ) ===
+                      selectedVariantId;
+
+                    const variantPrice =
+                      Number(
+                        variant.price ||
+                          0
+                      );
+
+                    const variantOldPrice =
+                      variant.old_price;
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          variant.id
+                        }
+                        className={`menu-modal-variant ${
+                          selected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          setSelectedVariantId(
+                            String(
+                              variant.id
+                            )
+                          )
+                        }
+                      >
+
+                        <span className="menu-modal-variant-copy">
+
+                          <strong>
+                            {getVariantName(
+                              variant,
+                              index
+                            )}
+                          </strong>
+
+                          {variant.description && (
+                            <small>
+                              {
+                                variant.description
+                              }
+                            </small>
+                          )}
+
+                        </span>
+
+                        <span className="menu-modal-variant-price">
+
+                          <strong>
+                            ₹
+                            {
+                              variantPrice
+                            }
+                          </strong>
+
+                          {validOldPrice(
+                            variantOldPrice,
+                            variantPrice
+                          ) && (
+                            <del>
+                              ₹
+                              {
+                                variantOldPrice
+                              }
+                            </del>
+                          )}
+
+                        </span>
+
+                      </button>
+                    );
+                  }
+                )}
+
+              </div>
+
+            </div>
+          )}
+
+          <div className="menu-modal-quantity">
+
+            <div>
+              <strong>
+                Quantity
+              </strong>
+
+              <small>
+                Choose how many you'd like
+              </small>
+            </div>
+
+            <div className="menu-modal-qty-picker">
+
+              <button
+                type="button"
+                onClick={() =>
+                  setQuantity(
+                    Math.max(
+                      1,
+                      quantity - 1
+                    )
+                  )
+                }
+              >
+                −
+              </button>
+
+              <span>
+                {quantity}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setQuantity(
+                    Math.min(
+                      99,
+                      quantity + 1
+                    )
+                  )
+                }
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="menu-modal-footer">
+
+          <div className="menu-modal-total">
+
+            <small>
+              Total
+            </small>
+
+            <strong>
+              ₹{total}
+            </strong>
+
+          </div>
+
+          {!orderable ? (
+            <a
+              href={
+                notifyUrl
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="menu-modal-whatsapp"
+            >
+              WhatsApp — Notify Me
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="menu-modal-add"
+              onClick={
+                onAdd
+              }
+            >
+              ADD TO CART
+            </button>
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+/* =========================================================
+   SEARCH PRICE
+   ========================================================= */
+
+function getSearchPrice(
+  product: Product
+) {
+  const variants =
+    Array.isArray(
+      product.variants
+    )
+      ? product.variants
+      : [];
+
+  const variant =
+    variants[0];
+
+  if (!variant) {
+    return "";
+  }
+
+  const price =
+    Number(
+      variant.price || 0
+    );
+
+  const oldPrice =
+    variant.old_price;
+
+  if (
+    validOldPrice(
+      oldPrice,
+      price
+    )
+  ) {
+    return `₹${price} · ₹${oldPrice}`;
+  }
+
+  return `₹${price}`;
 }
