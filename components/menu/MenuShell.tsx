@@ -53,19 +53,13 @@ function getNumber(value: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function hasRealOldPrice(value: unknown): boolean {
-  return getNumber(value) > 0;
-}
-
 function getDiscount(price: unknown, oldPrice: unknown): number {
-  const priceNumber = getNumber(price);
-  const oldNumber = getNumber(oldPrice);
+  const p = getNumber(price);
+  const old = getNumber(oldPrice);
 
-  if (!priceNumber || !oldNumber || oldNumber <= priceNumber) {
-    return 0;
-  }
+  if (!p || !old || old <= p) return 0;
 
-  return Math.round(((oldNumber - priceNumber) / oldNumber) * 100);
+  return Math.round(((old - p) / old) * 100);
 }
 
 function isFeatured(product: Product): boolean {
@@ -98,9 +92,7 @@ function readCart(): { items: CartItem[]; coupon_code?: string } {
   try {
     const raw = localStorage.getItem(CART_KEY);
 
-    if (!raw) {
-      return { items: [] };
-    }
+    if (!raw) return { items: [] };
 
     const parsed = JSON.parse(raw);
 
@@ -114,12 +106,17 @@ function readCart(): { items: CartItem[]; coupon_code?: string } {
   }
 }
 
-function writeCart(cart: { items: CartItem[]; coupon_code?: string }) {
+function writeCart(cart: {
+  items: CartItem[];
+  coupon_code?: string;
+}) {
   localStorage.setItem(
     CART_KEY,
     JSON.stringify({
       ...cart,
-      items: Array.isArray(cart.items) ? cart.items : [],
+      items: Array.isArray(cart.items)
+        ? cart.items
+        : [],
     })
   );
 
@@ -130,36 +127,48 @@ function writeCart(cart: { items: CartItem[]; coupon_code?: string }) {
 export default function MenuShell() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [categoryAvailability, setCategoryAvailability] = useState<
-    Record<string, CategoryAvailability>
-  >({});
+
+  const [categoryAvailability, setCategoryAvailability] =
+    useState<Record<string, CategoryAvailability>>({});
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] =
+    useState("all");
 
-  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
 
-  const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [modalProduct, setModalProduct] =
+    useState<Product | null>(null);
 
   const [featuredIndex, setFeaturedIndex] = useState(0);
 
   const [cartVersion, setCartVersion] = useState(0);
+
+  /* -----------------------------------------------------
+     STICKY
+  ----------------------------------------------------- */
 
   useEffect(() => {
     const onScroll = () => {
       setSticky(window.scrollY > 140);
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+  /* -----------------------------------------------------
+     LOAD MENU
+  ----------------------------------------------------- */
 
   useEffect(() => {
     let cancelled = false;
@@ -180,15 +189,22 @@ export default function MenuShell() {
         ]);
 
         if (!categoriesResponse.ok) {
-          throw new Error("Unable to load categories");
+          throw new Error(
+            "Unable to load categories"
+          );
         }
 
         if (!productsResponse.ok) {
-          throw new Error("Unable to load products");
+          throw new Error(
+            "Unable to load products"
+          );
         }
 
-        const categoriesData = await categoriesResponse.json();
-        const productsData = await productsResponse.json();
+        const categoriesData =
+          await categoriesResponse.json();
+
+        const productsData =
+          await productsResponse.json();
 
         const loadedCategories: Category[] =
           categoriesData.categories || [];
@@ -205,10 +221,13 @@ export default function MenuShell() {
           const availabilityData =
             await availabilityResponse.json();
 
-          (availabilityData.categories || []).forEach(
+          (
+            availabilityData.categories || []
+          ).forEach(
             (item: CategoryAvailability) => {
-              loadedAvailability[String(item.category_id)] =
-                item;
+              loadedAvailability[
+                String(item.category_id)
+              ] = item;
             }
           );
         }
@@ -217,9 +236,14 @@ export default function MenuShell() {
 
         setCategories(loadedCategories);
         setProducts(loadedProducts);
-        setCategoryAvailability(loadedAvailability);
+        setCategoryAvailability(
+          loadedAvailability
+        );
       } catch (err) {
-        console.error("Menu loading failed:", err);
+        console.error(
+          "Menu loading failed:",
+          err
+        );
 
         if (!cancelled) {
           setError(
@@ -240,12 +264,19 @@ export default function MenuShell() {
     };
   }, []);
 
+  /* -----------------------------------------------------
+     CART LISTENER
+  ----------------------------------------------------- */
+
   useEffect(() => {
     const refreshCart = () => {
       setCartVersion((value) => value + 1);
     };
 
-    window.addEventListener("cart:updated", refreshCart);
+    window.addEventListener(
+      "cart:updated",
+      refreshCart
+    );
 
     return () => {
       window.removeEventListener(
@@ -254,6 +285,14 @@ export default function MenuShell() {
       );
     };
   }, []);
+
+  /* -----------------------------------------------------
+     FEATURED
+     
+     IMPORTANT:
+     NO AUTO SLIDER HERE.
+     User controls it manually.
+  ----------------------------------------------------- */
 
   const featuredProducts = useMemo(() => {
     return products.filter(
@@ -264,28 +303,20 @@ export default function MenuShell() {
     );
   }, [products]);
 
-  useEffect(() => {
-    if (featuredProducts.length <= 1) return;
+  /* -----------------------------------------------------
+     SEARCH
+  ----------------------------------------------------- */
 
-    const timer = window.setInterval(() => {
-      setFeaturedIndex((current) =>
-        current + 1 >= featuredProducts.length
-          ? 0
-          : current + 1
-      );
-    }, 5500);
-
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [featuredProducts.length]);
-
-  const searchText = searchQuery.trim().toLowerCase();
+  const searchText =
+    searchQuery.trim().toLowerCase();
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    if (selectedCategory !== "all") {
+    if (
+      selectedCategory !== "all" &&
+      !searchOpen
+    ) {
       result = result.filter(
         (product) =>
           String(product.category_id) ===
@@ -295,13 +326,14 @@ export default function MenuShell() {
 
     if (searchText) {
       result = result.filter((product) => {
-        const productName =
+        const name =
           product.name?.toLowerCase() || "";
 
         const description =
-          product.description?.toLowerCase() || "";
+          product.description?.toLowerCase() ||
+          "";
 
-        const variantText =
+        const variants =
           product.variants
             ?.map(
               (variant) =>
@@ -313,74 +345,114 @@ export default function MenuShell() {
             .toLowerCase() || "";
 
         return (
-          productName.includes(searchText) ||
+          name.includes(searchText) ||
           description.includes(searchText) ||
-          variantText.includes(searchText)
+          variants.includes(searchText)
         );
       });
     }
 
     return result;
-  }, [products, selectedCategory, searchText]);
+  }, [
+    products,
+    selectedCategory,
+    searchText,
+    searchOpen,
+  ]);
 
-  const groupedProducts = useMemo(() => {
-    const groups: Record<string, Product[]> = {};
+  /* -----------------------------------------------------
+     SEARCH OPEN
+  ----------------------------------------------------- */
 
-    filteredProducts.forEach((product) => {
-      const key = String(product.category_id);
+  function openSearch() {
+    setSearchOpen(true);
+    setSelectedCategory("all");
 
-      if (!groups[key]) {
-        groups[key] = [];
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearchQuery("");
+
+    document.body.style.overflow = "";
+  }
+
+  /* -----------------------------------------------------
+     CATEGORY
+  ----------------------------------------------------- */
+
+  function selectCategory(
+    categoryId: string
+  ) {
+    setSelectedCategory(categoryId);
+    setSearchQuery("");
+
+    if (searchOpen) {
+      closeSearch();
+    }
+
+    window.setTimeout(() => {
+      if (categoryId === "all") {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+
+        return;
       }
 
-      groups[key].push(product);
-    });
+      const element =
+        document.getElementById(
+          `menu-category-${categoryId}`
+        );
 
-    return groups;
-  }, [filteredProducts]);
+      if (!element) return;
+
+      const header =
+        document.querySelector(
+          ".site-header"
+        );
+
+      const headerHeight =
+        header?.getBoundingClientRect()
+          .height || 80;
+
+      const stickyControls =
+        document.querySelector(
+          ".menu-sticky-controls"
+        );
+
+      const stickyHeight =
+        stickyControls?.getBoundingClientRect()
+          .height || 115;
+
+      const offset =
+        headerHeight +
+        stickyHeight +
+        20;
+
+      const top =
+        element.getBoundingClientRect().top +
+        window.scrollY -
+        offset;
+
+      window.scrollTo({
+        top: Math.max(top, 0),
+        behavior: "smooth",
+      });
+    }, 100);
+  }
+
+  /* -----------------------------------------------------
+     CART
+  ----------------------------------------------------- */
 
   const cart = useMemo(() => {
     void cartVersion;
+
     return readCart();
   }, [cartVersion]);
-
-  function getProductQuantity(product: Product): number {
-    const variants = product.variants || [];
-
-    for (const variant of variants) {
-      const item = cart.items.find(
-        (cartItem) =>
-          String(cartItem.variant_id) ===
-          String(variant.id)
-      );
-
-      if (item && item.qty > 0) {
-        return item.qty;
-      }
-    }
-
-    return 0;
-  }
-
-  function getActiveVariant(product: Product): Variant | null {
-    const variants = product.variants || [];
-
-    if (!variants.length) return null;
-
-    for (const variant of variants) {
-      const item = cart.items.find(
-        (cartItem) =>
-          String(cartItem.variant_id) ===
-          String(variant.id)
-      );
-
-      if (item && item.qty > 0) {
-        return variant;
-      }
-    }
-
-    return variants[0];
-  }
 
   function handleCart(
     variantId: number | string,
@@ -388,10 +460,12 @@ export default function MenuShell() {
   ) {
     const currentCart = readCart();
 
-    const existing = currentCart.items.find(
-      (item) =>
-        String(item.variant_id) === String(variantId)
-    );
+    const existing =
+      currentCart.items.find(
+        (item) =>
+          String(item.variant_id) ===
+          String(variantId)
+      );
 
     if (!existing && delta > 0) {
       currentCart.items.push({
@@ -399,7 +473,8 @@ export default function MenuShell() {
         qty: 1,
       });
     } else if (existing) {
-      const nextQty = existing.qty + delta;
+      const nextQty =
+        existing.qty + delta;
 
       if (nextQty <= 0) {
         currentCart.items =
@@ -414,96 +489,74 @@ export default function MenuShell() {
     }
 
     writeCart(currentCart);
-    setCartVersion((value) => value + 1);
+
+    setCartVersion(
+      (value) => value + 1
+    );
   }
 
-  function selectCategory(categoryId: string) {
-    setSelectedCategory(categoryId);
+  /* -----------------------------------------------------
+     PRODUCT
+  ----------------------------------------------------- */
 
-    // Category selection dismisses search.
-    setSearchQuery("");
-    setSearchFocused(false);
-
-    window.setTimeout(() => {
-      if (categoryId === "all") {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-        return;
-      }
-
-      const element = document.getElementById(
-        `menu-category-${categoryId}`
-      );
-
-      if (!element) return;
-
-      const stickyControls =
-        document.querySelector(
-          ".menu-sticky-controls"
-        );
-
-      const offset =
-        (stickyControls?.getBoundingClientRect()
-          .height || 110) + 24;
-
-      const top =
-        element.getBoundingClientRect().top +
-        window.scrollY -
-        offset;
-
-      window.scrollTo({
-        top: Math.max(top, 0),
-        behavior: "smooth",
-      });
-    }, 80);
-  }
-
-  function clearSearch() {
-    setSearchQuery("");
-    setSearchFocused(false);
-  }
-
-  function handleSearchChange(value: string) {
-    setSearchQuery(value);
-
-    // Searching always returns to all categories.
-    if (value.trim()) {
-      setSelectedCategory("all");
-    }
-  }
-
-  function openProduct(product: Product) {
+  function openProduct(
+    product: Product
+  ) {
     setModalProduct(product);
+    document.body.style.overflow = "hidden";
   }
 
   function closeProduct() {
     setModalProduct(null);
+
+    if (!searchOpen) {
+      document.body.style.overflow = "";
+    }
   }
 
-  function notifyWhatsApp(product: Product) {
-    const message = `I want to be notified when ${product.name} is available.`;
+  function notifyWhatsApp(
+    product: Product
+  ) {
+    const message =
+      `I want to be notified when ${product.name} is available.`;
 
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      message
-    )}`;
+    const url =
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+        message
+      )}`;
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
-  function scrollFeatured(direction: number) {
-    if (!featuredProducts.length) return;
+  /* -----------------------------------------------------
+     FEATURED MANUAL NAVIGATION
+  ----------------------------------------------------- */
+
+  function moveFeatured(
+    direction: number
+  ) {
+    if (!featuredProducts.length) {
+      return;
+    }
 
     setFeaturedIndex((current) => {
       const next =
         current + direction;
 
       if (next < 0) {
-        return featuredProducts.length - 1;
+        return (
+          featuredProducts.length - 1
+        );
       }
 
-      if (next >= featuredProducts.length) {
+      if (
+        next >=
+        featuredProducts.length
+      ) {
         return 0;
       }
 
@@ -511,27 +564,38 @@ export default function MenuShell() {
     });
   }
 
+  /* =====================================================
+     RENDER
+  ===================================================== */
+
   return (
     <section className="menu-page-shell">
-      {/* -------------------------------------------------
+
+      {/* =================================================
           SHORT HERO
-      ------------------------------------------------- */}
+      ================================================= */}
+
       <section className="menu-hero">
         <div className="menu-shell-container">
           <h1>
-            Homemade food, made with care.
+            Homemade food,
+            <br />
+            made with care.
           </h1>
 
           <p>
-            Freshly prepared meals, snacks, tiffin and
-            festive favourites.
+            Freshly prepared meals, snacks,
+            tiffin and festive favourites.
           </p>
         </div>
       </section>
 
-      {/* -------------------------------------------------
-          STICKY SEARCH + CATEGORIES
-      ------------------------------------------------- */}
+      {/* =================================================
+          NORMAL SEARCH + CATEGORY BAR
+
+          Search is now BELOW the fixed header.
+      ================================================= */}
+
       <section
         className={`menu-sticky-controls ${
           sticky
@@ -540,12 +604,11 @@ export default function MenuShell() {
         }`}
       >
         <div className="menu-shell-container">
-          <div
-            className={`menu-search-box ${
-              searchFocused
-                ? "menu-search-box-focused"
-                : ""
-            }`}
+
+          <button
+            type="button"
+            className="menu-search-trigger"
+            onClick={openSearch}
           >
             <span className="menu-search-icon">
               <svg
@@ -561,34 +624,14 @@ export default function MenuShell() {
               </svg>
             </span>
 
-            <input
-              type="search"
-              value={searchQuery}
-              onFocus={() =>
-                setSearchFocused(true)
-              }
-              onChange={(event) =>
-                handleSearchChange(
-                  event.target.value
-                )
-              }
-              placeholder="Search dishes, snacks, tiffin & more"
-              aria-label="Search menu"
-            />
-
-            {searchQuery && (
-              <button
-                type="button"
-                className="menu-search-clear"
-                onClick={clearSearch}
-                aria-label="Clear search"
-              >
-                ×
-              </button>
-            )}
-          </div>
+            <span>
+              {searchQuery ||
+                "Search dishes, snacks, tiffin & more"}
+            </span>
+          </button>
 
           <div className="menu-category-scroll">
+
             <button
               type="button"
               className={`menu-category-pill ${
@@ -603,42 +646,53 @@ export default function MenuShell() {
               All Items
             </button>
 
-            {categories.map((category) => (
-              <button
-                type="button"
-                key={category.id}
-                className={`menu-category-pill ${
-                  String(selectedCategory) ===
-                  String(category.id)
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  selectCategory(
+            {categories.map(
+              (category) => (
+                <button
+                  type="button"
+                  key={category.id}
+                  className={`menu-category-pill ${
+                    String(
+                      selectedCategory
+                    ) ===
                     String(category.id)
-                  )
-                }
-              >
-                {category.name}
-              </button>
-            ))}
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    selectCategory(
+                      String(category.id)
+                    )
+                  }
+                >
+                  {category.name}
+                </button>
+              )
+            )}
+
           </div>
         </div>
       </section>
 
-      {/* -------------------------------------------------
+      {/* =================================================
           LOADING
-      ------------------------------------------------- */}
+      ================================================= */}
+
       {loading && <MenuLoader />}
 
-      {/* -------------------------------------------------
+      {/* =================================================
           ERROR
-      ------------------------------------------------- */}
+      ================================================= */}
+
       {!loading && error && (
         <div className="menu-shell-container">
           <div className="menu-error-box">
-            <strong>Something went wrong</strong>
+            <strong>
+              Something went wrong
+            </strong>
+
             <span>{error}</span>
+
             <button
               type="button"
               onClick={() =>
@@ -651,181 +705,204 @@ export default function MenuShell() {
         </div>
       )}
 
+      {/* =================================================
+          MAIN MENU
+      ================================================= */}
+
       {!loading && !error && (
         <>
-          {/* -------------------------------------------------
-              SEARCH RESULT HEADER
-          ------------------------------------------------- */}
-          {searchText && (
-            <div className="menu-shell-container">
-              <div className="menu-search-result-summary">
-                <div>
-                  <span>SEARCH RESULTS</span>
-                  <strong>
-                    {filteredProducts.length}{" "}
-                    {filteredProducts.length === 1
-                      ? "dish"
-                      : "dishes"}
-                  </strong>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={clearSearch}
-                >
-                  SHOW ALL ITEMS
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* -------------------------------------------------
-              FEATURED
-              Only shown on All Items + no active search.
-          ------------------------------------------------- */}
           {selectedCategory === "all" &&
             !searchText &&
             featuredProducts.length > 0 && (
               <FeaturedCarousel
-                products={featuredProducts}
+                products={
+                  featuredProducts
+                }
                 index={featuredIndex}
                 availability={
                   categoryAvailability
                 }
                 onPrevious={() =>
-                  scrollFeatured(-1)
+                  moveFeatured(-1)
                 }
                 onNext={() =>
-                  scrollFeatured(1)
+                  moveFeatured(1)
                 }
                 onSelect={openProduct}
               />
             )}
 
-          {/* -------------------------------------------------
-              PRODUCTS
-          ------------------------------------------------- */}
           <main className="menu-content">
             <div className="menu-shell-container">
-              {categories.map((category) => {
-                const categoryProducts =
-                  groupedProducts[
-                    String(category.id)
-                  ] || [];
 
-                if (!categoryProducts.length) {
-                  return null;
-                }
+              {categories.map(
+                (category) => {
+                  const categoryProducts =
+                    filteredProducts.filter(
+                      (product) =>
+                        String(
+                          product.category_id
+                        ) ===
+                        String(category.id)
+                    );
 
-                const availability =
-                  categoryAvailability[
-                    String(category.id)
-                  ];
+                  if (
+                    !categoryProducts.length
+                  ) {
+                    return null;
+                  }
 
-                const ruleLabel =
-                  availability?.user_message ||
-                  "";
+                  const availability =
+                    categoryAvailability[
+                      String(category.id)
+                    ];
 
-                const isOpen =
-                  canOrderFromAvailability(
-                    availability
-                  );
+                  const isOpen =
+                    canOrderFromAvailability(
+                      availability
+                    );
 
-                return (
-                  <section
-                    key={category.id}
-                    id={`menu-category-${category.id}`}
-                    className="menu-category-section"
-                  >
-                    <div className="menu-category-heading">
-                      <div>
-                        <h2>
-                          {category.name}
-                        </h2>
+                  return (
+                    <section
+                      key={category.id}
+                      id={`menu-category-${category.id}`}
+                      className="menu-category-section"
+                    >
+                      <div className="menu-category-heading">
+                        <div>
+                          <h2>
+                            {category.name}
+                          </h2>
 
-                        <span>
-                          {categoryProducts.length}{" "}
-                          {categoryProducts.length ===
-                          1
-                            ? "item"
-                            : "items"}
-                        </span>
+                          <span>
+                            {
+                              categoryProducts.length
+                            }{" "}
+                            {categoryProducts.length ===
+                            1
+                              ? "item"
+                              : "items"}
+                          </span>
+                        </div>
+
+                        <div className="menu-fresh-badge">
+                          <span>✓</span>
+                          Fresh every order
+                        </div>
                       </div>
 
-                      <div className="menu-fresh-badge">
-                        <span>✓</span>
-                        Fresh every order
-                      </div>
-                    </div>
+                      {availability?.user_message && (
+                        <div
+                          className={`menu-availability ${
+                            isOpen
+                              ? "open"
+                              : "closed"
+                          }`}
+                        >
+                          <span />
 
-                    {ruleLabel && (
-                      <div
-                        className={`menu-availability ${
-                          isOpen
-                            ? "open"
-                            : "closed"
-                        }`}
-                      >
-                        <span />
-                        {ruleLabel}
-                      </div>
-                    )}
-
-                    <div className="menu-product-grid">
-                      {categoryProducts.map(
-                        (product) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            availability={
-                              availability
-                            }
-                            cart={cart}
-                            onOpen={openProduct}
-                            onAdd={handleCart}
-                            onNotify={
-                              notifyWhatsApp
-                            }
-                          />
-                        )
+                          {
+                            availability.user_message
+                          }
+                        </div>
                       )}
-                    </div>
-                  </section>
-                );
-              })}
 
-              {filteredProducts.length === 0 && (
+                      <div className="menu-product-grid">
+                        {categoryProducts.map(
+                          (product) => (
+                            <ProductCard
+                              key={
+                                product.id
+                              }
+                              product={
+                                product
+                              }
+                              availability={
+                                availability
+                              }
+                              cart={cart}
+                              onOpen={
+                                openProduct
+                              }
+                              onAdd={
+                                handleCart
+                              }
+                              onNotify={
+                                notifyWhatsApp
+                              }
+                            />
+                          )
+                        )}
+                      </div>
+                    </section>
+                  );
+                }
+              )}
+
+              {filteredProducts.length ===
+                0 && (
                 <div className="menu-empty-state">
                   <div className="menu-empty-icon">
                     🍲
                   </div>
 
-                  <h2>Nothing found</h2>
+                  <h2>
+                    Nothing found
+                  </h2>
 
                   <p>
-                    Try another dish, category or
-                    keyword.
+                    Try another dish,
+                    category or keyword.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => {
-                      clearSearch();
-                      selectCategory("all");
+                      setSearchQuery("");
+                      setSelectedCategory(
+                        "all"
+                      );
                     }}
                   >
                     SHOW ALL ITEMS
                   </button>
                 </div>
               )}
+
             </div>
           </main>
         </>
       )}
 
-      {/* -------------------------------------------------
-          PRODUCT / VARIANT MODAL
-      ------------------------------------------------- */}
+      {/* =================================================
+          SEARCH PAGE
+      ================================================= */}
+
+      {searchOpen && (
+        <SearchPage
+          categories={categories}
+          products={filteredProducts}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onBack={closeSearch}
+          onOpenProduct={
+            openProduct
+          }
+          availability={
+            categoryAvailability
+          }
+          cart={cart}
+          onAdd={handleCart}
+          onNotify={
+            notifyWhatsApp
+          }
+        />
+      )}
+
+      {/* =================================================
+          PRODUCT MODAL
+      ================================================= */}
+
       {modalProduct && (
         <ProductModal
           product={modalProduct}
@@ -839,10 +916,222 @@ export default function MenuShell() {
           cart={cart}
           onClose={closeProduct}
           onAdd={handleCart}
-          onNotify={notifyWhatsApp}
+          onNotify={
+            notifyWhatsApp
+          }
         />
       )}
+
     </section>
+  );
+}
+
+/* =====================================================
+   SEARCH PAGE
+===================================================== */
+
+function SearchPage({
+  categories,
+  products,
+  searchQuery,
+  setSearchQuery,
+  onBack,
+  onOpenProduct,
+  availability,
+  cart,
+  onAdd,
+  onNotify,
+}: {
+  categories: Category[];
+  products: Product[];
+  searchQuery: string;
+  setSearchQuery: (
+    value: string
+  ) => void;
+  onBack: () => void;
+  onOpenProduct: (
+    product: Product
+  ) => void;
+  availability: Record<
+    string,
+    CategoryAvailability
+  >;
+  cart: {
+    items: CartItem[];
+  };
+  onAdd: (
+    variantId: number | string,
+    delta: number
+  ) => void;
+  onNotify: (
+    product: Product
+  ) => void;
+}) {
+  return (
+    <div className="menu-search-page">
+
+      <div className="menu-search-page-top">
+
+        <button
+          type="button"
+          className="menu-search-back"
+          onClick={onBack}
+          aria-label="Back"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5" />
+            <path d="m12 19-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div className="menu-search-page-input">
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="7"
+            />
+            <path d="m20 20-4-4" />
+          </svg>
+
+          <input
+            autoFocus
+            type="search"
+            value={searchQuery}
+            onChange={(event) =>
+              setSearchQuery(
+                event.target.value
+              )
+            }
+            placeholder="Search dishes, snacks, tiffin & more"
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() =>
+                setSearchQuery("")
+              }
+            >
+              ×
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="menu-search-page-content">
+
+        {/* ALL ITEMS DIRECTLY BELOW SEARCH */}
+
+        <div className="menu-search-all-title">
+          <div>
+            <span>MENU</span>
+            <h2>
+              All Items
+            </h2>
+          </div>
+
+          <small>
+            {products.length}{" "}
+            {products.length === 1
+              ? "item"
+              : "items"}
+          </small>
+        </div>
+
+        <div className="menu-search-category-row">
+          <span>
+            Browse
+          </span>
+
+          {categories.map(
+            (category) => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => {
+                  onBack();
+
+                  window.setTimeout(
+                    () => {
+                      const element =
+                        document.getElementById(
+                          `menu-category-${category.id}`
+                        );
+
+                      if (
+                        element
+                      ) {
+                        element.scrollIntoView(
+                          {
+                            behavior:
+                              "smooth",
+                            block:
+                              "start",
+                          }
+                        );
+                      }
+                    },
+                    100
+                  );
+                }}
+              >
+                {category.name}
+              </button>
+            )
+          )}
+        </div>
+
+        {products.length > 0 ? (
+          <div className="menu-product-grid">
+            {products.map(
+              (product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  availability={
+                    availability[
+                      String(
+                        product.category_id
+                      )
+                    ]
+                  }
+                  cart={cart}
+                  onOpen={
+                    onOpenProduct
+                  }
+                  onAdd={onAdd}
+                  onNotify={
+                    onNotify
+                  }
+                />
+              )
+            )}
+          </div>
+        ) : (
+          <div className="menu-empty-state">
+            <div className="menu-empty-icon">
+              🍲
+            </div>
+
+            <h2>
+              No dishes found
+            </h2>
+
+            <p>
+              Try another search.
+            </p>
+          </div>
+        )}
+
+      </div>
+    </div>
   );
 }
 
@@ -860,35 +1149,50 @@ function ProductCard({
 }: {
   product: Product;
   availability?: CategoryAvailability;
-  cart: { items: CartItem[] };
-  onOpen: (product: Product) => void;
+  cart: {
+    items: CartItem[];
+  };
+  onOpen: (
+    product: Product
+  ) => void;
   onAdd: (
     variantId: number | string,
     delta: number
   ) => void;
-  onNotify: (product: Product) => void;
+  onNotify: (
+    product: Product
+  ) => void;
 }) {
-  const variants = product.variants || [];
+  const variants =
+    product.variants || [];
 
   if (!variants.length) {
     return null;
   }
 
   const activeVariant =
-    getActiveVariantFromCart(product, cart) ||
-    variants[0];
+    getActiveVariantFromCart(
+      product,
+      cart
+    ) || variants[0];
 
   const quantity =
-    getQuantityForProduct(product, cart);
-
-  const isMulti = variants.length > 1;
+    getQuantityForProduct(
+      product,
+      cart
+    );
 
   const canOrder =
-    canOrderFromAvailability(availability);
+    canOrderFromAvailability(
+      availability
+    );
 
   const subscription =
     availability?.delivery_type ===
     "SUBSCRIPTION";
+
+  const isMulti =
+    variants.length > 1;
 
   const price = getNumber(
     activeVariant.price
@@ -898,36 +1202,38 @@ function ProductCard({
     activeVariant.old_price
   );
 
-  const discount = getDiscount(
-    price,
-    oldPrice
-  );
+  const discount =
+    getDiscount(
+      price,
+      oldPrice
+    );
 
   const rating = getNumber(
     product.avg_rating
   );
 
-  const reviewCount = getNumber(
-    product.review_count
-  );
-
-  const image =
-    product.image_path ||
-    "/images/placeholder.png";
+  const reviewCount =
+    getNumber(
+      product.review_count
+    );
 
   return (
     <article className="menu-product-card">
+
       <button
         type="button"
         className="menu-product-image-button"
-        onClick={() => onOpen(product)}
-        aria-label={`View ${product.name}`}
+        onClick={() =>
+          onOpen(product)
+        }
       >
         <img
-          src={image}
+          src={
+            product.image_path ||
+            "/images/placeholder.png"
+          }
           alt={product.name}
           loading="lazy"
-          decoding="async"
         />
 
         {discount > 0 && (
@@ -944,8 +1250,11 @@ function ProductCard({
       </button>
 
       <div className="menu-product-body">
+
         <div className="menu-product-title-row">
-          <h3>{product.name}</h3>
+          <h3>
+            {product.name}
+          </h3>
 
           {rating >= 0.5 && (
             <div className="menu-rating">
@@ -967,22 +1276,21 @@ function ProductCard({
         )}
 
         <div className="menu-product-bottom">
+
           <div className="menu-price-block">
             <strong>
               ₹{price}
             </strong>
 
-            {hasRealOldPrice(
-              activeVariant.old_price
-            ) &&
-              oldPrice > price && (
-                <span>
-                  ₹{oldPrice}
-                </span>
-              )}
+            {oldPrice > price && (
+              <span>
+                ₹{oldPrice}
+              </span>
+            )}
           </div>
 
           <div className="menu-product-action">
+
             {quantity > 0 ? (
               <QuantityControl
                 quantity={quantity}
@@ -1009,21 +1317,17 @@ function ProductCard({
               >
                 WHATSAPP NOTIFY
               </button>
-            ) : subscription ? (
-              <button
-                type="button"
-                className="menu-btn-primary"
-                onClick={() => onOpen(product)}
-              >
-                SUBSCRIBE
-              </button>
             ) : isMulti ? (
               <button
                 type="button"
                 className="menu-btn-primary"
-                onClick={() => onOpen(product)}
+                onClick={() =>
+                  onOpen(product)
+                }
               >
-                VIEW OPTIONS
+                {subscription
+                  ? "SUBSCRIBE"
+                  : "VIEW OPTIONS"}
               </button>
             ) : (
               <button
@@ -1039,25 +1343,31 @@ function ProductCard({
                 ADD
               </button>
             )}
+
           </div>
         </div>
 
-        {isMulti && quantity === 0 && (
-          <button
-            type="button"
-            className="menu-options-link"
-            onClick={() => onOpen(product)}
-          >
-            {variants.length} options available
-          </button>
-        )}
+        {isMulti &&
+          quantity === 0 && (
+            <button
+              type="button"
+              className="menu-options-link"
+              onClick={() =>
+                onOpen(product)
+              }
+            >
+              {variants.length}{" "}
+              options available
+            </button>
+          )}
+
       </div>
     </article>
   );
 }
 
 /* =====================================================
-   FEATURED CAROUSEL
+   FEATURED
 ===================================================== */
 
 function FeaturedCarousel({
@@ -1076,7 +1386,9 @@ function FeaturedCarousel({
   >;
   onPrevious: () => void;
   onNext: () => void;
-  onSelect: (product: Product) => void;
+  onSelect: (
+    product: Product
+  ) => void;
 }) {
   const product =
     products[index] || products[0];
@@ -1096,16 +1408,17 @@ function FeaturedCarousel({
     variant.old_price
   );
 
-  const discount = getDiscount(
-    price,
-    oldPrice
-  );
+  const discount =
+    getDiscount(
+      price,
+      oldPrice
+    );
 
   const rating = getNumber(
     product.avg_rating
   );
 
-  const availabilityData =
+  const categoryAvailability =
     availability[
       String(product.category_id)
     ];
@@ -1113,7 +1426,9 @@ function FeaturedCarousel({
   return (
     <section className="menu-featured-wrap">
       <div className="menu-shell-container">
+
         <div className="menu-featured-card">
+
           <div className="menu-featured-top">
             <span>
               ★ HANDPICKED FOR YOU
@@ -1126,6 +1441,7 @@ function FeaturedCarousel({
           </div>
 
           <div className="menu-featured-content">
+
             <button
               type="button"
               className="menu-featured-image"
@@ -1143,11 +1459,14 @@ function FeaturedCarousel({
             </button>
 
             <div className="menu-featured-details">
+
               <span className="menu-featured-eyebrow">
                 MITHORA FAVOURITE
               </span>
 
-              <h2>{product.name}</h2>
+              <h2>
+                {product.name}
+              </h2>
 
               {product.description && (
                 <p>
@@ -1156,6 +1475,7 @@ function FeaturedCarousel({
               )}
 
               <div className="menu-featured-meta">
+
                 {rating >= 0.5 && (
                   <span>
                     ★{" "}
@@ -1169,12 +1489,12 @@ function FeaturedCarousel({
                   </span>
                 )}
 
-                {availabilityData
-                  ?.orderable_now && (
+                {categoryAvailability?.orderable_now && (
                   <span>
                     ● Available now
                   </span>
                 )}
+
               </div>
 
               <div className="menu-featured-price">
@@ -1201,6 +1521,7 @@ function FeaturedCarousel({
                   ? "VIEW OPTIONS"
                   : "ORDER NOW"}
               </button>
+
             </div>
           </div>
 
@@ -1209,8 +1530,10 @@ function FeaturedCarousel({
               <button
                 type="button"
                 className="menu-featured-arrow left"
-                onClick={onPrevious}
-                aria-label="Previous featured item"
+                onClick={
+                  onPrevious
+                }
+                aria-label="Previous"
               >
                 ‹
               </button>
@@ -1218,8 +1541,10 @@ function FeaturedCarousel({
               <button
                 type="button"
                 className="menu-featured-arrow right"
-                onClick={onNext}
-                aria-label="Next featured item"
+                onClick={
+                  onNext
+                }
+                aria-label="Next"
               >
                 ›
               </button>
@@ -1227,19 +1552,30 @@ function FeaturedCarousel({
               <div className="menu-featured-dots">
                 {products.map(
                   (item, dotIndex) => (
-                    <span
+                    <button
+                      type="button"
                       key={item.id}
                       className={
-                        dotIndex === index
+                        dotIndex ===
+                        index
                           ? "active"
                           : ""
                       }
+                      onClick={() =>
+                        onSelect(
+                          item
+                        )
+                      }
+                      aria-label={`Featured item ${
+                        dotIndex + 1
+                      }`}
                     />
                   )
                 )}
               </div>
             </>
           )}
+
         </div>
       </div>
     </section>
@@ -1261,23 +1597,25 @@ function QuantityControl({
 }) {
   return (
     <div className="menu-quantity-control">
+
       <button
         type="button"
         onClick={onDecrease}
-        aria-label="Decrease quantity"
       >
         −
       </button>
 
-      <strong>{quantity}</strong>
+      <strong>
+        {quantity}
+      </strong>
 
       <button
         type="button"
         onClick={onIncrease}
-        aria-label="Increase quantity"
       >
         +
       </button>
+
     </div>
   );
 }
@@ -1296,15 +1634,20 @@ function ProductModal({
 }: {
   product: Product;
   availability?: CategoryAvailability;
-  cart: { items: CartItem[] };
+  cart: {
+    items: CartItem[];
+  };
   onClose: () => void;
   onAdd: (
     variantId: number | string,
     delta: number
   ) => void;
-  onNotify: (product: Product) => void;
+  onNotify: (
+    product: Product
+  ) => void;
 }) {
-  const variants = product.variants || [];
+  const variants =
+    product.variants || [];
 
   const canOrder =
     canOrderFromAvailability(
@@ -1331,13 +1674,12 @@ function ProductModal({
         className="menu-product-modal"
         role="dialog"
         aria-modal="true"
-        aria-label={product.name}
       >
+
         <button
           type="button"
           className="menu-modal-close"
           onClick={onClose}
-          aria-label="Close"
         >
           ×
         </button>
@@ -1353,13 +1695,17 @@ function ProductModal({
         </div>
 
         <div className="menu-modal-content">
+
           <div className="menu-modal-title-row">
+
             <div>
               <span className="menu-modal-label">
                 MITHORA KITCHEN
               </span>
 
-              <h2>{product.name}</h2>
+              <h2>
+                {product.name}
+              </h2>
             </div>
 
             {getNumber(
@@ -1370,6 +1716,7 @@ function ProductModal({
                 {getNumber(
                   product.avg_rating
                 ).toFixed(1)}
+
                 <small>
                   (
                   {getNumber(
@@ -1379,6 +1726,7 @@ function ProductModal({
                 </small>
               </div>
             )}
+
           </div>
 
           {product.description && (
@@ -1388,125 +1736,152 @@ function ProductModal({
           )}
 
           <div className="menu-variant-list">
-            {variants.map((variant) => {
-              const item =
-                cart.items.find(
-                  (cartItem) =>
-                    String(
-                      cartItem.variant_id
-                    ) ===
-                    String(variant.id)
-                );
 
-              const quantity =
-                item?.qty || 0;
+            {variants.map(
+              (variant) => {
+                const item =
+                  cart.items.find(
+                    (cartItem) =>
+                      String(
+                        cartItem.variant_id
+                      ) ===
+                      String(
+                        variant.id
+                      )
+                  );
 
-              const price = getNumber(
-                variant.price
-              );
+                const quantity =
+                  item?.qty || 0;
 
-              const oldPrice =
-                getNumber(
-                  variant.old_price
-                );
+                const price =
+                  getNumber(
+                    variant.price
+                  );
 
-              const discount =
-                getDiscount(
-                  price,
-                  oldPrice
-                );
+                const oldPrice =
+                  getNumber(
+                    variant.old_price
+                  );
 
-              return (
-                <div
-                  key={variant.id}
-                  className={`menu-variant-row ${
-                    quantity > 0
-                      ? "selected"
-                      : ""
-                  }`}
-                >
-                  <div className="menu-variant-info">
-                    <strong>
-                      {variant.variant_name ||
-                        "Regular"}
-                    </strong>
+                const discount =
+                  getDiscount(
+                    price,
+                    oldPrice
+                  );
 
-                    {variant.description && (
-                      <p>
-                        {
-                          variant.description
-                        }
-                      </p>
-                    )}
+                return (
+                  <div
+                    key={
+                      variant.id
+                    }
+                    className={`menu-variant-row ${
+                      quantity > 0
+                        ? "selected"
+                        : ""
+                    }`}
+                  >
 
-                    <div className="menu-variant-price">
+                    <div className="menu-variant-info">
+
                       <strong>
-                        ₹{price}
+                        {variant.variant_name ||
+                          "Regular"}
                       </strong>
 
-                      {oldPrice > price && (
-                        <del>
-                          ₹{oldPrice}
-                        </del>
+                      {variant.description && (
+                        <p>
+                          {
+                            variant.description
+                          }
+                        </p>
                       )}
 
-                      {discount > 0 && (
-                        <span>
-                          {discount}% OFF
-                        </span>
-                      )}
+                      <div className="menu-variant-price">
+
+                        <strong>
+                          ₹{price}
+                        </strong>
+
+                        {oldPrice >
+                          price && (
+                          <del>
+                            ₹
+                            {
+                              oldPrice
+                            }
+                          </del>
+                        )}
+
+                        {discount >
+                          0 && (
+                          <span>
+                            {
+                              discount
+                            }%
+                            OFF
+                          </span>
+                        )}
+
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="menu-variant-action">
-                    {quantity > 0 ? (
-                      <QuantityControl
-                        quantity={quantity}
-                        onDecrease={() =>
-                          onAdd(
-                            variant.id,
-                            -1
-                          )
-                        }
-                        onIncrease={() =>
-                          onAdd(
-                            variant.id,
-                            1
-                          )
-                        }
-                      />
-                    ) : !canOrder ? (
-                      <button
-                        type="button"
-                        className="menu-btn-notify"
-                        onClick={() =>
-                          onNotify(
-                            product
-                          )
-                        }
-                      >
-                        NOTIFY
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="menu-btn-primary menu-variant-add"
-                        onClick={() =>
-                          onAdd(
-                            variant.id,
-                            1
-                          )
-                        }
-                      >
-                        {subscription
-                          ? "SUBSCRIBE"
-                          : "ADD"}
-                      </button>
-                    )}
+                    <div className="menu-variant-action">
+
+                      {quantity >
+                      0 ? (
+                        <QuantityControl
+                          quantity={
+                            quantity
+                          }
+                          onDecrease={() =>
+                            onAdd(
+                              variant.id,
+                              -1
+                            )
+                          }
+                          onIncrease={() =>
+                            onAdd(
+                              variant.id,
+                              1
+                            )
+                          }
+                        />
+                      ) : !canOrder ? (
+                        <button
+                          type="button"
+                          className="menu-btn-notify"
+                          onClick={() =>
+                            onNotify(
+                              product
+                            )
+                          }
+                        >
+                          NOTIFY
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="menu-btn-primary menu-variant-add"
+                          onClick={() =>
+                            onAdd(
+                              variant.id,
+                              1
+                            )
+                          }
+                        >
+                          {subscription
+                            ? "SUBSCRIBE"
+                            : "ADD"}
+                        </button>
+                      )}
+
+                    </div>
+
                   </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
+
           </div>
 
           <button
@@ -1516,6 +1891,7 @@ function ProductModal({
           >
             DONE
           </button>
+
         </div>
       </div>
     </div>
@@ -1557,6 +1933,7 @@ function MenuLoader() {
   return (
     <div className="menu-loader-area">
       <div className="menu-loader-card">
+
         <div className="menu-loader-offer">
           <span>OFFER</span>
 
@@ -1574,6 +1951,7 @@ function MenuLoader() {
         </div>
 
         <div className="menu-loader-heading">
+
           <div className="menu-loader-icon">
             🍳
           </div>
@@ -1587,16 +1965,19 @@ function MenuLoader() {
               Fresh from our kitchen • Jaipur
             </p>
           </div>
+
         </div>
 
         <div className="menu-loader-grid">
+
           {kitchenItems.map(
             (item, index) => (
               <div
                 className="menu-loader-item"
                 key={item.text}
                 style={{
-                  animationDelay: `${index * 100}ms`,
+                  animationDelay:
+                    `${index * 100}ms`,
                 }}
               >
                 <div className="menu-loader-image">
@@ -1612,11 +1993,13 @@ function MenuLoader() {
               </div>
             )
           )}
+
         </div>
 
         <div className="menu-loader-progress">
           <span />
         </div>
+
       </div>
     </div>
   );
@@ -1628,19 +2011,27 @@ function MenuLoader() {
 
 function getQuantityForProduct(
   product: Product,
-  cart: { items: CartItem[] }
+  cart: {
+    items: CartItem[];
+  }
 ): number {
   const variants =
     product.variants || [];
 
   for (const variant of variants) {
-    const item = cart.items.find(
-      (cartItem) =>
-        String(cartItem.variant_id) ===
-        String(variant.id)
-    );
+    const item =
+      cart.items.find(
+        (cartItem) =>
+          String(
+            cartItem.variant_id
+          ) ===
+          String(variant.id)
+      );
 
-    if (item && item.qty > 0) {
+    if (
+      item &&
+      item.qty > 0
+    ) {
       return item.qty;
     }
   }
@@ -1650,19 +2041,27 @@ function getQuantityForProduct(
 
 function getActiveVariantFromCart(
   product: Product,
-  cart: { items: CartItem[] }
+  cart: {
+    items: CartItem[];
+  }
 ): Variant | null {
   const variants =
     product.variants || [];
 
   for (const variant of variants) {
-    const item = cart.items.find(
-      (cartItem) =>
-        String(cartItem.variant_id) ===
-        String(variant.id)
-    );
+    const item =
+      cart.items.find(
+        (cartItem) =>
+          String(
+            cartItem.variant_id
+          ) ===
+          String(variant.id)
+      );
 
-    if (item && item.qty > 0) {
+    if (
+      item &&
+      item.qty > 0
+    ) {
       return variant;
     }
   }
