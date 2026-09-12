@@ -139,8 +139,6 @@ export default function MenuShell() {
     useState("all");
 
   const [searchOpen, setSearchOpen] = useState(false);
-  const [sticky, setSticky] = useState(false);
-
   const [modalProduct, setModalProduct] =
     useState<Product | null>(null);
 
@@ -170,21 +168,39 @@ export default function MenuShell() {
       );
     };
 
-    const onScroll = () => {
-      setSticky(window.scrollY > 140);
-    };
-
     updateMenuOffsets();
-    window.requestAnimationFrame(updateMenuOffsets);
+    const frame = window.requestAnimationFrame(updateMenuOffsets);
 
     window.addEventListener("resize", updateMenuOffsets);
-    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", updateMenuOffsets);
-      window.removeEventListener("scroll", onScroll);
     };
   }, [categories.length, loading]);
+
+  /* -----------------------------------------------------
+     MODAL / SEARCH SCROLL LOCK
+  ----------------------------------------------------- */
+
+  useEffect(() => {
+    const locked = Boolean(modalProduct || searchOpen);
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (locked) {
+      html.classList.add("menu-scroll-locked");
+      body.classList.add("menu-scroll-locked");
+    } else {
+      html.classList.remove("menu-scroll-locked");
+      body.classList.remove("menu-scroll-locked");
+    }
+
+    return () => {
+      html.classList.remove("menu-scroll-locked");
+      body.classList.remove("menu-scroll-locked");
+    };
+  }, [modalProduct, searchOpen]);
 
   /* -----------------------------------------------------
      LOAD MENU
@@ -388,14 +404,12 @@ export default function MenuShell() {
     setSearchOpen(true);
     setSelectedCategory("all");
 
-    document.body.style.overflow = "hidden";
   }
 
   function closeSearch() {
     setSearchOpen(false);
     setSearchQuery("");
 
-    document.body.style.overflow = "";
   }
 
   /* -----------------------------------------------------
@@ -523,15 +537,11 @@ export default function MenuShell() {
     product: Product
   ) {
     setModalProduct(product);
-    document.body.style.overflow = "hidden";
   }
 
   function closeProduct() {
     setModalProduct(null);
 
-    if (!searchOpen) {
-      document.body.style.overflow = "";
-    }
   }
 
   function notifyWhatsApp(
@@ -584,19 +594,6 @@ export default function MenuShell() {
     });
   }
 
-  function categoryIcon(category: Category): string {
-    const name = category.name.toLowerCase();
-
-    if (name.includes("breakfast")) return "☀️";
-    if (name.includes("tiffin")) return "🍱";
-    if (name.includes("snack")) return "🥨";
-    if (name.includes("travel")) return "🧳";
-    if (name.includes("party")) return "🎉";
-    if (name.includes("vrat")) return "🌿";
-    if (name.includes("fruit") || name.includes("sprout")) return "🥗";
-    return "🍽️";
-  }
-
   /* =====================================================
      RENDER
   ===================================================== */
@@ -610,13 +607,7 @@ export default function MenuShell() {
           Search is now BELOW the fixed header.
       ================================================= */}
 
-      <section
-        className={`menu-sticky-controls ${
-          sticky
-            ? "menu-sticky-controls-scrolled"
-            : ""
-        }`}
-      >
+      <section className="menu-sticky-controls">
         <div className="menu-shell-container">
 
           <button
@@ -657,7 +648,6 @@ export default function MenuShell() {
                 selectCategory("all")
               }
             >
-              <span className="menu-category-icon">🍽️</span>
               <span>All Items</span>
             </button>
 
@@ -680,17 +670,6 @@ export default function MenuShell() {
                     )
                   }
                 >
-                  <span className="menu-category-icon">
-                    {category.icon_svg ? (
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: String(category.icon_svg),
-                        }}
-                      />
-                    ) : (
-                      categoryIcon(category)
-                    )}
-                  </span>
                   <span>{category.name}</span>
                 </button>
               )
@@ -824,16 +803,8 @@ export default function MenuShell() {
                     >
                       <div className="menu-category-heading">
                         <div className="menu-category-heading-main">
-                          <div className="menu-category-heading-icon">
-                            {category.icon_svg ? (
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: String(category.icon_svg),
-                                }}
-                              />
-                            ) : (
-                              categoryIcon(category)
-                            )}
+                          <div className="menu-category-heading-icon" aria-hidden="true">
+                            🍽️
                           </div>
                           <div>
                             <h2>{category.name}</h2>
@@ -1222,6 +1193,9 @@ function ProductCard({
     product: Product
   ) => void;
 }) {
+  const [descriptionExpanded, setDescriptionExpanded] =
+    useState(false);
+
   const variants =
     product.variants || [];
 
@@ -1329,9 +1303,31 @@ function ProductCard({
         </div>
 
         {product.description && (
-          <p className="menu-product-description">
-            {product.description}
-          </p>
+          <>
+            <p
+              className={`menu-product-description ${
+                descriptionExpanded
+                  ? "expanded"
+                  : ""
+              }`}
+            >
+              {product.description}
+            </p>
+
+            <button
+              type="button"
+              className="menu-read-more"
+              onClick={() =>
+                setDescriptionExpanded(
+                  (value) => !value
+                )
+              }
+            >
+              {descriptionExpanded
+                ? "Read less"
+                : "Read more"}
+            </button>
+          </>
         )}
 
         <div className="menu-product-bottom">
