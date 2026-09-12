@@ -3560,3 +3560,66 @@
       54px !important;
   }
 }
+
+/* =========================================================
+   FINAL FIX — HERO VISIBILITY + MOBILE/DESKTOP STICKY BAR
+   Everything else remains unchanged.
+========================================================= */
+
+/* The site header is fixed, so the menu page must begin below it. */
+.menu-page-shell {
+  padding-top: 78px !important;
+}
+
+/* Keep search + category controls directly below the site header. */
+.menu-page-shell .menu-sticky-controls {
+  position: sticky !important;
+  top: 78px !important;
+  z-index: 999 !important;
+}
+
+/* Once the user scrolls, lock the controls in place for reliable
+   behaviour on mobile and desktop browsers. */
+.menu-page-shell-sticky .menu-sticky-controls {
+  position: fixed !important;
+  top: 78px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1999 !important;
+}
+
+/* Reserve the space occupied by the fixed controls so content does
+   not jump upward when the fixed state activates. */
+.menu-page-shell-sticky .menu-content {
+  padding-top: 173px !important;
+}
+
+@media (max-width: 768px) {
+  /* Mobile site header is approximately 50px high. */
+  .menu-page-shell {
+    padding-top: 50px !important;
+  }
+
+  .menu-page-shell .menu-sticky-controls {
+    top: 50px !important;
+  }
+
+  .menu-page-shell-sticky .menu-sticky-controls {
+    top: 50px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+  }
+
+  .menu-page-shell-sticky .menu-content {
+    padding-top: 114px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .menu-page-shell .menu-sticky-controls,
+  .menu-page-shell-sticky .menu-sticky-controls {
+    top: 50px !important;
+  }
+}

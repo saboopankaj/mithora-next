@@ -411,7 +411,7 @@ export default function MenuShell() {
 
       const header =
         document.querySelector(
-          ".site-header"
+          "#site-header"
         );
 
       const headerHeight =
@@ -569,7 +569,11 @@ export default function MenuShell() {
   ===================================================== */
 
   return (
-    <section className="menu-page-shell">
+    <section
+      className={`menu-page-shell ${
+        sticky ? "menu-page-shell-sticky" : ""
+      }`}
+    >
 
       {/* =================================================
           SHORT HERO
