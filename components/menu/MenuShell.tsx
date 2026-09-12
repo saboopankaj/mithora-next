@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
-
-/* =========================================================
-   TYPES — KEEPING EXISTING MITHORA API STRUCTURE
-   ========================================================= */
+import { useEffect, useMemo, useState } from "react";
 
 type Category = {
   id: number | string;
@@ -22,26 +12,21 @@ type Category = {
 type Variant = {
   id: number | string;
   variant_name?: string;
-  name?: string;
-  label?: string;
   description?: string;
   price?: number | string;
-  old_price?: number | string;
+  old_price?: number | string | null;
   [key: string]: unknown;
 };
 
 type Product = {
   id: number | string;
-  sku?: string;
+  category_id: number | string;
   name: string;
-  slug?: string;
   description?: string;
-  category_id: number | string | null;
-  is_active?: number | boolean;
-  is_featured?: number | boolean;
   image_path?: string;
   avg_rating?: number | string;
   review_count?: number | string;
+  is_featured?: number | boolean | string;
   variants?: Variant[];
   [key: string]: unknown;
 };
@@ -60,270 +45,121 @@ type CartItem = {
   qty: number;
 };
 
-type Cart = {
-  items: CartItem[];
-  coupon_code?: string;
-  [key: string]: unknown;
-};
-
-/* =========================================================
-   CONSTANTS
-   ========================================================= */
-
+const WHATSAPP_NUMBER = "918657427432";
 const CART_KEY = "cart";
 
-const WHATSAPP_NUMBER =
-  "918657427432";
-
-const KITCHEN_ITEMS = [
-  {
-    img: "/images/kitchen/fresh-vegitable.webp",
-    text: "Fresh Vegetables",
-  },
-  {
-    img: "/images/kitchen/desi-spices.webp",
-    text: "Desi Spices",
-  },
-  {
-    img: "/images/kitchen/pulses-and-grains.webp",
-    text: "Handpicked Pulses",
-  },
-  {
-    img: "/images/kitchen/veg-burger.webp",
-    text: "Mithora Foods & Snacks",
-  },
-  {
-    img: "/images/kitchen/desi-cow-ghee.webp",
-    text: "Desi Ghee",
-  },
-  {
-    img: "/images/kitchen/homemade-tiffin.webp",
-    text: "Homemade Tiffin",
-  },
-];
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-function isValidOldPrice(
-  oldPrice: unknown,
-  price: unknown
-) {
-  const oldValue =
-    Number(oldPrice || 0);
-
-  const currentValue =
-    Number(price || 0);
-
-  return (
-    oldValue > 0 &&
-    currentValue > 0 &&
-    oldValue > currentValue
-  );
+function getNumber(value: unknown): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
 }
 
-function getDiscount(
-  oldPrice: unknown,
-  price: unknown
-) {
-  if (
-    !isValidOldPrice(
-      oldPrice,
-      price
-    )
-  ) {
+function hasRealOldPrice(value: unknown): boolean {
+  return getNumber(value) > 0;
+}
+
+function getDiscount(price: unknown, oldPrice: unknown): number {
+  const priceNumber = getNumber(price);
+  const oldNumber = getNumber(oldPrice);
+
+  if (!priceNumber || !oldNumber || oldNumber <= priceNumber) {
     return 0;
   }
 
-  return Math.round(
-    ((Number(oldPrice) -
-      Number(price)) /
-      Number(oldPrice)) *
-      100
-  );
+  return Math.round(((oldNumber - priceNumber) / oldNumber) * 100);
 }
 
-function getVariantName(
-  variant: Variant,
-  index: number
-) {
+function isFeatured(product: Product): boolean {
   return (
-    variant.variant_name ||
-    variant.name ||
-    variant.label ||
-    `Option ${index + 1}`
+    product.is_featured === true ||
+    product.is_featured === 1 ||
+    product.is_featured === "1" ||
+    product.is_featured === "true"
   );
 }
 
-function getProductPrice(
-  product: Product
-) {
-  const variant =
-    product.variants?.[0];
-
-  return Number(
-    variant?.price || 0
-  );
-}
-
-function canOrder(
+function canOrderFromAvailability(
   availability?: CategoryAvailability
-) {
-  if (!availability) {
-    return false;
-  }
+): boolean {
+  if (!availability) return false;
 
   return Boolean(
-    availability.delivery_type ===
-      "SUBSCRIPTION" ||
+    availability.delivery_type === "SUBSCRIPTION" ||
       availability.orderable_now ||
       availability.status === "OPEN" ||
-      availability.status ===
-        "NEXT_DAY"
+      availability.status === "NEXT_DAY"
   );
 }
 
-function getWhatsAppUrl(
-  productName: string
-) {
-  const message =
-    `Hi Mithora Kitchen,\n\n` +
-    `I want to know when "${productName}" ` +
-    `will be available.`;
+function readCart(): { items: CartItem[]; coupon_code?: string } {
+  if (typeof window === "undefined") {
+    return { items: [] };
+  }
 
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    message
-  )}`;
-}
-
-function readCart(): Cart {
   try {
-    const raw =
-      localStorage.getItem(
-        CART_KEY
-      );
+    const raw = localStorage.getItem(CART_KEY);
 
     if (!raw) {
-      return {
-        items: [],
-      };
+      return { items: [] };
     }
 
-    const parsed =
-      JSON.parse(raw);
+    const parsed = JSON.parse(raw);
 
-    if (
-      !parsed ||
-      !Array.isArray(
-        parsed.items
-      )
-    ) {
-      return {
-        items: [],
-      };
+    if (!parsed || !Array.isArray(parsed.items)) {
+      return { items: [] };
     }
 
     return parsed;
   } catch {
-    return {
-      items: [],
-    };
+    return { items: [] };
   }
 }
 
-/* =========================================================
-   MAIN
-   ========================================================= */
-
-export default function MenuShell() {
-  const [categories, setCategories] =
-    useState<Category[]>([]);
-
-  const [products, setProducts] =
-    useState<Product[]>([]);
-
-  const [
-    categoryAvailability,
-    setCategoryAvailability,
-  ] = useState<
-    Record<
-      string,
-      CategoryAvailability
-    >
-  >({});
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
-  const [
-    selectedCategory,
-    setSelectedCategory,
-  ] = useState("all");
-
-  const [searchQuery, setSearchQuery] =
-    useState("");
-
-  const [
-    searchFocused,
-    setSearchFocused,
-  ] = useState(false);
-
-  const [
-    modalProduct,
-    setModalProduct,
-  ] = useState<Product | null>(
-    null
+function writeCart(cart: { items: CartItem[]; coupon_code?: string }) {
+  localStorage.setItem(
+    CART_KEY,
+    JSON.stringify({
+      ...cart,
+      items: Array.isArray(cart.items) ? cart.items : [],
+    })
   );
 
-  const [
-    cartVersion,
-    setCartVersion,
-  ] = useState(0);
+  window.dispatchEvent(new Event("cart:updated"));
+  window.dispatchEvent(new Event("storage"));
+}
 
-  /* =======================================================
-     HEADER HEIGHT
-     ======================================================= */
+export default function MenuShell() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categoryAvailability, setCategoryAvailability] = useState<
+    Record<string, CategoryAvailability>
+  >({});
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [sticky, setSticky] = useState(false);
+
+  const [modalProduct, setModalProduct] = useState<Product | null>(null);
+
+  const [featuredIndex, setFeaturedIndex] = useState(0);
+
+  const [cartVersion, setCartVersion] = useState(0);
 
   useEffect(() => {
-    function updateHeaderHeight() {
-      const header =
-        document.querySelector(
-          "header"
-        );
+    const onScroll = () => {
+      setSticky(window.scrollY > 140);
+    };
 
-      const height = header
-        ? header.getBoundingClientRect()
-            .height
-        : 68;
-
-      document.documentElement.style.setProperty(
-        "--mithora-header-height",
-        `${height}px`
-      );
-    }
-
-    updateHeaderHeight();
-
-    window.addEventListener(
-      "resize",
-      updateHeaderHeight
-    );
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        updateHeaderHeight
-      );
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
-
-  /* =======================================================
-     LOAD MENU
-     ======================================================= */
 
   useEffect(() => {
     let cancelled = false;
@@ -338,103 +174,52 @@ export default function MenuShell() {
           productsResponse,
           availabilityResponse,
         ] = await Promise.all([
-          fetch(
-            "/api/menu/categories?active=1"
-          ),
-          fetch(
-            "/api/menu/products"
-          ),
-          fetch(
-            "/api/menu/category-availability"
-          ),
+          fetch("/api/menu/categories?active=1"),
+          fetch("/api/menu/products"),
+          fetch("/api/menu/category-availability"),
         ]);
 
-        if (
-          !categoriesResponse.ok
-        ) {
-          throw new Error(
-            "Failed to load categories"
-          );
+        if (!categoriesResponse.ok) {
+          throw new Error("Unable to load categories");
         }
 
-        if (
-          !productsResponse.ok
-        ) {
-          throw new Error(
-            "Failed to load products"
-          );
+        if (!productsResponse.ok) {
+          throw new Error("Unable to load products");
         }
 
-        const categoriesData =
-          await categoriesResponse.json();
+        const categoriesData = await categoriesResponse.json();
+        const productsData = await productsResponse.json();
 
-        const productsData =
-          await productsResponse.json();
+        const loadedCategories: Category[] =
+          categoriesData.categories || [];
 
-        const availabilityData =
-          availabilityResponse.ok
-            ? await availabilityResponse.json()
-            : {
-                categories: [],
-              };
+        const loadedProducts: Product[] =
+          productsData.products || [];
 
-        const loadedCategories =
-          Array.isArray(
-            categoriesData.categories
-          )
-            ? categoriesData.categories
-            : [];
-
-        const loadedProducts =
-          Array.isArray(
-            productsData.products
-          )
-            ? productsData.products
-            : [];
-
-        const availabilityMap: Record<
+        const loadedAvailability: Record<
           string,
           CategoryAvailability
         > = {};
 
-        if (
-          Array.isArray(
-            availabilityData.categories
-          )
-        ) {
-          availabilityData.categories.forEach(
-            (
-              item: CategoryAvailability
-            ) => {
-              availabilityMap[
-                String(
-                  item.category_id
-                )
-              ] = item;
+        if (availabilityResponse.ok) {
+          const availabilityData =
+            await availabilityResponse.json();
+
+          (availabilityData.categories || []).forEach(
+            (item: CategoryAvailability) => {
+              loadedAvailability[String(item.category_id)] =
+                item;
             }
           );
         }
 
-        if (cancelled) {
-          return;
-        }
+        if (cancelled) return;
 
-        setCategories(
-          loadedCategories
-        );
-
-        setProducts(
-          loadedProducts
-        );
-
-        setCategoryAvailability(
-          availabilityMap
-        );
+        setCategories(loadedCategories);
+        setProducts(loadedProducts);
+        setCategoryAvailability(loadedAvailability);
       } catch (err) {
-        console.error(
-          "Menu loading failed:",
-          err
-        );
+        console.error("Menu loading failed:", err);
 
         if (!cancelled) {
           setError(
@@ -443,9 +228,7 @@ export default function MenuShell() {
         }
       } finally {
         if (!cancelled) {
-          setTimeout(() => {
-            setLoading(false);
-          }, 650);
+          setLoading(false);
         }
       }
     }
@@ -457,1019 +240,595 @@ export default function MenuShell() {
     };
   }, []);
 
-  /* =======================================================
-     CATEGORY SECTIONS
-     ======================================================= */
+  useEffect(() => {
+    const refreshCart = () => {
+      setCartVersion((value) => value + 1);
+    };
 
-  const categorySections =
-    useMemo(() => {
-      return categories
-        .map((category) => {
-          const categoryProducts =
-            products.filter(
-              (product) =>
-                String(
-                  product.category_id
-                ) ===
-                String(
-                  category.id
-                )
-            );
+    window.addEventListener("cart:updated", refreshCart);
 
-          return {
-            category,
-            products:
-              categoryProducts,
-            availability:
-              categoryAvailability[
-                String(
-                  category.id
-                )
-              ],
-          };
-        })
-        .filter(
-          (section) =>
-            section.products
-              .length > 0
-        );
-    }, [
-      categories,
-      products,
-      categoryAvailability,
-    ]);
+    return () => {
+      window.removeEventListener(
+        "cart:updated",
+        refreshCart
+      );
+    };
+  }, []);
 
-  /* =======================================================
-     FEATURED
-     ======================================================= */
+  const featuredProducts = useMemo(() => {
+    return products.filter(
+      (product) =>
+        isFeatured(product) &&
+        Array.isArray(product.variants) &&
+        product.variants.length > 0
+    );
+  }, [products]);
 
-  const featuredProducts =
-    useMemo(() => {
-      return products.filter(
+  useEffect(() => {
+    if (featuredProducts.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setFeaturedIndex((current) =>
+        current + 1 >= featuredProducts.length
+          ? 0
+          : current + 1
+      );
+    }, 5500);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [featuredProducts.length]);
+
+  const searchText = searchQuery.trim().toLowerCase();
+
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
+
+    if (selectedCategory !== "all") {
+      result = result.filter(
         (product) =>
-          Number(
-            product.is_featured
-          ) === 1 &&
-          Array.isArray(
-            product.variants
-          ) &&
+          String(product.category_id) ===
+          String(selectedCategory)
+      );
+    }
+
+    if (searchText) {
+      result = result.filter((product) => {
+        const productName =
+          product.name?.toLowerCase() || "";
+
+        const description =
+          product.description?.toLowerCase() || "";
+
+        const variantText =
           product.variants
-            .length > 0
-      );
-    }, [products]);
-
-  /* =======================================================
-     SEARCHED PRODUCTS
-     ======================================================= */
-
-  const searchResults =
-    useMemo(() => {
-      const query =
-        searchQuery
-          .trim()
-          .toLowerCase();
-
-      if (!query) {
-        return products;
-      }
-
-      return products.filter(
-        (product) => {
-          const searchableText = [
-            product.name,
-            product.description,
-            ...(product.variants ||
-              []).flatMap(
-              (variant) => [
-                variant.variant_name,
-                variant.name,
-                variant.label,
-                variant.description,
-              ]
-            ),
-          ]
-            .filter(Boolean)
+            ?.map(
+              (variant) =>
+                `${variant.variant_name || ""} ${
+                  variant.description || ""
+                }`
+            )
             .join(" ")
-            .toLowerCase();
+            .toLowerCase() || "";
 
-          return searchableText.includes(
-            query
-          );
-        }
-      );
-    }, [
-      products,
-      searchQuery,
-    ]);
-
-  /* =======================================================
-     VISIBLE CATEGORY SECTIONS
-     ======================================================= */
-
-  const visibleSections =
-    useMemo(() => {
-      let sections =
-        categorySections;
-
-      if (
-        selectedCategory !==
-        "all"
-      ) {
-        sections =
-          sections.filter(
-            (section) =>
-              String(
-                section.category.id
-              ) ===
-              selectedCategory
-          );
-      }
-
-      const query =
-        searchQuery
-          .trim()
-          .toLowerCase();
-
-      if (!query) {
-        return sections;
-      }
-
-      return sections
-        .map((section) => ({
-          ...section,
-          products:
-            section.products.filter(
-              (product) =>
-                searchResults.some(
-                  (result) =>
-                    String(
-                      result.id
-                    ) ===
-                    String(
-                      product.id
-                    )
-                )
-            ),
-        }))
-        .filter(
-          (section) =>
-            section.products
-              .length > 0
+        return (
+          productName.includes(searchText) ||
+          description.includes(searchText) ||
+          variantText.includes(searchText)
         );
-    }, [
-      categorySections,
-      selectedCategory,
-      searchQuery,
-      searchResults,
-    ]);
+      });
+    }
 
-  /* =======================================================
-     CART QUANTITY
-     ======================================================= */
+    return result;
+  }, [products, selectedCategory, searchText]);
 
-  function getCartQty(
-    variantId: number | string
-  ) {
+  const groupedProducts = useMemo(() => {
+    const groups: Record<string, Product[]> = {};
+
+    filteredProducts.forEach((product) => {
+      const key = String(product.category_id);
+
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+
+      groups[key].push(product);
+    });
+
+    return groups;
+  }, [filteredProducts]);
+
+  const cart = useMemo(() => {
     void cartVersion;
+    return readCart();
+  }, [cartVersion]);
 
-    const cart =
-      readCart();
+  function getProductQuantity(product: Product): number {
+    const variants = product.variants || [];
 
-    const item =
-      cart.items.find(
-        (entry) =>
-          String(
-            entry.variant_id
-          ) ===
-          String(variantId)
+    for (const variant of variants) {
+      const item = cart.items.find(
+        (cartItem) =>
+          String(cartItem.variant_id) ===
+          String(variant.id)
       );
 
-    return item
-      ? Number(item.qty || 0)
-      : 0;
+      if (item && item.qty > 0) {
+        return item.qty;
+      }
+    }
+
+    return 0;
   }
 
-  /* =======================================================
-     CART UPDATE
-     ======================================================= */
+  function getActiveVariant(product: Product): Variant | null {
+    const variants = product.variants || [];
 
-  function updateCartQuantity(
+    if (!variants.length) return null;
+
+    for (const variant of variants) {
+      const item = cart.items.find(
+        (cartItem) =>
+          String(cartItem.variant_id) ===
+          String(variant.id)
+      );
+
+      if (item && item.qty > 0) {
+        return variant;
+      }
+    }
+
+    return variants[0];
+  }
+
+  function handleCart(
     variantId: number | string,
     delta: number
   ) {
-    try {
-      const existingCart =
-        readCart();
+    const currentCart = readCart();
 
-      /*
-       * Use the existing Cart helper when available.
-       * This preserves compatibility with the
-       * existing Mithora cart implementation.
-       */
-      const globalWindow =
-        window as typeof window & {
-          Cart?: {
-            addItem?: (
-              id: number | string,
-              qty: number
-            ) => void;
-            updateQty?: (
-              id: number | string,
-              qty: number
-            ) => void;
-            removeItem?: (
-              id: number | string
-            ) => void;
-          };
-        };
-
-      const existing =
-        existingCart.items.find(
-          (item) =>
-            String(
-              item.variant_id
-            ) ===
-            String(variantId)
-        );
-
-      const currentQty =
-        existing?.qty || 0;
-
-      const newQty =
-        Math.max(
-          0,
-          currentQty + delta
-        );
-
-      if (
-        globalWindow.Cart &&
-        currentQty === 0 &&
-        delta > 0 &&
-        globalWindow.Cart
-          .addItem
-      ) {
-        globalWindow.Cart.addItem(
-          variantId,
-          delta
-        );
-      } else if (
-        globalWindow.Cart &&
-        newQty > 0 &&
-        globalWindow.Cart
-          .updateQty
-      ) {
-        globalWindow.Cart.updateQty(
-          variantId,
-          newQty
-        );
-      } else if (
-        globalWindow.Cart &&
-        newQty === 0 &&
-        currentQty > 0 &&
-        globalWindow.Cart
-          .removeItem
-      ) {
-        globalWindow.Cart.removeItem(
-          variantId
-        );
-      } else {
-        /*
-         * Fallback to the same cart structure
-         * used by the existing menu.
-         */
-        if (existing) {
-          existing.qty =
-            newQty;
-        } else if (
-          delta > 0
-        ) {
-          existingCart.items.push(
-            {
-              variant_id:
-                variantId,
-              qty: delta,
-            }
-          );
-        }
-
-        existingCart.items =
-          existingCart.items.filter(
-            (item) =>
-              Number(
-                item.qty
-              ) > 0
-          );
-
-        localStorage.setItem(
-          CART_KEY,
-          JSON.stringify(
-            existingCart
-          )
-        );
-      }
-
-      setCartVersion(
-        (value) => value + 1
-      );
-
-      window.dispatchEvent(
-        new Event(
-          "mithora-cart-updated"
-        )
-      );
-    } catch (err) {
-      console.error(
-        "Cart update failed:",
-        err
-      );
-    }
-  }
-
-  /* =======================================================
-     CATEGORY
-     ======================================================= */
-
-  function selectCategory(
-    categoryId: string
-  ) {
-    setSelectedCategory(
-      categoryId
+    const existing = currentCart.items.find(
+      (item) =>
+        String(item.variant_id) === String(variantId)
     );
 
-    if (
-      categoryId === "all"
-    ) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
+    if (!existing && delta > 0) {
+      currentCart.items.push({
+        variant_id: variantId,
+        qty: 1,
       });
+    } else if (existing) {
+      const nextQty = existing.qty + delta;
 
-      return;
+      if (nextQty <= 0) {
+        currentCart.items =
+          currentCart.items.filter(
+            (item) =>
+              String(item.variant_id) !==
+              String(variantId)
+          );
+      } else {
+        existing.qty = nextQty;
+      }
     }
 
-    setTimeout(() => {
-      const element =
-        document.getElementById(
-          `menu-category-${categoryId}`
-        );
+    writeCart(currentCart);
+    setCartVersion((value) => value + 1);
+  }
 
-      if (!element) {
+  function selectCategory(categoryId: string) {
+    setSelectedCategory(categoryId);
+
+    // Category selection dismisses search.
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    window.setTimeout(() => {
+      if (categoryId === "all") {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
         return;
       }
 
-      const sticky =
+      const element = document.getElementById(
+        `menu-category-${categoryId}`
+      );
+
+      if (!element) return;
+
+      const stickyControls =
         document.querySelector(
           ".menu-sticky-controls"
         );
 
       const offset =
-        (sticky?.getBoundingClientRect()
-          .height || 110) +
-        20;
+        (stickyControls?.getBoundingClientRect()
+          .height || 110) + 24;
 
       const top =
-        element.getBoundingClientRect()
-          .top +
+        element.getBoundingClientRect().top +
         window.scrollY -
         offset;
 
       window.scrollTo({
-        top: Math.max(
-          top,
-          0
-        ),
+        top: Math.max(top, 0),
         behavior: "smooth",
       });
-    }, 50);
+    }, 80);
   }
-
-  /* =======================================================
-     PRODUCT MODAL
-     ======================================================= */
-
-  function openProduct(
-    product: Product
-  ) {
-    setModalProduct(
-      product
-    );
-  }
-
-  function closeProduct() {
-    setModalProduct(
-      null
-    );
-  }
-
-  /* =======================================================
-     SEARCH
-     ======================================================= */
 
   function clearSearch() {
     setSearchQuery("");
+    setSearchFocused(false);
   }
 
-  const showSuggestions =
-    searchFocused &&
-    searchQuery.trim()
-      .length > 0;
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
 
-  /* =======================================================
-     RENDER
-     ======================================================= */
+    // Searching always returns to all categories.
+    if (value.trim()) {
+      setSelectedCategory("all");
+    }
+  }
+
+  function openProduct(product: Product) {
+    setModalProduct(product);
+  }
+
+  function closeProduct() {
+    setModalProduct(null);
+  }
+
+  function notifyWhatsApp(product: Product) {
+    const message = `I want to be notified when ${product.name} is available.`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function scrollFeatured(direction: number) {
+    if (!featuredProducts.length) return;
+
+    setFeaturedIndex((current) => {
+      const next =
+        current + direction;
+
+      if (next < 0) {
+        return featuredProducts.length - 1;
+      }
+
+      if (next >= featuredProducts.length) {
+        return 0;
+      }
+
+      return next;
+    });
+  }
 
   return (
     <section className="menu-page-shell">
-
-      {/* =================================================
-          LOCATION
-          ================================================= */}
-
-      <div className="menu-location-bar">
+      {/* -------------------------------------------------
+          SHORT HERO
+      ------------------------------------------------- */}
+      <section className="menu-hero">
         <div className="menu-shell-container">
+          <h1>
+            Homemade food, made with care.
+          </h1>
 
-          <button
-            type="button"
-            className="menu-location-button"
-          >
-            <span className="menu-location-pin">
-              📍
-            </span>
-
-            <span className="menu-location-copy">
-              <span className="menu-location-label">
-                Delivering to
-              </span>
-
-              <strong>
-                Jaipur
-              </strong>
-            </span>
-
-            <span className="menu-location-change">
-              Change
-            </span>
-          </button>
-
+          <p>
+            Freshly prepared meals, snacks, tiffin and
+            festive favourites.
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* =================================================
-          INTRO
-          ================================================= */}
-
-      <div className="menu-header-area">
-        <div className="menu-shell-container">
-
-          <div className="menu-heading">
-            <span className="menu-eyebrow">
-              MITHORA KITCHEN
-            </span>
-
-            <h1>
-              Homemade food,
-              <br />
-              made with care.
-            </h1>
-
-            <p>
-              Freshly prepared meals,
-              snacks, tiffin and
-              festive favourites.
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* =================================================
+      {/* -------------------------------------------------
           STICKY SEARCH + CATEGORIES
-          ================================================= */}
-
-      <section className="menu-sticky-controls">
+      ------------------------------------------------- */}
+      <section
+        className={`menu-sticky-controls ${
+          sticky
+            ? "menu-sticky-controls-scrolled"
+            : ""
+        }`}
+      >
         <div className="menu-shell-container">
+          <div
+            className={`menu-search-box ${
+              searchFocused
+                ? "menu-search-box-focused"
+                : ""
+            }`}
+          >
+            <span className="menu-search-icon">
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="7"
+                />
+                <path d="m20 20-4-4" />
+              </svg>
+            </span>
 
-          <div className="menu-search-wrap">
+            <input
+              type="search"
+              value={searchQuery}
+              onFocus={() =>
+                setSearchFocused(true)
+              }
+              onChange={(event) =>
+                handleSearchChange(
+                  event.target.value
+                )
+              }
+              placeholder="Search dishes, snacks, tiffin & more"
+              aria-label="Search menu"
+            />
 
-            <div
-              className={`menu-search-box ${
-                searchFocused
-                  ? "focused"
-                  : ""
-              }`}
-            >
-
-              <span className="menu-search-icon">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.3"
-                >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="7.5"
-                  />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
-              </span>
-
-              <input
-                value={
-                  searchQuery
-                }
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value
-                  )
-                }
-                onFocus={() =>
-                  setSearchFocused(
-                    true
-                  )
-                }
-                placeholder="Search dishes, snacks, tiffin & more"
-                type="search"
-                aria-label="Search Mithora menu"
-              />
-
-              {searchQuery && (
-                <button
-                  type="button"
-                  className="menu-search-clear"
-                  onClick={
-                    clearSearch
-                  }
-                  aria-label="Clear search"
-                >
-                  ×
-                </button>
-              )}
-
-            </div>
-
-            {/* PREDICTIVE SEARCH */}
-            {showSuggestions && (
-              <div className="menu-search-suggestions">
-
-                <div className="menu-search-suggestions-title">
-                  <span>
-                    SEARCH RESULTS
-                  </span>
-
-                  <strong>
-                    {searchResults.length}{" "}
-                    {searchResults.length ===
-                    1
-                      ? "item"
-                      : "items"}
-                  </strong>
-                </div>
-
-                {searchResults
-                  .slice(0, 6)
-                  .map(
-                    (product) => (
-                      <button
-                        type="button"
-                        key={
-                          product.id
-                        }
-                        className="menu-search-suggestion"
-                        onClick={() => {
-                          setSearchFocused(
-                            false
-                          );
-
-                          const element =
-                            document.getElementById(
-                              `menu-product-${product.id}`
-                            );
-
-                          if (
-                            element
-                          ) {
-                            element.scrollIntoView(
-                              {
-                                behavior:
-                                  "smooth",
-                                block:
-                                  "center",
-                              }
-                            );
-                          }
-                        }}
-                      >
-
-                        {product.image_path ? (
-                          <img
-                            src={
-                              product.image_path
-                            }
-                            alt={
-                              product.name
-                            }
-                          />
-                        ) : (
-                          <span className="menu-search-suggestion-placeholder">
-                            🍲
-                          </span>
-                        )}
-
-                        <span className="menu-search-suggestion-copy">
-
-                          <strong>
-                            {
-                              product.name
-                            }
-                          </strong>
-
-                          <small>
-                            {getProductPrice(
-                              product
-                            ) > 0
-                              ? `₹${getProductPrice(
-                                  product
-                                )}`
-                              : "View options"}
-                          </small>
-
-                        </span>
-
-                        <span className="menu-search-suggestion-arrow">
-                          →
-                        </span>
-
-                      </button>
-                    )
-                  )}
-
-                {searchResults.length >
-                  6 && (
-                  <div className="menu-search-more">
-                    Showing top results — scroll
-                    below for all matches
-                  </div>
-                )}
-
-                {searchResults.length ===
-                  0 && (
-                  <div className="menu-search-empty-mini">
-                    No matching dishes found.
-                  </div>
-                )}
-
-              </div>
+            {searchQuery && (
+              <button
+                type="button"
+                className="menu-search-clear"
+                onClick={clearSearch}
+                aria-label="Clear search"
+              >
+                ×
+              </button>
             )}
-
           </div>
 
-          {/* CATEGORY PILLS */}
-
-          <div className="menu-sticky-category-row">
-
+          <div className="menu-category-scroll">
             <button
               type="button"
-              className={`menu-category ${
-                selectedCategory ===
-                "all"
+              className={`menu-category-pill ${
+                selectedCategory === "all"
                   ? "active"
                   : ""
               }`}
               onClick={() =>
-                selectCategory(
-                  "all"
-                )
+                selectCategory("all")
               }
             >
               All Items
             </button>
 
-            {categories.map(
-              (category) => (
-                <button
-                  type="button"
-                  key={
-                    category.id
-                  }
-                  className={`menu-category ${
-                    selectedCategory ===
-                    String(
-                      category.id
-                    )
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    selectCategory(
-                      String(
-                        category.id
-                      )
-                    )
-                  }
-                >
-                  {
-                    category.name
-                  }
-                </button>
-              )
-            )}
-
+            {categories.map((category) => (
+              <button
+                type="button"
+                key={category.id}
+                className={`menu-category-pill ${
+                  String(selectedCategory) ===
+                  String(category.id)
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() =>
+                  selectCategory(
+                    String(category.id)
+                  )
+                }
+              >
+                {category.name}
+              </button>
+            ))}
           </div>
-
         </div>
       </section>
 
-      {/* =================================================
-          MAIN MENU
-          ================================================= */}
+      {/* -------------------------------------------------
+          LOADING
+      ------------------------------------------------- */}
+      {loading && <MenuLoader />}
 
-      <div className="menu-shell-container menu-content">
+      {/* -------------------------------------------------
+          ERROR
+      ------------------------------------------------- */}
+      {!loading && error && (
+        <div className="menu-shell-container">
+          <div className="menu-error-box">
+            <strong>Something went wrong</strong>
+            <span>{error}</span>
+            <button
+              type="button"
+              onClick={() =>
+                window.location.reload()
+              }
+            >
+              TRY AGAIN
+            </button>
+          </div>
+        </div>
+      )}
 
-        {/* LOADER */}
+      {!loading && !error && (
+        <>
+          {/* -------------------------------------------------
+              SEARCH RESULT HEADER
+          ------------------------------------------------- */}
+          {searchText && (
+            <div className="menu-shell-container">
+              <div className="menu-search-result-summary">
+                <div>
+                  <span>SEARCH RESULTS</span>
+                  <strong>
+                    {filteredProducts.length}{" "}
+                    {filteredProducts.length === 1
+                      ? "dish"
+                      : "dishes"}
+                  </strong>
+                </div>
 
-        {loading && (
-          <MenuLoader />
-        )}
-
-        {!loading &&
-          error && (
-            <div className="menu-error-card">
-              <span>
-                Something went wrong
-              </span>
-
-              <strong>
-                {error}
-              </strong>
-
-              <button
-                type="button"
-                onClick={() =>
-                  window.location.reload()
-                }
-              >
-                TRY AGAIN
-              </button>
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                >
+                  SHOW ALL ITEMS
+                </button>
+              </div>
             </div>
           )}
 
-        {!loading &&
-          !error && (
-            <>
-              {/* =========================================
-                  FEATURED
-                  ========================================= */}
+          {/* -------------------------------------------------
+              FEATURED
+              Only shown on All Items + no active search.
+          ------------------------------------------------- */}
+          {selectedCategory === "all" &&
+            !searchText &&
+            featuredProducts.length > 0 && (
+              <FeaturedCarousel
+                products={featuredProducts}
+                index={featuredIndex}
+                availability={
+                  categoryAvailability
+                }
+                onPrevious={() =>
+                  scrollFeatured(-1)
+                }
+                onNext={() =>
+                  scrollFeatured(1)
+                }
+                onSelect={openProduct}
+              />
+            )}
 
-              {selectedCategory ===
-                "all" &&
-                !searchQuery.trim() &&
-                featuredProducts.length >
-                  0 && (
-                  <FeaturedSection
-                    products={
-                      featuredProducts
-                    }
-                    availability={
-                      categoryAvailability
-                    }
-                    onOpen={
-                      openProduct
-                    }
-                    onAdd={
-                      updateCartQuantity
-                    }
-                    getCartQty={
-                      getCartQty
-                    }
-                  />
-                )}
+          {/* -------------------------------------------------
+              PRODUCTS
+          ------------------------------------------------- */}
+          <main className="menu-content">
+            <div className="menu-shell-container">
+              {categories.map((category) => {
+                const categoryProducts =
+                  groupedProducts[
+                    String(category.id)
+                  ] || [];
 
-              {/* =========================================
-                  SEARCH COUNT
-                  ========================================= */}
+                if (!categoryProducts.length) {
+                  return null;
+                }
 
-              {searchQuery.trim() && (
-                <div className="menu-search-active-summary">
+                const availability =
+                  categoryAvailability[
+                    String(category.id)
+                  ];
 
-                  <div>
-                    <span>
-                      SEARCHING FOR
-                    </span>
+                const ruleLabel =
+                  availability?.user_message ||
+                  "";
 
-                    <strong>
-                      “
-                      {
-                        searchQuery
-                      }
-                      ”
-                    </strong>
-                  </div>
+                const isOpen =
+                  canOrderFromAvailability(
+                    availability
+                  );
 
-                  <small>
-                    {
-                      searchResults.length
-                    }{" "}
-                    matching{" "}
-                    {searchResults.length ===
-                    1
-                      ? "dish"
-                      : "dishes"}
-                  </small>
-
-                </div>
-              )}
-
-              {/* =========================================
-                  CATEGORY SECTIONS
-                  ========================================= */}
-
-              {visibleSections.map(
-                ({
-                  category,
-                  products:
-                    categoryProducts,
-                  availability,
-                }) => (
+                return (
                   <section
-                    key={
-                      category.id
-                    }
+                    key={category.id}
                     id={`menu-category-${category.id}`}
                     className="menu-category-section"
                   >
+                    <div className="menu-category-heading">
+                      <div>
+                        <h2>
+                          {category.name}
+                        </h2>
 
-                    <div className="menu-category-header">
-
-                      <div className="menu-category-title-wrap">
-
-                        {category.icon_svg && (
-                          <span
-                            className="menu-category-icon"
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                String(
-                                  category.icon_svg
-                                ),
-                            }}
-                          />
-                        )}
-
-                        <div>
-                          <h2>
-                            {
-                              category.name
-                            }
-                          </h2>
-
-                          <span>
-                            {
-                              categoryProducts.length
-                            }{" "}
-                            {categoryProducts.length ===
-                            1
-                              ? "item"
-                              : "items"}
-                          </span>
-                        </div>
-
-                      </div>
-
-                      <div className="menu-category-header-right">
-
-                        <span className="menu-fresh-badge">
-                          <span>
-                            ✓
-                          </span>
-                          Fresh Every Order
+                        <span>
+                          {categoryProducts.length}{" "}
+                          {categoryProducts.length ===
+                          1
+                            ? "item"
+                            : "items"}
                         </span>
-
                       </div>
 
+                      <div className="menu-fresh-badge">
+                        <span>✓</span>
+                        Fresh every order
+                      </div>
                     </div>
 
-                    {availability && (
+                    {ruleLabel && (
                       <div
                         className={`menu-availability ${
-                          canOrder(
-                            availability
-                          )
-                            ? "available"
+                          isOpen
+                            ? "open"
                             : "closed"
                         }`}
                       >
-
-                        <span className="menu-availability-dot" />
-
-                        <span>
-                          {
-                            availability.user_message ||
-                              (canOrder(
-                                availability
-                              )
-                                ? "Available now"
-                                : "Kitchen currently closed")
-                          }
-                        </span>
-
+                        <span />
+                        {ruleLabel}
                       </div>
                     )}
 
                     <div className="menu-product-grid">
-
                       {categoryProducts.map(
                         (product) => (
-                          <div
-                            key={
-                              product.id
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            availability={
+                              availability
                             }
-                            id={`menu-product-${product.id}`}
-                          >
-                            <ProductCard
-                              product={
-                                product
-                              }
-                              availability={
-                                availability
-                              }
-                              onOpen={
-                                openProduct
-                              }
-                              onAdd={
-                                updateCartQuantity
-                              }
-                              getCartQty={
-                                getCartQty
-                              }
-                            />
-                          </div>
+                            cart={cart}
+                            onOpen={openProduct}
+                            onAdd={handleCart}
+                            onNotify={
+                              notifyWhatsApp
+                            }
+                          />
                         )
                       )}
-
                     </div>
-
                   </section>
-                )
-              )}
+                );
+              })}
 
-              {visibleSections.length ===
-                0 && (
-                <div className="menu-no-results">
-                  <div className="menu-no-results-icon">
+              {filteredProducts.length === 0 && (
+                <div className="menu-empty-state">
+                  <div className="menu-empty-icon">
                     🍲
                   </div>
 
-                  <h2>
-                    Nothing found
-                  </h2>
+                  <h2>Nothing found</h2>
 
                   <p>
-                    Try another dish,
-                    category or keyword.
+                    Try another dish, category or
+                    keyword.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => {
                       clearSearch();
-                      setSelectedCategory(
-                        "all"
-                      );
+                      selectCategory("all");
                     }}
                   >
                     SHOW ALL ITEMS
                   </button>
                 </div>
               )}
-            </>
-          )}
+            </div>
+          </main>
+        </>
+      )}
 
-      </div>
-
-      {/* SEARCH BACKDROP */}
-
-      {searchFocused &&
-        searchQuery && (
-          <button
-            type="button"
-            className="menu-search-backdrop"
-            aria-label="Close search suggestions"
-            onClick={() =>
-              setSearchFocused(
-                false
-              )
-            }
-          />
-        )}
-
-      {/* PRODUCT MODAL */}
-
+      {/* -------------------------------------------------
+          PRODUCT / VARIANT MODAL
+      ------------------------------------------------- */}
       {modalProduct && (
         <ProductModal
-          product={
-            modalProduct
-          }
+          product={modalProduct}
           availability={
             categoryAvailability[
               String(
@@ -1477,522 +836,484 @@ export default function MenuShell() {
               )
             ]
           }
-          getCartQty={
-            getCartQty
-          }
-          onAdd={
-            updateCartQuantity
-          }
-          onClose={
-            closeProduct
-          }
+          cart={cart}
+          onClose={closeProduct}
+          onAdd={handleCart}
+          onNotify={notifyWhatsApp}
         />
       )}
-
     </section>
   );
 }
 
-/* =========================================================
-   FEATURED SECTION
-   ========================================================= */
-
-function FeaturedSection({
-  products,
-  availability,
-  onOpen,
-  onAdd,
-  getCartQty,
-}: {
-  products: Product[];
-  availability: Record<
-    string,
-    CategoryAvailability
-  >;
-  onOpen: (
-    product: Product
-  ) => void;
-  onAdd: (
-    variantId: number | string,
-    delta: number
-  ) => void;
-  getCartQty: (
-    variantId: number | string
-  ) => number;
-}) {
-  return (
-    <section className="menu-featured-section">
-
-      <div className="menu-featured-heading">
-
-        <div>
-          <span>
-            MITHORA FAVOURITES
-          </span>
-
-          <h2>
-            Featured for you
-          </h2>
-
-          <p>
-            Handpicked from our kitchen
-          </p>
-        </div>
-
-        <div className="menu-featured-scroll-hint">
-          Swipe →
-        </div>
-
-      </div>
-
-      <div className="menu-featured-track">
-
-        {products.map(
-          (product) => (
-            <div
-              className="menu-featured-card"
-              key={
-                product.id
-              }
-            >
-              <ProductCard
-                product={
-                  product
-                }
-                availability={
-                  availability[
-                    String(
-                      product.category_id
-                    )
-                  ]
-                }
-                onOpen={
-                  onOpen
-                }
-                onAdd={
-                  onAdd
-                }
-                getCartQty={
-                  getCartQty
-                }
-              />
-            </div>
-          )
-        )}
-
-      </div>
-
-    </section>
-  );
-}
-
-/* =========================================================
+/* =====================================================
    PRODUCT CARD
-   ========================================================= */
+===================================================== */
 
 function ProductCard({
   product,
   availability,
+  cart,
   onOpen,
   onAdd,
-  getCartQty,
+  onNotify,
 }: {
   product: Product;
   availability?: CategoryAvailability;
-  onOpen: (
-    product: Product
-  ) => void;
+  cart: { items: CartItem[] };
+  onOpen: (product: Product) => void;
   onAdd: (
     variantId: number | string,
     delta: number
   ) => void;
-  getCartQty: (
-    variantId: number | string
-  ) => number;
+  onNotify: (product: Product) => void;
 }) {
-  const variants =
-    Array.isArray(
-      product.variants
-    )
-      ? product.variants
-      : [];
+  const variants = product.variants || [];
 
   if (!variants.length) {
     return null;
   }
 
-  const firstVariant =
+  const activeVariant =
+    getActiveVariantFromCart(product, cart) ||
     variants[0];
 
-  const price =
-    Number(
-      firstVariant.price || 0
-    );
+  const quantity =
+    getQuantityForProduct(product, cart);
 
-  const oldPrice =
-    firstVariant.old_price;
+  const isMulti = variants.length > 1;
 
-  const discount =
-    getDiscount(
-      oldPrice,
-      price
-    );
+  const canOrder =
+    canOrderFromAvailability(availability);
 
-  const rating =
-    Number(
-      product.avg_rating || 0
-    );
-
-  const reviewCount =
-    Number(
-      product.review_count || 0
-    );
-
-  const orderable =
-    canOrder(
-      availability
-    );
-
-  const isMulti =
-    variants.length > 1;
-
-  const qty =
-    getCartQty(
-      firstVariant.id
-    );
-
-  const whatsappUrl =
-    getWhatsAppUrl(
-      product.name
-    );
-
-  const actionText =
+  const subscription =
     availability?.delivery_type ===
-    "SUBSCRIPTION"
-      ? "SUBSCRIBE"
-      : isMulti
-      ? "VIEW OPTIONS"
-      : "ADD";
+    "SUBSCRIPTION";
+
+  const price = getNumber(
+    activeVariant.price
+  );
+
+  const oldPrice = getNumber(
+    activeVariant.old_price
+  );
+
+  const discount = getDiscount(
+    price,
+    oldPrice
+  );
+
+  const rating = getNumber(
+    product.avg_rating
+  );
+
+  const reviewCount = getNumber(
+    product.review_count
+  );
+
+  const image =
+    product.image_path ||
+    "/images/placeholder.png";
 
   return (
     <article className="menu-product-card">
-
-      {/* IMAGE */}
-
       <button
         type="button"
         className="menu-product-image-button"
-        onClick={() =>
-          onOpen(product)
-        }
+        onClick={() => onOpen(product)}
         aria-label={`View ${product.name}`}
       >
+        <img
+          src={image}
+          alt={product.name}
+          loading="lazy"
+          decoding="async"
+        />
 
-        <div className="menu-product-image-wrap">
+        {discount > 0 && (
+          <span className="menu-discount-badge">
+            {discount}% OFF
+          </span>
+        )}
 
-          {product.image_path ? (
-            <img
-              src={
-                product.image_path
-              }
-              alt={
-                product.name
-              }
-              className="menu-product-image"
-              loading="lazy"
-            />
-          ) : (
-            <div className="menu-product-image-placeholder">
-              <span>
-                🍲
-              </span>
-              Mithora Kitchen
-            </div>
-          )}
-
-          {discount > 0 && (
-            <span className="menu-discount-badge">
-              {discount}% OFF
-            </span>
-          )}
-
-          {Number(
-            product.is_featured
-          ) === 1 && (
-            <span className="menu-featured-badge">
-              ★ FEATURED
-            </span>
-          )}
-
-        </div>
-
+        {isFeatured(product) && (
+          <span className="menu-card-featured-badge">
+            ★ FEATURED
+          </span>
+        )}
       </button>
 
-      {/* CONTENT */}
-
-      <div className="menu-product-details">
-
+      <div className="menu-product-body">
         <div className="menu-product-title-row">
-
-          <button
-            type="button"
-            className="menu-product-title-button"
-            onClick={() =>
-              onOpen(product)
-            }
-          >
-            <h3>
-              {product.name}
-            </h3>
-          </button>
+          <h3>{product.name}</h3>
 
           {rating >= 0.5 && (
-            <div className="menu-product-rating">
-
-              <span>
-                ★
-              </span>
-
+            <div className="menu-rating">
+              <span>★</span>
               <strong>
-                {rating.toFixed(
-                  1
-                )}
+                {rating.toFixed(1)}
               </strong>
-
-              {reviewCount >
-                0 && (
-                <small>
-                  (
-                  {
-                    reviewCount
-                  }
-                  )
-                </small>
-              )}
-
+              <small>
+                ({reviewCount})
+              </small>
             </div>
           )}
-
         </div>
 
         {product.description && (
           <p className="menu-product-description">
-            {
-              product.description
-            }
+            {product.description}
           </p>
         )}
 
-        {isMulti && (
-          <div className="menu-option-count">
-            {variants.length}{" "}
-            OPTIONS AVAILABLE
-          </div>
-        )}
-
         <div className="menu-product-bottom">
-
-          <div className="menu-price">
-
+          <div className="menu-price-block">
             <strong>
               ₹{price}
             </strong>
 
-            {isValidOldPrice(
-              oldPrice,
-              price
-            ) && (
-              <del>
-                ₹{oldPrice}
-              </del>
-            )}
-
+            {hasRealOldPrice(
+              activeVariant.old_price
+            ) &&
+              oldPrice > price && (
+                <span>
+                  ₹{oldPrice}
+                </span>
+              )}
           </div>
 
           <div className="menu-product-action">
-
-            {qty > 0 ? (
+            {quantity > 0 ? (
               <QuantityControl
-                qty={
-                  qty
-                }
-                onMinus={() =>
+                quantity={quantity}
+                onDecrease={() =>
                   onAdd(
-                    firstVariant.id,
+                    activeVariant.id,
                     -1
                   )
                 }
-                onPlus={() =>
+                onIncrease={() =>
                   onAdd(
-                    firstVariant.id,
+                    activeVariant.id,
                     1
                   )
                 }
               />
-            ) : !orderable ? (
-              <a
-                href={
-                  whatsappUrl
+            ) : !canOrder ? (
+              <button
+                type="button"
+                className="menu-btn-notify"
+                onClick={() =>
+                  onNotify(product)
                 }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="menu-whatsapp-button"
               >
-                <span className="menu-whatsapp-icon">
-                  <WhatsAppIcon />
-                </span>
-
-                <span>
-                  NOTIFY
-                </span>
-              </a>
+                WHATSAPP NOTIFY
+              </button>
+            ) : subscription ? (
+              <button
+                type="button"
+                className="menu-btn-primary"
+                onClick={() => onOpen(product)}
+              >
+                SUBSCRIBE
+              </button>
+            ) : isMulti ? (
+              <button
+                type="button"
+                className="menu-btn-primary"
+                onClick={() => onOpen(product)}
+              >
+                VIEW OPTIONS
+              </button>
             ) : (
               <button
                 type="button"
-                className={`menu-primary-action ${
-                  isMulti
-                    ? "view"
-                    : ""
-                }`}
-                onClick={() => {
-                  if (
-                    isMulti ||
-                    availability?.delivery_type ===
-                      "SUBSCRIPTION"
-                  ) {
-                    onOpen(
-                      product
-                    );
-                  } else {
-                    onAdd(
-                      firstVariant.id,
-                      1
-                    );
-                  }
-                }}
+                className="menu-btn-primary"
+                onClick={() =>
+                  onAdd(
+                    activeVariant.id,
+                    1
+                  )
+                }
               >
-                {actionText}
+                ADD
               </button>
             )}
-
           </div>
-
         </div>
 
+        {isMulti && quantity === 0 && (
+          <button
+            type="button"
+            className="menu-options-link"
+            onClick={() => onOpen(product)}
+          >
+            {variants.length} options available
+          </button>
+        )}
       </div>
-
     </article>
   );
 }
 
-/* =========================================================
+/* =====================================================
+   FEATURED CAROUSEL
+===================================================== */
+
+function FeaturedCarousel({
+  products,
+  index,
+  availability,
+  onPrevious,
+  onNext,
+  onSelect,
+}: {
+  products: Product[];
+  index: number;
+  availability: Record<
+    string,
+    CategoryAvailability
+  >;
+  onPrevious: () => void;
+  onNext: () => void;
+  onSelect: (product: Product) => void;
+}) {
+  const product =
+    products[index] || products[0];
+
+  if (!product) return null;
+
+  const variant =
+    product.variants?.[0];
+
+  if (!variant) return null;
+
+  const price = getNumber(
+    variant.price
+  );
+
+  const oldPrice = getNumber(
+    variant.old_price
+  );
+
+  const discount = getDiscount(
+    price,
+    oldPrice
+  );
+
+  const rating = getNumber(
+    product.avg_rating
+  );
+
+  const availabilityData =
+    availability[
+      String(product.category_id)
+    ];
+
+  return (
+    <section className="menu-featured-wrap">
+      <div className="menu-shell-container">
+        <div className="menu-featured-card">
+          <div className="menu-featured-top">
+            <span>
+              ★ HANDPICKED FOR YOU
+            </span>
+
+            <small>
+              {index + 1} /{" "}
+              {products.length}
+            </small>
+          </div>
+
+          <div className="menu-featured-content">
+            <button
+              type="button"
+              className="menu-featured-image"
+              onClick={() =>
+                onSelect(product)
+              }
+            >
+              <img
+                src={
+                  product.image_path ||
+                  "/images/placeholder.png"
+                }
+                alt={product.name}
+              />
+            </button>
+
+            <div className="menu-featured-details">
+              <span className="menu-featured-eyebrow">
+                MITHORA FAVOURITE
+              </span>
+
+              <h2>{product.name}</h2>
+
+              {product.description && (
+                <p>
+                  {product.description}
+                </p>
+              )}
+
+              <div className="menu-featured-meta">
+                {rating >= 0.5 && (
+                  <span>
+                    ★{" "}
+                    {rating.toFixed(1)}
+                  </span>
+                )}
+
+                {discount > 0 && (
+                  <span>
+                    {discount}% OFF
+                  </span>
+                )}
+
+                {availabilityData
+                  ?.orderable_now && (
+                  <span>
+                    ● Available now
+                  </span>
+                )}
+              </div>
+
+              <div className="menu-featured-price">
+                <strong>
+                  ₹{price}
+                </strong>
+
+                {oldPrice > price && (
+                  <del>
+                    ₹{oldPrice}
+                  </del>
+                )}
+              </div>
+
+              <button
+                type="button"
+                className="menu-featured-cta"
+                onClick={() =>
+                  onSelect(product)
+                }
+              >
+                {product.variants &&
+                product.variants.length > 1
+                  ? "VIEW OPTIONS"
+                  : "ORDER NOW"}
+              </button>
+            </div>
+          </div>
+
+          {products.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="menu-featured-arrow left"
+                onClick={onPrevious}
+                aria-label="Previous featured item"
+              >
+                ‹
+              </button>
+
+              <button
+                type="button"
+                className="menu-featured-arrow right"
+                onClick={onNext}
+                aria-label="Next featured item"
+              >
+                ›
+              </button>
+
+              <div className="menu-featured-dots">
+                {products.map(
+                  (item, dotIndex) => (
+                    <span
+                      key={item.id}
+                      className={
+                        dotIndex === index
+                          ? "active"
+                          : ""
+                      }
+                    />
+                  )
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =====================================================
    QUANTITY
-   ========================================================= */
+===================================================== */
 
 function QuantityControl({
-  qty,
-  onMinus,
-  onPlus,
+  quantity,
+  onDecrease,
+  onIncrease,
 }: {
-  qty: number;
-  onMinus: () => void;
-  onPlus: () => void;
+  quantity: number;
+  onDecrease: () => void;
+  onIncrease: () => void;
 }) {
   return (
-    <div className="menu-qty-box">
-
+    <div className="menu-quantity-control">
       <button
         type="button"
-        onClick={onMinus}
+        onClick={onDecrease}
         aria-label="Decrease quantity"
       >
         −
       </button>
 
-      <span>
-        {qty}
-      </span>
+      <strong>{quantity}</strong>
 
       <button
         type="button"
-        onClick={onPlus}
+        onClick={onIncrease}
         aria-label="Increase quantity"
       >
         +
       </button>
-
     </div>
   );
 }
 
-/* =========================================================
+/* =====================================================
    PRODUCT MODAL
-   ========================================================= */
+===================================================== */
 
 function ProductModal({
   product,
   availability,
-  getCartQty,
-  onAdd,
+  cart,
   onClose,
+  onAdd,
+  onNotify,
 }: {
   product: Product;
   availability?: CategoryAvailability;
-  getCartQty: (
-    variantId: number | string
-  ) => number;
+  cart: { items: CartItem[] };
+  onClose: () => void;
   onAdd: (
     variantId: number | string,
     delta: number
   ) => void;
-  onClose: () => void;
+  onNotify: (product: Product) => void;
 }) {
-  const variants =
-    Array.isArray(
-      product.variants
-    )
-      ? product.variants
-      : [];
+  const variants = product.variants || [];
 
-  const orderable =
-    canOrder(
+  const canOrder =
+    canOrderFromAvailability(
       availability
     );
 
-  useEffect(() => {
-    const previousOverflow =
-      document.body.style
-        .overflow;
-
-    document.body.style.overflow =
-      "hidden";
-
-    function handleKey(
-      event: KeyboardEvent
-    ) {
-      if (
-        event.key ===
-        "Escape"
-      ) {
-        onClose();
-      }
-    }
-
-    document.addEventListener(
-      "keydown",
-      handleKey
-    );
-
-    return () => {
-      document.body.style.overflow =
-        previousOverflow;
-
-      document.removeEventListener(
-        "keydown",
-        handleKey
-      );
-    };
-  }, [onClose]);
+  const subscription =
+    availability?.delivery_type ===
+    "SUBSCRIPTION";
 
   return (
     <div
@@ -2006,410 +1327,345 @@ function ProductModal({
         }
       }}
     >
-
-      <div className="menu-product-modal">
-
-        {/* CLOSE */}
-
+      <div
+        className="menu-product-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={product.name}
+      >
         <button
           type="button"
           className="menu-modal-close"
-          onClick={
-            onClose
-          }
-          aria-label="Close product"
+          onClick={onClose}
+          aria-label="Close"
         >
           ×
         </button>
 
-        {/* IMAGE */}
-
         <div className="menu-modal-image">
-
-          {product.image_path ? (
-            <img
-              src={
-                product.image_path
-              }
-              alt={
-                product.name
-              }
-            />
-          ) : (
-            <div className="menu-product-image-placeholder">
-              <span>
-                🍲
-              </span>
-              Mithora Kitchen
-            </div>
-          )}
-
+          <img
+            src={
+              product.image_path ||
+              "/images/placeholder.png"
+            }
+            alt={product.name}
+          />
         </div>
 
-        {/* BODY */}
-
-        <div className="menu-modal-body">
-
-          <div className="menu-modal-heading">
-
+        <div className="menu-modal-content">
+          <div className="menu-modal-title-row">
             <div>
-              <span className="menu-modal-kicker">
+              <span className="menu-modal-label">
                 MITHORA KITCHEN
               </span>
 
-              <h2>
-                {
-                  product.name
-                }
-              </h2>
+              <h2>{product.name}</h2>
             </div>
 
-            {Number(
-              product.avg_rating ||
-                0
+            {getNumber(
+              product.avg_rating
             ) >= 0.5 && (
               <div className="menu-modal-rating">
                 ★{" "}
-                {Number(
+                {getNumber(
                   product.avg_rating
-                ).toFixed(
-                  1
-                )}
+                ).toFixed(1)}
+                <small>
+                  (
+                  {getNumber(
+                    product.review_count
+                  )}
+                  )
+                </small>
               </div>
             )}
-
           </div>
 
           {product.description && (
             <p className="menu-modal-description">
-              {
-                product.description
-              }
+              {product.description}
             </p>
           )}
 
-          <div className="menu-modal-option-heading">
-            <strong>
-              Choose your option
-            </strong>
-
-            <span>
-              {variants.length}{" "}
-              {variants.length ===
-              1
-                ? "option"
-                : "options"}
-            </span>
-          </div>
-
-          {/* VARIANTS */}
-
-          <div className="menu-modal-variants">
-
-            {variants.map(
-              (
-                variant,
-                index
-              ) => {
-                const price =
-                  Number(
-                    variant.price ||
-                      0
-                  );
-
-                const oldPrice =
-                  variant.old_price;
-
-                const qty =
-                  getCartQty(
-                    variant.id
-                  );
-
-                const discount =
-                  getDiscount(
-                    oldPrice,
-                    price
-                  );
-
-                return (
-                  <div
-                    className={`menu-modal-variant ${
-                      qty > 0
-                        ? "selected"
-                        : ""
-                    }`}
-                    key={
-                      variant.id
-                    }
-                  >
-
-                    <div className="menu-modal-variant-info">
-
-                      <div className="menu-modal-variant-name-row">
-
-                        <strong>
-                          {getVariantName(
-                            variant,
-                            index
-                          )}
-                        </strong>
-
-                        {discount >
-                          0 && (
-                          <span>
-                            {
-                              discount
-                            }%
-                            OFF
-                          </span>
-                        )}
-
-                      </div>
-
-                      {variant.description && (
-                        <p>
-                          {
-                            variant.description
-                          }
-                        </p>
-                      )}
-
-                      <div className="menu-modal-variant-price">
-
-                        <strong>
-                          ₹{price}
-                        </strong>
-
-                        {isValidOldPrice(
-                          oldPrice,
-                          price
-                        ) && (
-                          <del>
-                            ₹
-                            {
-                              oldPrice
-                            }
-                          </del>
-                        )}
-
-                      </div>
-
-                    </div>
-
-                    <div className="menu-modal-variant-action">
-
-                      {!orderable ? (
-                        <a
-                          href={getWhatsAppUrl(
-                            product.name
-                          )}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="menu-modal-notify"
-                        >
-                          <WhatsAppIcon />
-                          NOTIFY
-                        </a>
-                      ) : qty >
-                        0 ? (
-                        <QuantityControl
-                          qty={
-                            qty
-                          }
-                          onMinus={() =>
-                            onAdd(
-                              variant.id,
-                              -1
-                            )
-                          }
-                          onPlus={() =>
-                            onAdd(
-                              variant.id,
-                              1
-                            )
-                          }
-                        />
-                      ) : (
-                        <button
-                          type="button"
-                          className="menu-modal-add"
-                          onClick={() =>
-                            onAdd(
-                              variant.id,
-                              1
-                            )
-                          }
-                        >
-                          ADD
-                        </button>
-                      )}
-
-                    </div>
-
-                  </div>
+          <div className="menu-variant-list">
+            {variants.map((variant) => {
+              const item =
+                cart.items.find(
+                  (cartItem) =>
+                    String(
+                      cartItem.variant_id
+                    ) ===
+                    String(variant.id)
                 );
-              }
-            )}
 
-          </div>
+              const quantity =
+                item?.qty || 0;
 
-        </div>
+              const price = getNumber(
+                variant.price
+              );
 
-        {/* FOOTER */}
+              const oldPrice =
+                getNumber(
+                  variant.old_price
+                );
 
-        <div className="menu-modal-footer">
+              const discount =
+                getDiscount(
+                  price,
+                  oldPrice
+                );
 
-          <div>
-            <span>
-              Selected items
-            </span>
+              return (
+                <div
+                  key={variant.id}
+                  className={`menu-variant-row ${
+                    quantity > 0
+                      ? "selected"
+                      : ""
+                  }`}
+                >
+                  <div className="menu-variant-info">
+                    <strong>
+                      {variant.variant_name ||
+                        "Regular"}
+                    </strong>
 
-            <strong>
-              {variants.reduce(
-                (
-                  total,
-                  variant
-                ) =>
-                  total +
-                  getCartQty(
-                    variant.id
-                  ),
-                0
-              )}
-            </strong>
+                    {variant.description && (
+                      <p>
+                        {
+                          variant.description
+                        }
+                      </p>
+                    )}
+
+                    <div className="menu-variant-price">
+                      <strong>
+                        ₹{price}
+                      </strong>
+
+                      {oldPrice > price && (
+                        <del>
+                          ₹{oldPrice}
+                        </del>
+                      )}
+
+                      {discount > 0 && (
+                        <span>
+                          {discount}% OFF
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="menu-variant-action">
+                    {quantity > 0 ? (
+                      <QuantityControl
+                        quantity={quantity}
+                        onDecrease={() =>
+                          onAdd(
+                            variant.id,
+                            -1
+                          )
+                        }
+                        onIncrease={() =>
+                          onAdd(
+                            variant.id,
+                            1
+                          )
+                        }
+                      />
+                    ) : !canOrder ? (
+                      <button
+                        type="button"
+                        className="menu-btn-notify"
+                        onClick={() =>
+                          onNotify(
+                            product
+                          )
+                        }
+                      >
+                        NOTIFY
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="menu-btn-primary menu-variant-add"
+                        onClick={() =>
+                          onAdd(
+                            variant.id,
+                            1
+                          )
+                        }
+                      >
+                        {subscription
+                          ? "SUBSCRIBE"
+                          : "ADD"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           <button
             type="button"
             className="menu-modal-done"
-            onClick={
-              onClose
-            }
+            onClick={onClose}
           >
             DONE
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 }
 
-/* =========================================================
+/* =====================================================
    LOADER
-   ========================================================= */
+===================================================== */
 
 function MenuLoader() {
+  const kitchenItems = [
+    {
+      img: "/images/kitchen/fresh-vegitable.webp",
+      text: "Fresh Vegetables",
+    },
+    {
+      img: "/images/kitchen/desi-spices.webp",
+      text: "Desi Spices",
+    },
+    {
+      img: "/images/kitchen/pulses-and-grains.webp",
+      text: "Handpicked Pulses",
+    },
+    {
+      img: "/images/kitchen/veg-burger.webp",
+      text: "Mithora Foods & Snacks",
+    },
+    {
+      img: "/images/kitchen/desi-cow-ghee.webp",
+      text: "Desi Ghee",
+    },
+    {
+      img: "/images/kitchen/homemade-tiffin.webp",
+      text: "Homemade Tiffin",
+    },
+  ];
+
   return (
     <div className="menu-loader-area">
-
       <div className="menu-loader-card">
-
         <div className="menu-loader-offer">
-
-          <span>
-            SPECIAL OFFER
-          </span>
+          <span>OFFER</span>
 
           <strong>
-            <small>
-              ₹
-            </small>
-            100 OFF
+            ₹100 OFF
           </strong>
 
-          <p>
+          <b>
             ON YOUR FIRST ORDER
-          </p>
+          </b>
 
-          <em>
+          <small>
             Valid on orders above ₹400
-          </em>
-
+          </small>
         </div>
 
-        <div className="menu-loader-title">
-
-          <div className="menu-loader-chef">
-            👨‍🍳
+        <div className="menu-loader-heading">
+          <div className="menu-loader-icon">
+            🍳
           </div>
 
           <div>
             <h3>
-              Preparing your menu...
+              Preparing the Mithora menu...
             </h3>
 
             <p>
-              Mithora Kitchen • Jaipur
+              Fresh from our kitchen • Jaipur
             </p>
           </div>
-
         </div>
 
-        <div className="menu-loader-images">
-
-          {KITCHEN_ITEMS.map(
+        <div className="menu-loader-grid">
+          {kitchenItems.map(
             (item, index) => (
               <div
                 className="menu-loader-item"
-                key={
-                  item.text
-                }
+                key={item.text}
                 style={{
-                  animationDelay: `${index *
-                    80}ms`,
+                  animationDelay: `${index * 100}ms`,
                 }}
               >
-                <div>
+                <div className="menu-loader-image">
                   <img
-                    src={
-                      item.img
-                    }
-                    alt={
-                      item.text
-                    }
+                    src={item.img}
+                    alt={item.text}
                   />
                 </div>
 
                 <span>
-                  {
-                    item.text
-                  }
+                  {item.text}
                 </span>
               </div>
             )
           )}
-
-        </div>
-
-        <div className="menu-loader-message">
-          Freshly prepared with care.
         </div>
 
         <div className="menu-loader-progress">
           <span />
         </div>
-
       </div>
-
     </div>
   );
 }
 
-/* =========================================================
-   WHATSAPP ICON
-   ========================================================= */
+/* =====================================================
+   CART HELPERS
+===================================================== */
 
-function WhatsAppIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M20.52 3.48A11.78 11.78 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L.06 24l6.29-1.65a11.86 11.86 0 0 0 5.7 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.43-8.42ZM12.06 21.8h-.01a9.88 9.88 0 0 1-5.03-1.38l-.36-.21-3.73.98.99-3.64-.24-.37a9.86 9.86 0 0 1-1.51-5.28c0-5.47 4.46-9.92 9.94-9.92 2.65 0 5.14 1.03 7.01 2.91a9.85 9.85 0 0 1 2.9 7.02c0 5.47-4.46 9.92-9.96 9.92Zm5.44-7.43c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.5 1.7.64.72.23 1.37.2 1.89.12.58-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z" />
-    </svg>
-  );
+function getQuantityForProduct(
+  product: Product,
+  cart: { items: CartItem[] }
+): number {
+  const variants =
+    product.variants || [];
+
+  for (const variant of variants) {
+    const item = cart.items.find(
+      (cartItem) =>
+        String(cartItem.variant_id) ===
+        String(variant.id)
+    );
+
+    if (item && item.qty > 0) {
+      return item.qty;
+    }
+  }
+
+  return 0;
+}
+
+function getActiveVariantFromCart(
+  product: Product,
+  cart: { items: CartItem[] }
+): Variant | null {
+  const variants =
+    product.variants || [];
+
+  for (const variant of variants) {
+    const item = cart.items.find(
+      (cartItem) =>
+        String(cartItem.variant_id) ===
+        String(variant.id)
+    );
+
+    if (item && item.qty > 0) {
+      return variant;
+    }
+  }
+
+  return null;
 }
