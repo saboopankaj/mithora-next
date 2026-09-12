@@ -58,6 +58,7 @@ type TimelineItem = {
 export default function AccountPage() {
   const { user, isAuthenticated, logout } = useAuth();
 
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("orders");
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -90,10 +91,20 @@ export default function AccountPage() {
       : null;
 
   /* =========================================================
+     MOUNT
+     ========================================================= */
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  /* =========================================================
      AUTH
      ========================================================= */
 
   useEffect(() => {
+    if (!mounted) return;
+
     if (!isAuthenticated || !token) {
       window.location.href = "/";
       return;
@@ -101,7 +112,7 @@ export default function AccountPage() {
 
     loadOrders();
     loadProfile();
-  }, [isAuthenticated]);
+  }, [mounted, isAuthenticated]);
 
   /* =========================================================
      PROFILE
@@ -485,7 +496,11 @@ export default function AccountPage() {
     );
   }
 
-  if (!isAuthenticated) {
+  /* =========================================================
+     PREVENT HYDRATION MISMATCH
+     ========================================================= */
+
+  if (!mounted || !isAuthenticated) {
     return null;
   }
 
@@ -556,6 +571,7 @@ export default function AccountPage() {
                 handleTab("orders")
               }
             >
+
               <span>📦</span>
 
               <div>
@@ -567,6 +583,7 @@ export default function AccountPage() {
                   Track & review
                 </small>
               </div>
+
             </button>
 
 
@@ -580,6 +597,7 @@ export default function AccountPage() {
                 handleTab("account")
               }
             >
+
               <span>👤</span>
 
               <div>
@@ -591,6 +609,7 @@ export default function AccountPage() {
                   Your information
                 </small>
               </div>
+
             </button>
 
 
@@ -604,6 +623,7 @@ export default function AccountPage() {
                 handleTab("coupons")
               }
             >
+
               <span>🎟️</span>
 
               <div>
@@ -615,6 +635,7 @@ export default function AccountPage() {
                   Your savings
                 </small>
               </div>
+
             </button>
 
 
@@ -628,6 +649,7 @@ export default function AccountPage() {
                 handleTab("referral")
               }
             >
+
               <span>🎁</span>
 
               <div>
@@ -639,6 +661,7 @@ export default function AccountPage() {
                   Invite friends
                 </small>
               </div>
+
             </button>
 
 
@@ -652,6 +675,7 @@ export default function AccountPage() {
                 handleTab("addresses")
               }
             >
+
               <span>📍</span>
 
               <div>
@@ -663,6 +687,7 @@ export default function AccountPage() {
                   Delivery locations
                 </small>
               </div>
+
             </button>
 
 
@@ -673,6 +698,7 @@ export default function AccountPage() {
               className="account-nav logout-nav"
               onClick={handleLogout}
             >
+
               <span>↪</span>
 
               <div>
@@ -684,6 +710,7 @@ export default function AccountPage() {
                   Sign out of account
                 </small>
               </div>
+
             </button>
 
           </aside>
