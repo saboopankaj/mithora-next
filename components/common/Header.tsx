@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const {
     user,
@@ -15,6 +18,30 @@ export default function Header() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setProfileOpen(false);
+    closeMenu();
+  };
+
   return (
     <header
       id="site-header"
@@ -23,7 +50,14 @@ export default function Header() {
       <div className="header-container">
 
         {/* LOGO */}
-        <a href="/" className="logo" onClick={closeMenu}>
+        <a
+          href="/"
+          className="logo"
+          onClick={() => {
+            closeMenu();
+            setProfileOpen(false);
+          }}
+        >
           <img
             src="/images/mithora-logo.webp"
             alt="Mithora Kitchen"
@@ -119,28 +153,25 @@ export default function Header() {
             </li>
 
 
-            {/* MOBILE AUTH */}
-            {isAuthenticated ? (
-              <>
-                <li className="mobile-user-greeting">
-                  Hello, {user?.name || "there"} 👋
-                </li>
+            {/* MOBILE USER GREETING */}
+            {isAuthenticated && (
+              <li className="mobile-user-greeting">
+                Hello, {user?.name || "there"} 👋
+              </li>
+            )}
 
-                <li className="mobile-login-item">
-                  <button
-                    type="button"
-                    className="mobile-login-link"
-                    onClick={() => {
-                      logout();
-                      closeMenu();
-                    }}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <li className="mobile-login-item">
+
+            {/* MOBILE AUTH */}
+            <li className="mobile-login-item">
+              {isAuthenticated ? (
+                <button
+                  type="button"
+                  className="mobile-login-link"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              ) : (
                 <button
                   type="button"
                   className="mobile-login-link"
@@ -151,8 +182,8 @@ export default function Header() {
                 >
                   Login / Signup
                 </button>
-              </li>
-            )}
+              )}
+            </li>
 
           </ul>
         </nav>
@@ -160,6 +191,14 @@ export default function Header() {
 
         {/* HEADER ACTIONS */}
         <div className="header-actions">
+
+          {/* DESKTOP USER GREETING */}
+          {isAuthenticated && (
+            <div className="desktop-user-greeting">
+              Hello, {user?.name || "there"} 👋
+            </div>
+          )}
+
 
           {/* CALL */}
           <a
@@ -195,36 +234,107 @@ export default function Header() {
           </a>
 
 
-          {/* LOGIN / USER */}
-          <button
-            type="button"
-            className="login-btn"
-            aria-label={
-              isAuthenticated
-                ? `Logout ${user?.name || "user"}`
-                : "Login / Signup"
-            }
-            onClick={() => {
-              if (isAuthenticated) {
-                logout();
-              } else {
-                openAuth("login");
-              }
-            }}
+          {/* PROFILE */}
+          <div
+            className="desktop-profile-wrapper"
+            ref={profileRef}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+            <button
+              type="button"
+              className={`login-btn ${
+                profileOpen ? "profile-active" : ""
+              }`}
+              aria-label={
+                isAuthenticated
+                  ? "Open profile menu"
+                  : "Login / Signup"
+              }
+              aria-expanded={
+                isAuthenticated ? profileOpen : undefined
+              }
+              onClick={() => {
+                if (isAuthenticated) {
+                  setProfileOpen((open) => !open);
+                } else {
+                  openAuth("login");
+                }
+              }}
             >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </button>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+
+
+            {/* PROFILE DROPDOWN */}
+            {isAuthenticated && profileOpen && (
+              <div className="profile-dropdown">
+
+                <div className="profile-dropdown-header">
+                  <div className="profile-avatar">
+                    {(user?.name || "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+
+                  <div className="profile-user-info">
+                    <strong>
+                      {user?.name || "User"}
+                    </strong>
+
+                    <span>
+                      {user?.email || ""}
+                    </span>
+                  </div>
+                </div>
+
+
+                <div className="profile-dropdown-divider" />
+
+
+                <button
+                  type="button"
+                  className="profile-dropdown-item"
+                  onClick={() => {
+                    setProfileOpen(false);
+                  }}
+                >
+                  <span className="profile-item-icon">
+                    👤
+                  </span>
+
+                  <span>
+                    My Profile
+                  </span>
+                </button>
+
+
+                <button
+                  type="button"
+                  className="profile-dropdown-item logout-item"
+                  onClick={handleLogout}
+                >
+                  <span className="profile-item-icon">
+                    ↪
+                  </span>
+
+                  <span>
+                    Logout
+                  </span>
+                </button>
+
+              </div>
+            )}
+          </div>
 
 
           {/* MOBILE MENU */}
