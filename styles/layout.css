@@ -608,6 +608,275 @@
 
 
 /* =========================================================
+   MITHORA — MOBILE PROFILE + MENU ACTIONS
+   ========================================================= */
+
+/* Mobile profile is hidden on desktop */
+.mobile-profile-wrapper {
+    display: none;
+}
+
+
+/* Mobile menu divider */
+.mobile-menu-divider {
+    display: none;
+}
+
+
+/* Mobile call item */
+.mobile-call-item {
+    display: none;
+}
+
+
+/* Mobile action icon */
+.mobile-action-icon {
+    width: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    /* Hide old mobile greeting completely */
+    .mobile-user-greeting {
+        display: none !important;
+    }
+
+
+    /* Desktop profile hidden */
+    .desktop-profile-wrapper {
+        display: none !important;
+    }
+
+
+    /* Mobile profile icon */
+    .mobile-profile-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .mobile-profile-btn {
+        width: 35px;
+        height: 35px;
+
+        padding: 0;
+
+        border: 0;
+        border-radius: 50%;
+
+        background: rgba(45, 27, 20, 0.07);
+        color: #2d1b14;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .mobile-profile-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .mobile-profile-btn.profile-active {
+        background: #f4c430;
+    }
+
+    .mobile-profile-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    /* =====================================================
+       MOBILE PROFILE DROPDOWN
+       ===================================================== */
+
+    .mobile-profile-dropdown {
+        position: absolute;
+
+        top: calc(100% + 10px);
+        right: 0;
+
+        width: 270px;
+
+        background: #ffffff;
+
+        border: 1px solid rgba(45, 27, 20, 0.08);
+        border-radius: 16px;
+
+        box-shadow:
+            0 18px 45px rgba(45, 27, 20, 0.16);
+
+        padding: 8px;
+
+        z-index: 1100;
+
+        animation: profileDropdownIn 0.16s ease-out;
+    }
+
+
+    /* Welcome */
+    .mobile-profile-welcome {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        padding: 11px 10px;
+    }
+
+    .mobile-profile-avatar {
+        width: 42px;
+        height: 42px;
+
+        flex: 0 0 42px;
+
+        border-radius: 50%;
+
+        background: #f4c430;
+        color: #2d1b14;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .mobile-profile-welcome > div:last-child {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+    .mobile-profile-welcome strong {
+        color: #2d1b14;
+
+        font-size: 14px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .mobile-profile-welcome span {
+        color: #7a6a62;
+
+        font-size: 11px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       REMOVE CALL FROM MOBILE HEADER
+       ===================================================== */
+
+    .header-call-btn {
+        display: none !important;
+    }
+
+
+    /* =====================================================
+       MOBILE MENU BOTTOM ACTIONS
+       ===================================================== */
+
+    .mobile-menu-divider {
+        display: block;
+
+        width: 100%;
+        height: 1px;
+
+        margin: 18px 0 4px;
+
+        background: rgba(45, 27, 20, 0.10);
+    }
+
+
+    .mobile-login-item {
+        display: block;
+
+        margin-top: 8px;
+    }
+
+
+    .mobile-call-item {
+        display: block;
+
+        margin-top: 8px;
+    }
+
+
+    .mobile-login-link,
+    .mobile-call-link {
+        width: 100%;
+
+        min-height: 48px;
+
+        padding: 0 16px;
+
+        border-radius: 10px;
+
+        display: flex;
+        align-items: center;
+
+        font-family: inherit;
+
+        font-size: 14px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        box-sizing: border-box;
+    }
+
+
+    .mobile-login-link {
+        border: 0;
+
+        background: #f4c430;
+        color: #2d1b14;
+    }
+
+
+    .mobile-call-link {
+        border: 1px solid rgba(45, 27, 20, 0.10);
+
+        background: #ffffff;
+        color: #2d1b14;
+    }
+
+
+    .mobile-login-link:hover,
+    .mobile-call-link:hover {
+        transform: translateY(-1px);
+    }
+
+}
+
+/* =========================================================
    MITHORA KITCHEN — FOOTER
    ========================================================= */
 
