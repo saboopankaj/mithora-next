@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/components/auth/AuthContext";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { openAuth } = useAuth();
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -31,19 +34,31 @@ export default function Header() {
           <ul className="nav-menu">
 
             <li>
-              <a href="/" className="nav-link" onClick={closeMenu}>
+              <a
+                href="/"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 Home
               </a>
             </li>
 
             <li>
-              <a href="/menu" className="nav-link" onClick={closeMenu}>
+              <a
+                href="/menu"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 Menu
               </a>
             </li>
 
             <li>
-              <a href="/tiffin" className="nav-link" onClick={closeMenu}>
+              <a
+                href="/tiffin"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 Tiffin
               </a>
             </li>
@@ -98,11 +113,16 @@ export default function Header() {
               </a>
             </li>
 
+
             {/* MOBILE LOGIN */}
             <li className="mobile-login-item">
               <button
                 type="button"
                 className="mobile-login-link"
+                onClick={() => {
+                  closeMenu();
+                  openAuth("login");
+                }}
               >
                 Login / Signup
               </button>
@@ -154,6 +174,7 @@ export default function Header() {
             type="button"
             className="login-btn"
             aria-label="Login / Signup"
+            onClick={() => openAuth("login")}
           >
             <svg
               viewBox="0 0 24 24"

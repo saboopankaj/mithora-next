@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import "./globals.css";
-import "../styles/layout.css";
-import "../styles/home.css";
+import "@/styles/layout.css";
+import "@/styles/home.css";
+import "@/styles/auth.css";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import { AuthProvider } from "@/components/auth/AuthContext";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Mithora Kitchen | Homemade Food in Jaipur",
   description:
     "Homemade food, party catering, bulk food orders and tiffin service in Jaipur.",
@@ -20,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
+        <AuthProvider>
+          <Header />
 
-        {children}
+          {children}
 
-        <Footer />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
