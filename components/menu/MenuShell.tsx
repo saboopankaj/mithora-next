@@ -485,7 +485,6 @@ export default function MenuShell() {
   ) {
     setModalProduct(product);
     document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
   }
 
   function closeProduct() {
@@ -493,7 +492,6 @@ export default function MenuShell() {
 
     if (!searchOpen) {
       document.body.style.overflow = "";
-      document.body.style.overscrollBehavior = "";
     }
   }
 
@@ -555,8 +553,9 @@ export default function MenuShell() {
     <section className="menu-page-shell">
 
       {/* =================================================
-          SEARCH + CATEGORY BAR
-          Directly below the fixed site header.
+          NORMAL SEARCH + CATEGORY BAR
+
+          Search is now BELOW the fixed header.
       ================================================= */}
 
       <section className="menu-sticky-controls">
@@ -572,7 +571,11 @@ export default function MenuShell() {
                 viewBox="0 0 24 24"
                 aria-hidden="true"
               >
-                <circle cx="11" cy="11" r="7" />
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="7"
+                />
                 <path d="m20 20-4-4" />
               </svg>
             </span>
@@ -584,37 +587,52 @@ export default function MenuShell() {
           </button>
 
           <div className="menu-category-scroll">
+
             <button
               type="button"
               className={`menu-category-pill ${
-                selectedCategory === "all" ? "active" : ""
+                selectedCategory === "all"
+                  ? "active"
+                  : ""
               }`}
-              onClick={() => selectCategory("all")}
+              onClick={() =>
+                selectCategory("all")
+              }
             >
               All Items
             </button>
 
-            {categories.map((category) => (
-              <button
-                type="button"
-                key={category.id}
-                className={`menu-category-pill ${
-                  String(selectedCategory) === String(category.id)
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() => selectCategory(String(category.id))}
-              >
-                {category.name}
-              </button>
-            ))}
+            {categories.map(
+              (category) => (
+                <button
+                  type="button"
+                  key={category.id}
+                  className={`menu-category-pill ${
+                    String(
+                      selectedCategory
+                    ) ===
+                    String(category.id)
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    selectCategory(
+                      String(category.id)
+                    )
+                  }
+                >
+                  {category.name}
+                </button>
+              )
+            )}
+
           </div>
         </div>
       </section>
 
+
       {/* =================================================
-          HERO
-          Probow-inspired centered introduction.
+          SHORT HERO
       ================================================= */}
 
       <section className="menu-hero">
@@ -624,12 +642,13 @@ export default function MenuShell() {
           </span>
 
           <h1>
-            The <em>MITHORA</em> Menu
+            Homemade food,
+            <br />
+            made with care.
           </h1>
 
           <p>
-            Homemade vegetarian food, made fresh to order. Explore our meals,
-            snacks, tiffin and festive favourites.
+            Freshly prepared meals, snacks, tiffin and festive favourites.
           </p>
 
           <div className="menu-hero-badges">
