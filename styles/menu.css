@@ -1887,2131 +1887,627 @@
    TABLET
 ========================================================= */
 
-@media (max-width: 1100px) {
-  .menu-product-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .menu-featured-content {
-    grid-template-columns:
-      minmax(0, 1fr)
-      minmax(0, 0.9fr);
-
-    min-height: 360px;
-  }
-
-  .menu-featured-image {
-    height: 360px;
-  }
-
-  .menu-featured-details {
-    padding-right: 25px;
-  }
-}
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE / FINAL LAYOUT
 ========================================================= */
 
-@media (max-width: 700px) {
-  .menu-shell-container {
-    width: min(
-      100% - 24px,
-      1380px
-    );
-  }
-
-  .menu-hero {
-    padding: 27px 0 23px;
-  }
-
-  .menu-hero h1 {
-    max-width: 100%;
-
-    font-size: 36px;
-    line-height: 1.02;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-
-    overflow: hidden;
-  }
-
-  .menu-hero p {
-    margin-top: 10px;
-
-    max-width: 100%;
-
-    font-size: 14px;
-    line-height: 1.45;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-
-    overflow: hidden;
-  }
-
-  .menu-sticky-controls {
-    top: 0;
-
-    padding: 10px 0 10px;
-  }
-
-  .menu-search-box {
-    height: 52px;
-
-    padding-left: 14px;
-
-    border-radius: 15px;
-  }
-
-  .menu-search-clear {
-    width: 36px;
-    height: 36px;
-
-    font-size: 23px;
-  }
-
-  .menu-category-scroll {
-    gap: 7px;
-
-    margin-top: 9px;
-  }
-
-  .menu-category-pill {
-    min-height: 37px;
-
-    padding: 0 14px;
-
-    font-size: 11px;
-  }
-
-  .menu-search-result-summary {
-    margin-top: 18px;
-
-    padding: 14px 15px;
-
-    align-items: flex-start;
-    flex-direction: column;
-
-    gap: 11px;
-  }
-
-  .menu-search-result-summary div {
-    gap: 8px;
-  }
-
-  .menu-featured-wrap {
-    padding-top: 20px;
-  }
-
-  .menu-featured-card {
-    padding: 13px;
-
-    border-radius: 22px;
-  }
-
-  .menu-featured-top {
-    margin-bottom: 11px;
-  }
-
-  .menu-featured-top span {
-    padding: 8px 10px;
-
-    font-size: 9px;
-  }
-
-  .menu-featured-content {
-    display: flex;
-    flex-direction: column;
-
-    gap: 0;
-
-    min-height: 0;
-  }
-
-  .menu-featured-image {
-    width: 100%;
-    height: 250px;
-
-    border-radius: 17px;
-  }
-
-  .menu-featured-details {
-    padding: 20px 12px 30px;
-  }
-
-  .menu-featured-eyebrow {
-    margin-bottom: 7px;
-
-    font-size: 9px;
-  }
-
-  .menu-featured-details h2 {
-    font-size: 29px;
-  }
-
-  .menu-featured-details p {
-    margin-top: 10px;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-
-    overflow: hidden;
-  }
-
-  .menu-featured-meta {
-    margin-top: 13px;
-
-    gap: 6px;
-  }
-
-  .menu-featured-meta span {
-    padding: 5px 8px;
-
-    font-size: 9px;
-  }
-
-  .menu-featured-price {
-    margin-top: 14px;
-  }
-
-  .menu-featured-price strong {
-    font-size: 27px;
-  }
-
-  .menu-featured-cta {
-    width: 100%;
-
-    min-width: 0;
-
-    margin-top: 14px;
-
-    min-height: 48px;
-
-    border-radius: 13px;
-  }
-
-  .menu-featured-arrow {
-    top: 130px;
-
-    width: 36px;
-    height: 36px;
-
-    margin-top: 0;
-
-    font-size: 24px;
-  }
-
-  .menu-featured-arrow.left {
-    left: 21px;
-  }
-
-  .menu-featured-arrow.right {
-    right: 21px;
-  }
-
-  .menu-featured-dots {
-    bottom: 11px;
-  }
-
-  .menu-content {
-    padding-top: 5px;
-  }
-
-  .menu-category-section {
-    scroll-margin-top: 125px;
-
-    padding-top: 27px;
-  }
-
-  .menu-category-heading {
-    align-items: flex-start;
-
-    margin-bottom: 11px;
-
-    padding-bottom: 12px;
-  }
-
-  .menu-category-heading h2 {
-    font-size: 24px;
-  }
-
-  .menu-category-heading span {
-    font-size: 11px;
-  }
-
-  .menu-fresh-badge {
-    display: none;
-  }
-
-  .menu-availability {
-    margin-bottom: 13px;
-
-    padding: 7px 10px;
-
-    font-size: 9px;
-  }
-
-  .menu-product-grid {
-    grid-template-columns: 1fr;
-
-    gap: 14px;
-  }
-
-  .menu-product-card {
-    border-radius: 18px;
-  }
-
-  .menu-product-image-button {
-    height: 250px;
-  }
-
-  .menu-product-body {
-    padding: 15px 16px 17px;
-  }
-
-  .menu-product-title-row h3 {
-    font-size: 18px;
-  }
-
-  .menu-product-description {
-    min-height: 0;
-
-    margin-top: 7px;
-
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .menu-product-bottom {
-    margin-top: 15px;
-  }
-
-  .menu-price-block strong {
-    font-size: 21px;
-  }
-
-  .menu-btn-primary,
-  .menu-btn-notify {
-    min-width: 110px;
-
-    min-height: 43px;
-
-    padding: 0 12px;
-
-    font-size: 10px;
-  }
-
-  .menu-quantity-control {
-    height: 43px;
-  }
-
-  .menu-quantity-control button {
-    width: 35px;
-  }
-
-  .menu-options-link {
-    margin-top: 8px;
-  }
-
-  /* Modal */
-  .menu-modal-overlay {
-    align-items: flex-end;
-
-    padding: 0;
-  }
-
-  .menu-product-modal {
-    width: 100%;
-
-    max-height: 93vh;
-
-    border-radius:
-      25px 25px 0 0;
-
-    animation:
-      menuModalMobileIn
-        0.25s ease;
-  }
-
-  .menu-modal-image {
-    height: 230px;
-  }
-
-  .menu-modal-content {
-    padding: 20px 16px 18px;
-  }
-
-  .menu-modal-title-row h2 {
-    font-size: 25px;
-  }
-
-  .menu-modal-rating {
-    font-size: 10px;
-  }
-
-  .menu-variant-row {
-    padding: 13px;
-
-    gap: 10px;
-  }
-
-  .menu-variant-info > strong {
-    font-size: 13px;
-  }
-
-  .menu-variant-info p {
-    font-size: 10px;
-  }
-
-  .menu-variant-price > strong {
-    font-size: 15px;
-  }
-
-  .menu-variant-action
-    .menu-btn-notify {
-    min-width: 72px;
-  }
-
-  .menu-variant-add {
-    min-width: 72px;
-  }
-
-  .menu-modal-done {
-    min-height: 45px;
-  }
-
-  /* Loader */
-  .menu-loader-area {
-    min-height: 430px;
-
-    padding: 30px 12px;
-  }
-
-  .menu-loader-card {
-    padding: 18px;
-
-    border-radius: 21px;
-  }
-
-  .menu-loader-offer {
-    padding: 13px;
-  }
-
-  .menu-loader-offer strong {
-    font-size: 24px;
-  }
-
-  .menu-loader-heading {
-    margin: 18px 0 15px;
-  }
-
-  .menu-loader-heading h3 {
-    font-size: 15px;
-  }
-
-  .menu-loader-grid {
-    grid-template-columns:
-      repeat(3, 1fr);
-
-    gap: 7px;
-  }
-
-  .menu-loader-image {
-    height: 75px;
-
-    border-radius: 9px;
-  }
-
-  .menu-loader-item span {
-    font-size: 8px;
-  }
-
-  .menu-empty-state {
-    min-height: 350px;
-  }
-}
-
-@keyframes menuModalMobileIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 390px) {
-  .menu-shell-container {
-    width: calc(100% - 18px);
-  }
-
-  .menu-hero h1 {
-    font-size: 31px;
-  }
-
-  .menu-hero p {
-    font-size: 13px;
-  }
-
-  .menu-product-image-button {
-    height: 225px;
-  }
-
-  .menu-product-title-row h3 {
-    font-size: 17px;
-  }
-
-  .menu-btn-primary,
-  .menu-btn-notify {
-    min-width: 100px;
-
-    padding-left: 9px;
-    padding-right: 9px;
-  }
-}
-
-/* =========================================================
-   FINAL MENU CORRECTIONS
-   Added after the existing menu CSS
-========================================================= */
-
-/* ---------------------------------------------------------
-   1. SMALLER HERO HEADING
---------------------------------------------------------- */
-
-.menu-hero {
-  padding: 30px 0 28px;
-}
-
-.menu-hero h1 {
-  max-width: 900px;
-
-  font-size: clamp(34px, 4vw, 58px);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-
-.menu-hero p {
-  margin-top: 10px;
-
-  font-size: 16px;
-}
-
-
-/* ---------------------------------------------------------
-   2. STICKY SEARCH BELOW EXISTING HEADER
---------------------------------------------------------- */
-
-/*
-   Header is already fixed/sticky.
-   Keep menu controls underneath it instead
-   of allowing them to hide behind the header.
-*/
-
-.menu-sticky-controls {
-  position: sticky;
-
-  /*
-     Desktop header is approximately 80px.
-     This keeps the search/category bar
-     directly underneath it.
-  */
-  top: 80px;
-
-  z-index: 100;
-
-  background:
-    rgba(255, 250, 245, 0.97);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-
-/* ---------------------------------------------------------
-   SEARCH IS NOW A BUTTON / TRIGGER
---------------------------------------------------------- */
-
-.menu-search-trigger {
-  width: 100%;
-  height: 60px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 0 20px;
-
-  border: 1px solid
-    var(--menu-border);
-
-  border-radius: 18px;
-
-  background: #ffffff;
-
-  color: #9b887f;
-
-  font: inherit;
-  font-size: 16px;
-
-  text-align: left;
-
-  cursor: text;
-
-  box-shadow:
-    0 5px 20px
-      rgba(45, 27, 20, 0.04);
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.menu-search-trigger:hover {
-  border-color:
-    var(--menu-orange);
-
-  box-shadow:
-    0 0 0 4px
-      rgba(255, 100, 47, 0.07);
-}
-
-.menu-search-trigger
-  .menu-search-icon {
-  margin-right: 12px;
-}
-
-
-/* ---------------------------------------------------------
-   3. FEATURED DOES NOT AUTO MOVE
---------------------------------------------------------- */
-
-/*
-   There is deliberately NO animation/interval
-   applied to the featured carousel.
-*/
-
-.menu-featured-card {
-  animation: none !important;
-}
-
-.menu-featured-dots span {
-  cursor: pointer;
-}
-
-
-/* ---------------------------------------------------------
-   4. INNER CTA = WHITE + ORANGE BORDER + BLACK TEXT
---------------------------------------------------------- */
-
-.menu-btn-primary {
-  border: 1.5px solid
-    var(--menu-orange);
-
-  background: #ffffff;
-
-  color: #18110d;
-
-  box-shadow: none;
-}
-
-.menu-btn-primary:hover {
-  border-color:
-    var(--menu-orange-dark);
-
-  background:
-    #fff7f2;
-
-  color: #18110d;
-
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 6px 16px
-      rgba(255, 100, 47, 0.12);
-}
-
-
-/*
-   Featured CTA remains filled orange.
-*/
-
-.menu-featured-cta {
-  border: 1px solid
-    var(--menu-orange);
-
-  background:
-    var(--menu-orange);
-
-  color: #ffffff;
-}
-
-
-/* ---------------------------------------------------------
-   5. PRODUCT MODAL ABOVE EVERYTHING
---------------------------------------------------------- */
-
-.menu-modal-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 99999;
-
-  padding: 24px;
-
-  overflow-y: auto;
-
-  align-items: center;
-}
-
-.menu-product-modal {
-  position: relative;
-
-  z-index: 100000;
-
-  margin: auto;
-
-  max-height: calc(100vh - 48px);
-}
-
-
-/* ---------------------------------------------------------
-   6. SEARCH PAGE / SEARCH OVERLAY
---------------------------------------------------------- */
-
-.menu-search-page {
-  position: fixed;
-
-  /*
-     Leave the existing site header visible.
-  */
-  top: 80px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  z-index: 9000;
-
-  overflow-y: auto;
-
-  background:
-    var(--menu-cream);
-
-  animation:
-    menuSearchPageIn
-    0.18s ease;
-}
-
-.menu-search-page-top {
-  position: sticky;
-
-  top: 0;
-
-  z-index: 10;
-
-  width: min(
-    100%,
-    1380px
-  );
-
-  margin: 0 auto;
-
-  padding: 18px 24px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 15px;
-
-  background:
-    rgba(255, 250, 245, 0.97);
-
-  border-bottom: 1px solid
-    var(--menu-border);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.menu-search-back {
-  width: 48px;
-  height: 48px;
-
-  flex: 0 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid
-    var(--menu-border);
-
-  border-radius: 14px;
-
-  background: #ffffff;
-
-  color: var(--menu-brown);
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.menu-search-back:hover {
-  border-color:
-    var(--menu-orange);
-
-  background:
-    var(--menu-orange-soft);
-}
-
-.menu-search-back svg {
-  width: 22px;
-  height: 22px;
-
-  fill: none;
-
-  stroke: currentColor;
-
-  stroke-width: 2;
-
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.menu-search-page-input {
-  flex: 1;
-
-  height: 54px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 0 12px 0 17px;
-
-  background: white;
-
-  border: 1.5px solid
-    var(--menu-orange);
-
-  border-radius: 15px;
-
-  box-shadow:
-    0 0 0 4px
-      rgba(255, 100, 47, 0.07);
-}
-
-.menu-search-page-input > svg {
-  width: 21px;
-  height: 21px;
-
-  flex: 0 0 auto;
-
-  fill: none;
-
-  stroke:
-    var(--menu-orange);
-
-  stroke-width: 2;
-
-  stroke-linecap: round;
-}
-
-.menu-search-page-input input {
-  min-width: 0;
-  flex: 1;
-
-  height: 100%;
-
-  padding: 0 13px;
-
-  border: 0;
-  outline: 0;
-
-  background: transparent;
-
-  color: var(--menu-brown);
-
-  font: inherit;
-
-  font-size: 16px;
-}
-
-.menu-search-page-input input::placeholder {
-  color: #a28f86;
-}
-
-.menu-search-page-input button {
-  width: 36px;
-  height: 36px;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background:
-    var(--menu-orange-soft);
-
-  color:
-    var(--menu-orange);
-
-  font-size: 22px;
-
-  cursor: pointer;
-}
-
-.menu-search-page-content {
-  width: min(
-    1380px,
-    calc(100% - 48px)
-  );
-
-  margin: 0 auto;
-
-  padding: 28px 0 80px;
-}
-
-
-/* ---------------------------------------------------------
-   ALL ITEMS DIRECTLY BELOW SEARCH
---------------------------------------------------------- */
-
-.menu-search-all-title {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  margin-bottom: 18px;
-
-  padding-bottom: 15px;
-
-  border-bottom: 1px solid
-    var(--menu-border);
-}
-
-.menu-search-all-title span {
-  display: block;
-
-  margin-bottom: 4px;
-
-  color:
-    var(--menu-orange);
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: 0.12em;
-}
-
-.menu-search-all-title h2 {
-  margin: 0;
-
-  font-size: 30px;
-
-  letter-spacing: -0.025em;
-}
-
-.menu-search-all-title small {
-  color: #958078;
-
-  font-size: 12px;
-}
-
-
-/* ---------------------------------------------------------
-   SEARCH PAGE CATEGORY BROWSE
---------------------------------------------------------- */
-
-.menu-search-category-row {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  margin-bottom: 24px;
-
-  overflow-x: auto;
-
-  scrollbar-width: none;
-}
-
-.menu-search-category-row::-webkit-scrollbar {
-  display: none;
-}
-
-.menu-search-category-row > span {
-  flex: 0 0 auto;
-
-  margin-right: 3px;
-
-  color: #9a867c;
-
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.menu-search-category-row button {
-  flex: 0 0 auto;
-
-  padding: 8px 13px;
-
-  border: 1px solid
-    var(--menu-border);
-
-  border-radius: 999px;
-
-  background: #ffffff;
-
-  color: #6e5b52;
-
-  font-size: 10px;
-  font-weight: 800;
-
-  cursor: pointer;
-}
-
-.menu-search-category-row button:hover {
-  border-color:
-    var(--menu-orange);
-
-  color:
-    var(--menu-orange);
-}
-
-
-/* ---------------------------------------------------------
-   SEARCH PAGE ANIMATION
---------------------------------------------------------- */
-
-@keyframes menuSearchPageIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 700px) {
-
-  /* Smaller hero */
-  .menu-hero {
-    padding: 22px 0 20px;
-  }
-
-  .menu-hero h1 {
-    max-width: 100%;
-
-    font-size: 30px;
-
-    line-height: 1.04;
-
-    letter-spacing: -0.035em;
-  }
-
-  .menu-hero p {
-    margin-top: 8px;
-
-    font-size: 13px;
-
-    line-height: 1.45;
-  }
-
-
-  /* Sticky below mobile header */
-  .menu-sticky-controls {
-    top: 64px;
-
-    padding-top: 9px;
-    padding-bottom: 9px;
-  }
-
-  .menu-search-trigger {
-    height: 50px;
-
-    padding-left: 14px;
-
-    border-radius: 14px;
-
-    font-size: 13px;
-  }
-
-  .menu-category-scroll {
-    margin-top: 8px;
-  }
-
-
-  /* Search page */
-  .menu-search-page {
-    top: 64px;
-  }
-
-  .menu-search-page-top {
-    width: 100%;
-
-    padding: 10px 12px;
-
-    gap: 9px;
-  }
-
-  .menu-search-back {
-    width: 43px;
-    height: 43px;
-
-    border-radius: 12px;
-  }
-
-  .menu-search-page-input {
-    height: 46px;
-
-    border-radius: 12px;
-  }
-
-  .menu-search-page-input input {
-    font-size: 14px;
-
-    padding-left: 9px;
-  }
-
-  .menu-search-page-content {
-    width: calc(100% - 24px);
-
-    padding-top: 19px;
-  }
-
-  .menu-search-all-title {
-    align-items: center;
-
-    margin-bottom: 13px;
-  }
-
-  .menu-search-all-title h2 {
-    font-size: 24px;
-  }
-
-  .menu-search-category-row {
-    margin-bottom: 18px;
-  }
-
-
-  /* Modal above mobile header too */
-  .menu-modal-overlay {
-    z-index: 99999;
-
-    padding: 0;
-
-    align-items: flex-end;
-  }
-
-  .menu-product-modal {
-    z-index: 100000;
-
-    max-height: 94vh;
-
-    margin: 0;
-
-    border-radius:
-      25px 25px 0 0;
-  }
-
-
-  /* Inner CTA stays white */
-  .menu-btn-primary {
-    background: #ffffff;
-
-    color: #18110d;
-
-    border:
-      1.5px solid
-      var(--menu-orange);
-  }
-
-  .menu-featured-cta {
-    background:
-      var(--menu-orange);
-
-    color: #ffffff;
-  }
-}
-
-
-/* =========================================================
-   VERY SMALL MOBILE
-========================================================= */
-
-@media (max-width: 390px) {
-
-  .menu-hero h1 {
-    font-size: 27px;
-  }
-
-  .menu-hero p {
-    font-size: 12px;
-  }
-
-  .menu-sticky-controls {
-    top: 60px;
-  }
-
-  .menu-search-page {
-    top: 60px;
-  }
-}
-/* =========================================================
-   MITHORA MENU — CORRECTIONS ONLY
-   Do not change anything else
-========================================================= */
-
-
-/* =========================================================
-   1. HERO HEADING — SMALLER
-========================================================= */
-
-.menu-page-shell .menu-hero {
-  padding: 28px 0 24px !important;
-}
-
-.menu-page-shell .menu-hero h1 {
-  max-width: 760px !important;
-
-  font-size: clamp(32px, 3.6vw, 52px) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -0.035em !important;
-
-  margin: 0 !important;
-}
-
-.menu-page-shell .menu-hero p {
-  margin-top: 9px !important;
-
-  font-size: 15px !important;
-  line-height: 1.45 !important;
-}
-
-
-/* =========================================================
-   2. FEATURED CAROUSEL — NEVER AUTO MOVE
-========================================================= */
-
-.menu-featured-card,
-.menu-featured-content,
-.menu-featured-image img {
-  animation: none !important;
-}
-
-
-/* =========================================================
-   3. MENU SEARCH + CATEGORY — STICKY
-      Header = #site-header
-========================================================= */
-
-.menu-page-shell .menu-sticky-controls {
-  position: sticky !important;
-
-  top: 78px !important;
-
-  z-index: 900 !important;
-
-  background:
-    rgba(255, 250, 245, 0.98) !important;
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 6px 22px
-      rgba(45, 27, 20, 0.08);
-}
-
-
-/*
-   Keep the search and categories together.
-*/
-
-.menu-page-shell .menu-category-scroll {
-  position: relative;
-
-  display: flex;
-
-  overflow-x: auto;
-
-  white-space: nowrap;
-
-  scrollbar-width: none;
-}
-
-.menu-page-shell .menu-category-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* =========================================================
-   4. PRODUCT MODAL — ABOVE HEADER BUT START BELOW IT
-========================================================= */
-
-.menu-page-shell .menu-modal-overlay {
-  position: fixed !important;
-
-  inset: 0 !important;
-
-  z-index: 2000 !important;
-
-  display: flex !important;
-
-  align-items: flex-start !important;
-  justify-content: center !important;
-
-  padding:
-    96px 24px 24px !important;
-
-  overflow-y: auto !important;
-
-  background:
-    rgba(34, 20, 14, 0.62) !important;
-
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-}
-
-.menu-page-shell .menu-product-modal {
-  position: relative !important;
-
-  z-index: 2001 !important;
-
-  width: min(720px, 100%) !important;
-
-  max-height:
-    calc(100vh - 120px) !important;
-
-  margin: 0 auto !important;
-
-  overflow-y: auto !important;
-}
-
-
-/* =========================================================
-   5. INNER CTA
-      WHITE + ORANGE BORDER + BLACK TEXT
-========================================================= */
-
-.menu-page-shell .menu-btn-primary {
-  min-height: 44px;
-
-  border:
-    1.5px solid
-    var(--menu-orange) !important;
-
-  background:
-    #ffffff !important;
-
-  color:
-    #18110d !important;
-
-  box-shadow: none !important;
-}
-
-.menu-page-shell .menu-btn-primary:hover {
-  background:
-    #fff7f2 !important;
-
-  color:
-    #18110d !important;
-
-  border-color:
-    var(--menu-orange-dark) !important;
-}
-
-
-/*
-   Featured CTA stays filled.
-*/
-
-.menu-page-shell .menu-featured-cta {
-  border:
-    1px solid
-    var(--menu-orange) !important;
-
-  background:
-    var(--menu-orange) !important;
-
-  color:
-    #ffffff !important;
-}
-
-
-/* =========================================================
-   6. SEARCH — OPEN AS FULL PAGE
-========================================================= */
-
-.menu-page-shell .menu-search-page {
-  position: fixed !important;
-
-  inset: 0 !important;
-
-  top: 0 !important;
-
-  z-index: 3000 !important;
-
-  width: 100vw !important;
-  height: 100vh !important;
-
-  overflow-y: auto !important;
-
-  background:
-    var(--menu-cream) !important;
-}
-
-
-/*
-   Search page header stays at top while scrolling.
-*/
-
-.menu-page-shell .menu-search-page-top {
-  position: sticky !important;
-
-  top: 0 !important;
-
-  z-index: 20 !important;
-
-  width: 100% !important;
-
-  padding:
-    18px 24px !important;
-
-  background:
-    rgba(255, 250, 245, 0.98) !important;
-
-  border-bottom:
-    1px solid
-    var(--menu-border) !important;
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-
-/*
-   Back arrow is clearly on the left.
-*/
-
-.menu-page-shell .menu-search-back {
-  flex: 0 0 48px;
-
-  width: 48px !important;
-  height: 48px !important;
-
-  display: flex !important;
-
-  align-items: center;
-  justify-content: center;
-
-  border:
-    1px solid
-    var(--menu-border) !important;
-
-  border-radius: 14px;
-
-  background:
-    #ffffff !important;
-
-  color:
-    var(--menu-brown) !important;
-}
-
-
-/*
-   All Items immediately below search.
-*/
-
-.menu-page-shell .menu-search-page-content {
-  width: min(
-    1380px,
-    calc(100% - 48px)
-  ) !important;
-
-  margin: 0 auto !important;
-
-  padding:
-    26px 0 80px !important;
-}
-
-
-/* =========================================================
-   7. MOBILE — HEADER + STICKY MENU
-========================================================= */
-
-@media (max-width: 768px) {
-
-  /* Hero */
-  .menu-page-shell .menu-hero {
-    padding:
-      18px 0 17px !important;
-  }
-
-  .menu-page-shell .menu-hero h1 {
-    max-width: 100% !important;
-
-    font-size:
-      28px !important;
-
-    line-height:
-      1.04 !important;
-
-    letter-spacing:
-      -0.03em !important;
-  }
-
-  .menu-page-shell .menu-hero p {
-    margin-top:
-      7px !important;
-
-    font-size:
-      12px !important;
-
-    line-height:
-      1.4 !important;
-  }
-
-
-  /* -------------------------------------------------------
-     MOBILE STICKY SEARCH + CATEGORIES
-     Header is approximately 50–56px
-  ------------------------------------------------------- */
-
-  .menu-page-shell .menu-sticky-controls {
-    position: sticky !important;
-
-    top: 56px !important;
-
-    z-index: 900 !important;
-
-    padding:
-      8px 0 !important;
-  }
-
-  .menu-page-shell .menu-search-trigger {
-    height:
-      48px !important;
-
-    border-radius:
-      13px !important;
-
-    font-size:
-      13px !important;
-  }
-
-  .menu-page-shell .menu-category-scroll {
-    margin-top:
-      7px !important;
-
-    padding-bottom:
-      1px;
-  }
-
-
-  /* -------------------------------------------------------
-     MOBILE SEARCH PAGE
-     Covers the header and behaves like a separate page.
-  ------------------------------------------------------- */
-
-  .menu-page-shell .menu-search-page {
-    top: 0 !important;
-
-    z-index: 3000 !important;
-  }
-
-  .menu-page-shell .menu-search-page-top {
-    padding:
-      10px 12px !important;
-
-    gap:
-      9px !important;
-  }
-
-  .menu-page-shell .menu-search-back {
-    width:
-      43px !important;
-
-    height:
-      43px !important;
-
-    flex-basis:
-      43px !important;
-
-    border-radius:
-      12px !important;
-  }
-
-  .menu-page-shell .menu-search-page-input {
-    height:
-      46px !important;
-
-    border-radius:
-      12px !important;
-  }
-
-  .menu-page-shell .menu-search-page-content {
-    width:
-      calc(100% - 24px) !important;
-
-    padding:
-      18px 0 60px !important;
-  }
-
-
-  /* -------------------------------------------------------
-     MOBILE MODAL
-     Keep it above everything.
-  ------------------------------------------------------- */
-
-  .menu-page-shell .menu-modal-overlay {
-    z-index: 4000 !important;
-
-    padding:
-      58px 0 0 !important;
-
-    align-items:
-      flex-end !important;
-  }
-
-  .menu-page-shell .menu-product-modal {
-    z-index: 4001 !important;
-
-    width:
-      100% !important;
-
-    max-height:
-      calc(100vh - 58px) !important;
-
-    margin:
-      0 !important;
-
-    border-radius:
-      25px 25px 0 0 !important;
-  }
-
-
-  /* Inner CTA */
-  .menu-page-shell .menu-btn-primary {
-    background:
-      #ffffff !important;
-
-    color:
-      #18110d !important;
-
-    border:
-      1.5px solid
-      var(--menu-orange) !important;
-  }
-
-  /* Featured CTA */
-  .menu-page-shell .menu-featured-cta {
-    background:
-      var(--menu-orange) !important;
-
-    color:
-      #ffffff !important;
-  }
-}
-
-
-/* =========================================================
-   8. VERY SMALL MOBILE
-========================================================= */
-
-@media (max-width: 390px) {
-
-  .menu-page-shell .menu-hero h1 {
-    font-size:
-      26px !important;
-  }
-
-  .menu-page-shell .menu-sticky-controls {
-    top:
-      54px !important;
-  }
-}
-
-/* =========================================================
-   FINAL MITHORA MENU POLISH
-   Header-safe / smooth sticky / Probow-inspired hero /
-   contained mobile product modal
-========================================================= */
-
-/* The global Mithora header is fixed. Keep menu content below it. */
+/* The site header is fixed by the shared layout. Keep the menu
+   content below it from the first paint. */
 .menu-page-shell {
-  padding-top: 78px !important;
+  padding-top: var(--menu-header-height, 78px);
 }
 
-/* ---------------------------------------------------------
-   HERO — centered, clean, Probow-inspired
---------------------------------------------------------- */
-.menu-page-shell .menu-hero {
-  padding: 48px 0 42px !important;
+/* Hero / intro */
+.menu-hero {
   text-align: center;
+  padding: 42px 0 36px;
 }
 
-.menu-page-shell .menu-hero .menu-shell-container {
+.menu-hero .menu-shell-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.menu-page-shell .menu-hero-eyebrow {
+.menu-hero-eyebrow {
   display: block;
-  margin: 0 0 13px;
-  color: var(--menu-green);
-  font-size: 16px;
-  line-height: 1.3;
+  margin-bottom: 10px;
+  color: #1f5a2e;
+  font-size: 17px;
   font-weight: 700;
   font-style: italic;
-  letter-spacing: 0.01em;
+  letter-spacing: .01em;
 }
 
-.menu-page-shell .menu-hero h1 {
-  max-width: 900px !important;
-  margin: 0 !important;
-  font-size: clamp(46px, 5vw, 68px) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -0.045em !important;
+.menu-hero h1 {
+  max-width: 1000px;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 5vw, 70px);
+  line-height: .98;
+  letter-spacing: -.045em;
+  font-weight: 800;
+  color: #14271d;
 }
 
-.menu-page-shell .menu-hero p {
-  max-width: 760px !important;
-  margin: 17px auto 0 !important;
-  font-size: 17px !important;
-  line-height: 1.55 !important;
+.menu-hero h1 em {
+  color: #23552c;
+}
+
+.menu-hero p {
+  max-width: 760px;
+  margin: 17px auto 0;
+  color: #6f625b;
+  font-size: 17px;
+  line-height: 1.55;
 }
 
 .menu-hero-badges {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
+  gap: 9px;
+  margin-top: 20px;
 }
 
 .menu-hero-badges span {
   display: inline-flex;
   align-items: center;
-  min-height: 38px;
+  min-height: 36px;
   padding: 0 14px;
-  border: 1px solid rgba(234, 222, 213, 0.95);
+  border: 1px solid #e6ddd4;
   border-radius: 999px;
-  background: #fff;
-  color: #3b2d26;
-  font-size: 12px;
+  background: rgba(255,255,255,.9);
+  color: #172119;
+  font-size: 11px;
   font-weight: 800;
-  box-shadow: 0 4px 14px rgba(45, 27, 20, 0.035);
 }
 
-/* ---------------------------------------------------------
-   SEARCH + CATEGORIES — one stable sticky block
-   No scroll-state padding changes = no jerky jump.
---------------------------------------------------------- */
-.menu-page-shell .menu-sticky-controls {
+/* Search + categories: one stable navigation unit */
+.menu-sticky-controls {
   position: sticky !important;
-  top: 78px !important;
+  top: var(--menu-header-height, 78px) !important;
   z-index: 900 !important;
-  padding: 12px 0 13px !important;
-  margin: 0 !important;
-  transform: none !important;
+  padding: 14px 0 13px !important;
+  background: rgba(255,250,245,.98) !important;
+  border-bottom: 1px solid rgba(226,211,201,.9);
+  box-shadow: 0 6px 22px rgba(45,27,20,.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   transition: none !important;
 }
 
-.menu-page-shell .menu-sticky-controls-scrolled {
-  padding: 12px 0 13px !important;
-  box-shadow: 0 10px 30px rgba(45, 27, 20, 0.07) !important;
+.menu-sticky-controls-scrolled {
+  padding-top: 14px !important;
+  padding-bottom: 13px !important;
+  box-shadow: 0 6px 22px rgba(45,27,20,.08);
 }
 
-.menu-page-shell .menu-category-scroll {
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
+.menu-search-trigger {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border: 1px solid var(--menu-border);
+  border-radius: 17px;
+  background: #fff;
+  color: #8d7b72;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: text;
+  box-shadow: 0 5px 20px rgba(45,27,20,.04);
 }
 
-/* ---------------------------------------------------------
-   MOBILE
---------------------------------------------------------- */
+.menu-search-trigger .menu-search-icon {
+  margin-right: 11px;
+}
+
+.menu-search-trigger:hover {
+  border-color: var(--menu-orange);
+}
+
+/* Category pills with image/icon */
+.menu-category-scroll {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 1px 1px 3px;
+}
+
+.menu-category-scroll::-webkit-scrollbar { display: none; }
+
+.menu-category-pill {
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 16px 0 8px;
+  border: 1px solid var(--menu-border);
+  border-radius: 999px;
+  background: #fff;
+  color: #6f5e55;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: none !important;
+}
+
+.menu-category-pill:hover {
+  border-color: var(--menu-orange);
+  color: var(--menu-orange);
+  transform: none;
+}
+
+.menu-category-pill.active {
+  background: #17251c;
+  border-color: #17251c;
+  color: #fff;
+  box-shadow: none;
+}
+
+.menu-category-icon,
+.menu-category-heading-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #f1e9df;
+  font-size: 18px;
+}
+
+.menu-category-icon svg,
+.menu-category-heading-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.menu-category-pill.active .menu-category-icon {
+  background: rgba(255,255,255,.14);
+}
+
+/* 4 cards normally, 5 on wide screens */
+.menu-product-grid {
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  align-items: stretch;
+}
+
+.menu-product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-product-image-button {
+  aspect-ratio: 1.18 / 1;
+  height: auto;
+}
+
+.menu-product-image-button img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.menu-product-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-product-bottom {
+  margin-top: auto;
+  padding-top: 18px;
+  align-items: center;
+}
+
+.menu-product-action {
+  min-width: 116px;
+}
+
+.menu-product-action > button,
+.menu-product-action > .menu-quantity-control {
+  width: 100%;
+}
+
+/* Category header */
+.menu-category-heading {
+  align-items: center;
+}
+
+.menu-category-heading-main {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.menu-category-heading-main > div:last-child {
+  min-width: 0;
+}
+
+.menu-category-heading-icon {
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+  background: #f6ece4;
+}
+
+.menu-category-heading-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-fresh-badge {
+  flex: 0 0 auto;
+}
+
+/* Search page */
+.menu-search-page {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  overflow-y: auto;
+  background: var(--menu-cream);
+  animation: menuSearchPageIn .18s ease;
+}
+
+.menu-search-page-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: min(100%,1380px);
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,250,245,.98);
+  border-bottom: 1px solid var(--menu-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.menu-search-back {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--menu-border);
+  border-radius: 13px;
+  background: #fff;
+  color: var(--menu-brown);
+  cursor: pointer;
+}
+
+.menu-search-back svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.menu-search-page-input {
+  flex: 1;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px 0 16px;
+  background: #fff;
+  border: 1.5px solid var(--menu-orange);
+  border-radius: 15px;
+  box-shadow: 0 0 0 4px rgba(255,100,47,.06);
+}
+
+.menu-search-page-input > svg {
+  width: 21px;
+  height: 21px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: var(--menu-orange);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.menu-search-page-input input {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  padding: 0 12px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--menu-brown);
+  font: inherit;
+  font-size: 15px;
+}
+
+.menu-search-page-input input::placeholder { color: #a28f86; }
+
+.menu-search-page-input button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--menu-orange-soft);
+  color: var(--menu-orange);
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.menu-search-page-content {
+  width: min(1380px,calc(100% - 48px));
+  margin: 0 auto;
+  padding: 25px 0 80px;
+}
+
+.menu-search-all-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 17px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--menu-border);
+}
+
+.menu-search-all-title span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--menu-orange);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.menu-search-all-title h2 { margin: 0; font-size: 30px; letter-spacing: -.025em; }
+.menu-search-all-title small { color: #958078; font-size: 12px; }
+
+.menu-search-category-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.menu-search-category-row::-webkit-scrollbar { display: none; }
+.menu-search-category-row > span { flex: 0 0 auto; color: #9a867c; font-size: 11px; font-weight: 800; }
+.menu-search-category-row button { flex: 0 0 auto; padding: 8px 13px; border: 1px solid var(--menu-border); border-radius: 999px; background: #fff; color: #6e5b52; font-size: 10px; font-weight: 800; cursor: pointer; }
+
+@keyframes menuSearchPageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+@media (max-width: 1199px) {
+  .menu-product-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+
+@media (max-width: 900px) {
+  .menu-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .menu-featured-content { grid-template-columns: 1fr .9fr; }
+  .menu-featured-image { height: 360px; }
+}
+
+/* =========================================================
+   MOBILE — FIXED MENU NAV
+========================================================= */
 @media (max-width: 768px) {
   .menu-page-shell {
-    padding-top: 50px !important;
+    padding-top: calc(var(--menu-header-height, 56px) + var(--menu-controls-height, 104px));
   }
 
-  .menu-page-shell .menu-hero {
-    padding: 34px 0 30px !important;
+  .menu-sticky-controls {
+    position: fixed !important;
+    top: var(--menu-header-height, 56px) !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 7px 0 8px !important;
+    z-index: 1500 !important;
+    box-shadow: 0 5px 18px rgba(45,27,20,.10);
   }
 
-  .menu-page-shell .menu-hero-eyebrow {
-    margin-bottom: 9px;
+  .menu-shell-container {
+    width: calc(100% - 18px);
+  }
+
+  .menu-search-trigger {
+    height: 46px;
+    padding: 0 13px;
+    border-radius: 13px;
+    font-size: 12px;
+  }
+
+  .menu-search-trigger .menu-search-icon { margin-right: 9px; }
+  .menu-search-trigger .menu-search-icon svg { width: 20px; height: 20px; }
+
+  .menu-category-scroll {
+    gap: 7px;
+    margin-top: 6px;
+    padding-bottom: 1px;
+  }
+
+  .menu-category-pill {
+    min-height: 38px;
+    gap: 6px;
+    padding: 0 12px 0 6px;
+    font-size: 10px;
+  }
+
+  .menu-category-icon {
+    width: 29px;
+    height: 29px;
+    flex-basis: 29px;
+    font-size: 15px;
+  }
+
+  .menu-hero {
+    padding: 21px 0 20px;
+  }
+
+  .menu-hero-eyebrow {
+    margin-bottom: 7px;
     font-size: 13px;
   }
 
-  .menu-page-shell .menu-hero h1 {
-    font-size: 34px !important;
-    line-height: 1.03 !important;
+  .menu-hero h1 {
+    max-width: 360px;
+    font-size: 29px;
+    line-height: 1.02;
+    letter-spacing: -.035em;
   }
 
-  .menu-page-shell .menu-hero p {
-    max-width: 355px !important;
-    margin-top: 10px !important;
-    font-size: 13px !important;
-    line-height: 1.5 !important;
+  .menu-hero p {
+    max-width: 340px;
+    margin-top: 9px;
+    font-size: 12px;
+    line-height: 1.45;
   }
 
   .menu-hero-badges {
-    gap: 7px;
-    margin-top: 16px;
+    gap: 5px;
+    margin-top: 13px;
   }
 
   .menu-hero-badges span {
-    min-height: 32px;
-    padding: 0 10px;
-    font-size: 9px;
+    min-height: 30px;
+    padding: 0 9px;
+    font-size: 8px;
   }
 
-  /* Header ends at ~50px on mobile. Keep the menu block exactly there. */
-  .menu-page-shell .menu-sticky-controls {
-    top: 50px !important;
-    z-index: 900 !important;
-    padding: 8px 0 9px !important;
-    transition: none !important;
-  }
+  .menu-featured-wrap { padding: 17px 0 10px; }
+  .menu-featured-card { padding: 11px; border-radius: 21px; }
+  .menu-featured-top { margin-bottom: 10px; }
+  .menu-featured-top span { padding: 7px 9px; font-size: 8px; }
+  .menu-featured-content { display: flex; flex-direction: column; gap: 0; min-height: 0; }
+  .menu-featured-image { height: 250px; border-radius: 16px; }
+  .menu-featured-details { padding: 17px 10px 27px; }
+  .menu-featured-eyebrow { margin-bottom: 6px; font-size: 8px; }
+  .menu-featured-details h2 { font-size: 28px; }
+  .menu-featured-details p { margin-top: 9px; font-size: 12px; line-height: 1.45; }
+  .menu-featured-meta { margin-top: 11px; gap: 5px; }
+  .menu-featured-meta span { padding: 5px 7px; font-size: 8px; }
+  .menu-featured-price { margin-top: 12px; }
+  .menu-featured-price strong { font-size: 25px; }
+  .menu-featured-cta { width: 100%; min-width: 0; min-height: 44px; margin-top: 12px; border-radius: 12px; }
+  .menu-featured-arrow { top: 125px; width: 35px; height: 35px; font-size: 22px; }
+  .menu-featured-arrow.left { left: 18px; }
+  .menu-featured-arrow.right { right: 18px; }
 
-  .menu-page-shell .menu-sticky-controls-scrolled {
-    padding: 8px 0 9px !important;
-  }
+  .menu-content { padding: 4px 0 70px; }
+  .menu-category-section { scroll-margin-top: calc(var(--menu-header-height,56px) + var(--menu-controls-height,104px) + 12px); padding: 24px 0 11px; }
+  .menu-category-heading { margin-bottom: 10px; padding-bottom: 11px; }
+  .menu-category-heading-main { gap: 8px; }
+  .menu-category-heading-icon { width: 36px; height: 36px; flex-basis: 36px; font-size: 16px; }
+  .menu-category-heading h2 { font-size: 21px; }
+  .menu-category-heading span { font-size: 10px; }
+  .menu-fresh-badge { padding: 7px 9px; font-size: 9px; }
+  .menu-fresh-badge span { font-size: 10px; }
 
-  .menu-page-shell .menu-search-trigger {
-    height: 48px !important;
-    border-radius: 14px !important;
-  }
+  .menu-availability { margin-bottom: 11px; padding: 6px 9px; font-size: 8px; }
 
-  .menu-page-shell .menu-category-scroll {
-    margin-top: 7px !important;
-    padding-bottom: 2px !important;
-  }
+  .menu-product-grid { grid-template-columns: 1fr; gap: 12px; }
+  .menu-product-card { border-radius: 17px; }
+  .menu-product-image-button { aspect-ratio: 1.55 / 1; height: auto; }
+  .menu-product-body { padding: 13px 14px 14px; }
+  .menu-product-title-row { gap: 8px; }
+  .menu-product-title-row h3 { font-size: 16px; }
+  .menu-rating { font-size: 10px; }
+  .menu-rating strong { font-size: 10px; }
+  .menu-rating small { font-size: 8px; }
+  .menu-product-description { min-height: 0; margin-top: 6px; font-size: 11px; line-height: 1.45; -webkit-line-clamp: 2; }
+  .menu-product-bottom { padding-top: 13px; }
+  .menu-price-block strong { font-size: 20px; }
+  .menu-price-block span { font-size: 11px; }
+  .menu-product-action { min-width: 104px; }
+  .menu-btn-primary, .menu-btn-notify { min-width: 104px; min-height: 39px; padding: 0 10px; border-radius: 11px; font-size: 9px; }
+  .menu-quantity-control { height: 39px; }
+  .menu-quantity-control button { width: 33px; }
 
-  /* Keep the existing desktop-style vertical cards on mobile. */
-  .menu-page-shell .menu-product-card {
-    border-radius: 18px !important;
-  }
-
-  .menu-page-shell .menu-product-image-button {
-    height: 250px !important;
-  }
-
-  /* -------------------------------------------------------
-     MOBILE PRODUCT MODAL
-     Bottom sheet, contained below header, no page scrolling.
-  ------------------------------------------------------- */
-  body:has(.menu-page-shell .menu-product-modal) {
-    overflow: hidden !important;
-    overscroll-behavior: none !important;
-  }
-
-  .menu-page-shell .menu-modal-overlay {
-    position: fixed !important;
+  /* Modal: focused bottom sheet, background is locked by JS */
+  .menu-modal-overlay {
     inset: 0 !important;
-    z-index: 4000 !important;
-    display: flex !important;
+    z-index: 5000 !important;
     align-items: flex-end !important;
     justify-content: center !important;
     padding: 0 !important;
     overflow: hidden !important;
-    overscroll-behavior: none !important;
-    touch-action: none;
+    background: rgba(25,17,13,.68) !important;
   }
 
-  .menu-page-shell .menu-product-modal {
-    position: relative !important;
-    z-index: 4001 !important;
-    width: 100% !important;
+  .menu-product-modal {
+    z-index: 5001 !important;
+    width: min(100%, 560px) !important;
     max-height: 78vh !important;
     margin: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain !important;
-    border-radius: 24px 24px 0 0 !important;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden !important;
+    border-radius: 23px 23px 0 0 !important;
+    display: flex;
+    flex-direction: column;
+    animation: menuModalMobileIn .22s ease;
   }
 
-  .menu-page-shell .menu-modal-image {
-    height: 190px !important;
-  }
+  .menu-modal-image { height: 190px; flex: 0 0 190px; }
+  .menu-modal-content { padding: 16px 14px 14px; overflow-y: auto; overscroll-behavior: contain; }
+  .menu-modal-title-row { gap: 10px; }
+  .menu-modal-title-row h2 { font-size: 23px; }
+  .menu-modal-description { margin: 10px 0 16px; font-size: 12px; line-height: 1.5; }
+  .menu-variant-list { gap: 8px; }
+  .menu-variant-row { padding: 11px; gap: 8px; }
+  .menu-variant-info > strong { font-size: 12px; }
+  .menu-variant-info p { margin: 3px 0 6px; font-size: 9px; }
+  .menu-variant-price > strong { font-size: 14px; }
+  .menu-variant-action .menu-btn-notify, .menu-variant-add { min-width: 70px; }
+  .menu-modal-done { min-height: 43px; margin-top: 12px; }
 
-  .menu-page-shell .menu-modal-content {
-    padding: 17px 15px 22px !important;
-  }
+  /* Search page */
+  .menu-search-page { z-index: 6000; }
+  .menu-search-page-top { width: 100%; padding: 9px 9px; gap: 7px; }
+  .menu-search-back { width: 41px; height: 41px; flex-basis: 41px; border-radius: 11px; }
+  .menu-search-page-input { height: 44px; border-radius: 12px; }
+  .menu-search-page-input input { font-size: 13px; padding: 0 8px; }
+  .menu-search-page-content { width: calc(100% - 18px); padding: 17px 0 60px; }
+  .menu-search-all-title { margin-bottom: 12px; }
+  .menu-search-all-title h2 { font-size: 22px; }
+  .menu-search-category-row { margin-bottom: 16px; }
 }
 
-@media (max-width: 390px) {
-  .menu-page-shell .menu-hero {
-    padding-top: 29px !important;
-    padding-bottom: 25px !important;
-  }
-
-  .menu-page-shell .menu-hero h1 {
-    font-size: 30px !important;
-  }
-
-  .menu-page-shell .menu-hero p {
-    font-size: 12px !important;
-  }
-
-  .menu-page-shell .menu-sticky-controls {
-    top: 50px !important;
-  }
-
-  .menu-page-shell .menu-product-modal {
-    max-height: 76vh !important;
-  }
-}
-
-/* =========================================================
-   FINAL LAYOUT FIX — SEARCH FIRST / STABLE STICKY / RESPONSIVE GRID
-========================================================= */
-
-/* Header is fixed by the global layout. Menu starts underneath it. */
-.menu-page-shell {
-  padding-top: 78px !important;
-}
-
-/* Search + categories are the first menu element and remain sticky. */
-.menu-page-shell .menu-sticky-controls {
-  position: sticky !important;
-  top: 78px !important;
-  z-index: 900 !important;
-  display: block !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 10px 0 11px !important;
-  background: rgba(255, 250, 245, 0.98) !important;
-  border-bottom: 1px solid rgba(226, 211, 201, 0.9) !important;
-  box-shadow: 0 7px 22px rgba(45, 27, 20, 0.055) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  transform: none !important;
-  transition: none !important;
-}
-
-.menu-page-shell .menu-sticky-controls-scrolled {
-  padding: 10px 0 11px !important;
-  box-shadow: 0 7px 22px rgba(45, 27, 20, 0.055) !important;
-}
-
-/* Never let the sticky bar animate when the page scrolls. */
-.menu-page-shell .menu-search-trigger,
-.menu-page-shell .menu-category-pill,
-.menu-page-shell .menu-category-scroll {
-  transition: none !important;
-}
-
-/* Probow-style centered hero, AFTER search + categories. */
-.menu-page-shell .menu-hero {
-  padding: 42px 0 38px !important;
-  text-align: center !important;
-}
-
-.menu-page-shell .menu-hero .menu-shell-container {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-}
-
-.menu-page-shell .menu-hero-eyebrow {
-  margin: 0 0 12px !important;
-  color: #23602e !important;
-  font-size: 16px !important;
-  line-height: 1.3 !important;
-  font-weight: 700 !important;
-  font-style: italic !important;
-}
-
-.menu-page-shell .menu-hero h1 {
-  max-width: 980px !important;
-  margin: 0 !important;
-  font-size: clamp(44px, 5vw, 68px) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -0.045em !important;
-  font-weight: 900 !important;
-}
-
-.menu-page-shell .menu-hero p {
-  max-width: 780px !important;
-  margin: 16px auto 0 !important;
-  font-size: 17px !important;
-  line-height: 1.55 !important;
-}
-
-.menu-page-shell .menu-hero-badges {
-  display: flex !important;
-  justify-content: center !important;
-  flex-wrap: wrap !important;
-  gap: 9px !important;
-  margin-top: 21px !important;
-}
-
-/* Desktop: 4 cards, then 5 on wide screens. */
-.menu-page-shell .menu-product-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 18px !important;
+@keyframes menuModalMobileIn {
+  from { opacity: 0; transform: translateY(36px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (min-width: 1500px) {
-  .menu-page-shell .menu-product-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-  }
+  .menu-product-grid { grid-template-columns: repeat(5,minmax(0,1fr)); }
 }
 
-@media (max-width: 1199px) and (min-width: 769px) {
-  .menu-page-shell .menu-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Actual mobile header is about 50px high. */
-  .menu-page-shell {
-    padding-top: 50px !important;
-  }
-
-  /* Search + categories are immediately below the header. */
-  .menu-page-shell .menu-sticky-controls {
-    top: 50px !important;
-    z-index: 900 !important;
-    padding: 7px 0 8px !important;
-    box-shadow: 0 6px 18px rgba(45, 27, 20, 0.06) !important;
-  }
-
-  .menu-page-shell .menu-sticky-controls-scrolled {
-    padding: 7px 0 8px !important;
-  }
-
-  .menu-page-shell .menu-search-trigger {
-    height: 45px !important;
-    min-height: 45px !important;
-    border-radius: 14px !important;
-  }
-
-  .menu-page-shell .menu-category-scroll {
-    margin-top: 6px !important;
-    padding: 0 1px 2px !important;
-    gap: 8px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    white-space: nowrap !important;
-    scrollbar-width: none !important;
-  }
-
-  .menu-page-shell .menu-category-scroll::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .menu-page-shell .menu-category-pill {
-    min-height: 38px !important;
-    height: 38px !important;
-    padding: 0 14px !important;
-    font-size: 11px !important;
-  }
-
-  /* Compact Probow-inspired mobile hero. */
-  .menu-page-shell .menu-hero {
-    padding: 28px 0 25px !important;
-  }
-
-  .menu-page-shell .menu-hero-eyebrow {
-    margin-bottom: 8px !important;
-    font-size: 13px !important;
-  }
-
-  .menu-page-shell .menu-hero h1 {
-    max-width: 100% !important;
-    font-size: 31px !important;
-    line-height: 1.04 !important;
-    letter-spacing: -0.035em !important;
-  }
-
-  .menu-page-shell .menu-hero p {
-    max-width: 355px !important;
-    margin-top: 9px !important;
-    font-size: 12.5px !important;
-    line-height: 1.5 !important;
-  }
-
-  .menu-page-shell .menu-hero-badges {
-    gap: 6px !important;
-    margin-top: 14px !important;
-  }
-
-  .menu-page-shell .menu-hero-badges span {
-    min-height: 30px !important;
-    padding: 0 9px !important;
-    font-size: 8.5px !important;
-  }
-
-  /* Mobile: one compact vertical card per row. */
-  .menu-page-shell .menu-product-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  .menu-page-shell .menu-product-card {
-    border-radius: 17px !important;
-  }
-
-  .menu-page-shell .menu-product-image-button {
-    height: 185px !important;
-  }
-
-  .menu-page-shell .menu-product-body {
-    padding: 13px 15px 14px !important;
-  }
-
-  .menu-page-shell .menu-product-title-row h3 {
-    font-size: 17px !important;
-  }
-
-  .menu-page-shell .menu-product-description {
-    min-height: 0 !important;
-    margin-top: 7px !important;
-    font-size: 12px !important;
-    line-height: 1.45 !important;
-  }
-
-  .menu-page-shell .menu-product-bottom {
-    margin-top: 12px !important;
-  }
-
-  .menu-page-shell .menu-price-block strong {
-    font-size: 20px !important;
-  }
+@media (max-width: 390px) {
+  .menu-hero h1 { font-size: 27px; }
+  .menu-hero p { font-size: 11px; }
+  .menu-product-image-button { aspect-ratio: 1.6 / 1; }
+  .menu-product-action { min-width: 98px; }
+  .menu-btn-primary, .menu-btn-notify { min-width: 98px; }
 }

@@ -139,6 +139,7 @@ export default function MenuShell() {
     useState("all");
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [sticky, setSticky] = useState(false);
 
   const [modalProduct, setModalProduct] =
     useState<Product | null>(null);
@@ -146,6 +147,44 @@ export default function MenuShell() {
   const [featuredIndex, setFeaturedIndex] = useState(0);
 
   const [cartVersion, setCartVersion] = useState(0);
+
+  /* -----------------------------------------------------
+     STICKY
+  ----------------------------------------------------- */
+
+  useEffect(() => {
+    const updateMenuOffsets = () => {
+      const header = document.getElementById("site-header");
+      const controls = document.querySelector<HTMLElement>(".menu-sticky-controls");
+
+      const headerHeight = header?.getBoundingClientRect().height || 56;
+      const controlsHeight = controls?.getBoundingClientRect().height || 112;
+
+      document.documentElement.style.setProperty(
+        "--menu-header-height",
+        `${Math.round(headerHeight)}px`
+      );
+      document.documentElement.style.setProperty(
+        "--menu-controls-height",
+        `${Math.round(controlsHeight)}px`
+      );
+    };
+
+    const onScroll = () => {
+      setSticky(window.scrollY > 140);
+    };
+
+    updateMenuOffsets();
+    window.requestAnimationFrame(updateMenuOffsets);
+
+    window.addEventListener("resize", updateMenuOffsets);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateMenuOffsets);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [categories.length, loading]);
 
   /* -----------------------------------------------------
      LOAD MENU
@@ -392,7 +431,7 @@ export default function MenuShell() {
 
       const header =
         document.querySelector(
-          "#site-header"
+          ".site-header"
         );
 
       const headerHeight =
@@ -545,6 +584,19 @@ export default function MenuShell() {
     });
   }
 
+  function categoryIcon(category: Category): string {
+    const name = category.name.toLowerCase();
+
+    if (name.includes("breakfast")) return "☀️";
+    if (name.includes("tiffin")) return "🍱";
+    if (name.includes("snack")) return "🥨";
+    if (name.includes("travel")) return "🧳";
+    if (name.includes("party")) return "🎉";
+    if (name.includes("vrat")) return "🌿";
+    if (name.includes("fruit") || name.includes("sprout")) return "🥗";
+    return "🍽️";
+  }
+
   /* =====================================================
      RENDER
   ===================================================== */
@@ -558,7 +610,13 @@ export default function MenuShell() {
           Search is now BELOW the fixed header.
       ================================================= */}
 
-      <section className="menu-sticky-controls">
+      <section
+        className={`menu-sticky-controls ${
+          sticky
+            ? "menu-sticky-controls-scrolled"
+            : ""
+        }`}
+      >
         <div className="menu-shell-container">
 
           <button
@@ -599,7 +657,8 @@ export default function MenuShell() {
                 selectCategory("all")
               }
             >
-              All Items
+              <span className="menu-category-icon">🍽️</span>
+              <span>All Items</span>
             </button>
 
             {categories.map(
@@ -621,7 +680,18 @@ export default function MenuShell() {
                     )
                   }
                 >
-                  {category.name}
+                  <span className="menu-category-icon">
+                    {category.icon_svg ? (
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: String(category.icon_svg),
+                        }}
+                      />
+                    ) : (
+                      categoryIcon(category)
+                    )}
+                  </span>
+                  <span>{category.name}</span>
                 </button>
               )
             )}
@@ -630,9 +700,8 @@ export default function MenuShell() {
         </div>
       </section>
 
-
       {/* =================================================
-          SHORT HERO
+          HERO / INTRO
       ================================================= */}
 
       <section className="menu-hero">
@@ -651,7 +720,7 @@ export default function MenuShell() {
             Freshly prepared meals, snacks, tiffin and festive favourites.
           </p>
 
-          <div className="menu-hero-badges">
+          <div className="menu-hero-badges" aria-label="Mithora benefits">
             <span>✦ 100% pure veg</span>
             <span>⊘ No preservatives</span>
             <span>♨ Made fresh daily</span>
@@ -754,25 +823,30 @@ export default function MenuShell() {
                       className="menu-category-section"
                     >
                       <div className="menu-category-heading">
-                        <div>
-                          <h2>
-                            {category.name}
-                          </h2>
-
-                          <span>
-                            {
-                              categoryProducts.length
-                            }{" "}
-                            {categoryProducts.length ===
-                            1
-                              ? "item"
-                              : "items"}
-                          </span>
+                        <div className="menu-category-heading-main">
+                          <div className="menu-category-heading-icon">
+                            {category.icon_svg ? (
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: String(category.icon_svg),
+                                }}
+                              />
+                            ) : (
+                              categoryIcon(category)
+                            )}
+                          </div>
+                          <div>
+                            <h2>{category.name}</h2>
+                            <span>
+                              {categoryProducts.length}{" "}
+                              {categoryProducts.length === 1 ? "item" : "items"}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="menu-fresh-badge">
                           <span>✓</span>
-                          Fresh every order
+                          Fresh Every Order
                         </div>
                       </div>
 
