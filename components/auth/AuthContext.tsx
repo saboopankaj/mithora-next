@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -29,6 +30,7 @@ export type AuthMode =
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
+  authReady: boolean;
   openAuth: (mode?: AuthMode) => void;
   closeAuth: () => void;
   logout: () => void;
@@ -43,16 +45,29 @@ export function AuthProvider({
 }: {
   children: ReactNode;
 }) {
+  // IMPORTANT:
+  // Start with null so server and browser render
+  // the exact same initial state.
   const [user, setUser] =
-    useState<User | null>(() =>
-      getCurrentUser()
-    );
+    useState<User | null>(null);
+
+  const [authReady, setAuthReady] =
+    useState(false);
 
   const [authOpen, setAuthOpen] =
     useState(false);
 
   const [authMode, setAuthMode] =
     useState<AuthMode>("mobile");
+
+  // Load localStorage only after the component
+  // has mounted in the browser.
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+
+    setUser(currentUser);
+    setAuthReady(true);
+  }, []);
 
   const openAuth = useCallback(
     (mode: AuthMode = "mobile") => {
@@ -76,6 +91,7 @@ export function AuthProvider({
       value={{
         user,
         isAuthenticated: !!user,
+        authReady,
         openAuth,
         closeAuth,
         logout,
