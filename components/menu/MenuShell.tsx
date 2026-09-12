@@ -1370,7 +1370,7 @@ function ProductCard({
                   onNotify(product)
                 }
               >
-                WHATSAPP NOTIFY
+                NOTIFY ME
               </button>
             ) : isMulti ? (
               <button
@@ -1382,7 +1382,7 @@ function ProductCard({
               >
                 {subscription
                   ? "SUBSCRIBE"
-                  : "VIEW OPTIONS"}
+                  : "CUSTOMIZE"}
               </button>
             ) : (
               <button
@@ -1573,8 +1573,8 @@ function FeaturedCarousel({
               >
                 {product.variants &&
                 product.variants.length > 1
-                  ? "VIEW OPTIONS"
-                  : "ORDER NOW"}
+                  ? "CUSTOMIZE"
+                  : "ADD"}
               </button>
 
             </div>
