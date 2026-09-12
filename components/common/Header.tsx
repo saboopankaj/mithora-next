@@ -335,7 +335,7 @@ export default function Header() {
 
                 {/* ORDERS */}
                 <a
-                  href="/orders"
+                  href="/account"
                   className="profile-dropdown-item"
                   onClick={() => setProfileOpen(false)}
                 >
@@ -351,7 +351,7 @@ export default function Header() {
 
                 {/* MY PROFILE */}
                 <a
-                  href="/profile"
+                  href="/account"
                   className="profile-dropdown-item"
                   onClick={() => setProfileOpen(false)}
                 >
@@ -447,7 +447,7 @@ export default function Header() {
                 <div className="profile-dropdown-divider" />
 
                 <a
-                  href="/orders"
+                  href="/account"
                   className="profile-dropdown-item"
                   onClick={() => setProfileOpen(false)}
                 >
@@ -460,7 +460,7 @@ export default function Header() {
                 </a>
 
                 <a
-                  href="/profile"
+                  href="/account"
                   className="profile-dropdown-item"
                   onClick={() => setProfileOpen(false)}
                 >

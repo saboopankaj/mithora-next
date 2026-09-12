@@ -2,7 +2,7 @@ import "./globals.css";
 import "@/styles/layout.css";
 import "@/styles/home.css";
 import "@/styles/auth.css";
-
+import "@/styles/account.css";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { AuthProvider } from "@/components/auth/AuthContext";
