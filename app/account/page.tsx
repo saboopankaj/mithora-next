@@ -92,7 +92,7 @@ export default function AccountPage() {
 
   const token =
     typeof window !== "undefined"
-      ? localStorage.getItem("m_token")
+      ? localStorage.getItem("mithora_auth_token")
       : null;
 
   /* =========================================================
@@ -110,7 +110,10 @@ export default function AccountPage() {
 useEffect(() => {
   if (!mounted || !authReady) return;
 
-  if (!isAuthenticated || !token) {
+  const currentToken =
+    localStorage.getItem("mithora_auth_token");
+
+  if (!isAuthenticated || !currentToken) {
     window.location.href = "/";
     return;
   }
@@ -137,7 +140,7 @@ useEffect(() => {
         setReferralCode(data.user.referral_code || "");
 
         localStorage.setItem(
-          "m_user",
+          "mithora_auth_user",
           JSON.stringify(data.user)
         );
       }
