@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 
 import {
-  signup,
+  checkMobile,
   login,
+  requestSignupOTP,
+  verifySignupOTP,
+  completeSignup,
   requestPinResetOTP,
   resetPin,
   saveAuth,
@@ -14,8 +17,11 @@ import {
 } from "@/lib/auth";
 
 type AuthMode =
-  | "login"
+  | "mobile"
+  | "login-pin"
   | "signup"
+  | "signup-verify"
+  | "signup-pin"
   | "forgot-pin"
   | "verify-otp"
   | "reset-pin";
@@ -31,7 +37,7 @@ type AuthModalProps = {
 export default function AuthModal({
   open,
   onClose,
-  initialMode = "login",
+  initialMode = "mobile",
   onAuthenticated,
   onLoggedOut,
 }: AuthModalProps) {
@@ -44,9 +50,7 @@ export default function AuthModal({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
 
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
@@ -64,7 +68,7 @@ export default function AuthModal({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // ========================================
-  // LOAD CURRENT USER / INITIAL MODE
+  // LOAD CURRENT USER
   // ========================================
 
   useEffect(() => {
@@ -74,7 +78,6 @@ export default function AuthModal({
 
     setCurrentUser(user);
     setMode(initialMode);
-
     setError("");
     setMessage("");
     setLoading(false);
@@ -106,20 +109,15 @@ export default function AuthModal({
     setMessage("");
   };
 
-  const goToLogin = () => {
-    changeMode("login");
-  };
-
   // ========================================
-  // RESET FORM
+  // RESET FORMS
   // ========================================
 
   const resetForms = () => {
     setName("");
     setEmail("");
     setPhone("");
-    setIdentifier("");
-    setPassword("");
+    setReferralCode("");
     setPin("");
     setConfirmPin("");
     setOtp("");
@@ -152,6 +150,50 @@ export default function AuthModal({
   };
 
   // ========================================
+  // MOBILE CHECK
+  // ========================================
+
+  const handleMobileSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    setError("");
+    setMessage("");
+
+    const cleanPhone = phone.replace(/\D/g, "");
+
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      setError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const result = await checkMobile(cleanPhone);
+
+      if (result.exists) {
+        setPhone(cleanPhone);
+        setMode("login-pin");
+        setMessage("Welcome back! Please enter your PIN.");
+      } else {
+        setPhone(cleanPhone);
+        setMode("signup");
+        setMessage("Let's create your Mithora Kitchen account.");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to check mobile number. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
   // LOGIN
   // ========================================
 
@@ -163,13 +205,8 @@ export default function AuthModal({
     setError("");
     setMessage("");
 
-    if (!identifier.trim()) {
-      setError("Please enter your mobile number or email.");
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter your PIN or password.");
+    if (!/^\d{4}$/.test(pin)) {
+      setError("PIN must be exactly 4 digits.");
       return;
     }
 
@@ -177,8 +214,8 @@ export default function AuthModal({
       setLoading(true);
 
       const result = await login({
-        identifier,
-        password,
+        identifier: phone,
+        password: pin,
       });
 
       if (!result.token) {
@@ -188,24 +225,18 @@ export default function AuthModal({
         );
       }
 
-      // Save JWT + user
       saveAuth(result.token, result.user);
 
-      // Refresh local user state
+      if (result.user) {
+        onAuthenticated?.(result.user);
+      }
+
       const user = getCurrentUser();
 
       setCurrentUser(user);
 
-      // Notify global AuthProvider
-      if (user) {
-        onAuthenticated?.(user);
-      }
+      setMessage(result.message || "Login successful.");
 
-      setMessage(
-        result.message || "Login successful."
-      );
-
-      // Give UI a moment to show success
       setTimeout(() => {
         onClose();
       }, 500);
@@ -221,10 +252,10 @@ export default function AuthModal({
   };
 
   // ========================================
-  // SIGNUP
+  // REQUEST SIGNUP OTP
   // ========================================
 
-  const handleSignup = async (
+  const handleSignupRequestOtp = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -242,10 +273,103 @@ export default function AuthModal({
       return;
     }
 
-    if (!phone.trim()) {
-      setError("Please enter your mobile number.");
+    const cleanPhone = phone.replace(/\D/g, "");
+
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      setError("Please enter a valid 10-digit mobile number.");
       return;
     }
+
+    try {
+      setLoading(true);
+
+      const result = await requestSignupOTP({
+        name,
+        email,
+        phone: cleanPhone,
+        referralCode,
+      });
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      setPhone(cleanPhone);
+
+      setMessage(
+        result.message ||
+          "A 6-digit OTP has been sent to your email."
+      );
+
+      setMode("signup-verify");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to send OTP. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
+  // VERIFY SIGNUP OTP
+  // ========================================
+
+  const handleSignupVerifyOtp = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    setError("");
+    setMessage("");
+
+    if (!/^\d{6}$/.test(otp)) {
+      setError("Please enter the 6-digit OTP.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const result = await verifySignupOTP({
+        phone,
+        otp,
+      });
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      setMessage(
+        result.message ||
+          "Email verified successfully. Now create your PIN."
+      );
+
+      setMode("signup-pin");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to verify OTP. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================
+  // COMPLETE SIGNUP
+  // ========================================
+
+  const handleSignupComplete = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    setError("");
+    setMessage("");
 
     if (!/^\d{4}$/.test(pin)) {
       setError("PIN must be exactly 4 digits.");
@@ -260,11 +384,12 @@ export default function AuthModal({
     try {
       setLoading(true);
 
-      const result = await signup({
+      const result = await completeSignup({
         name,
         email,
         phone,
         pin,
+        referralCode,
       });
 
       if (!result.token) {
@@ -274,25 +399,21 @@ export default function AuthModal({
         );
       }
 
-      // Save JWT + user
       saveAuth(result.token, result.user);
 
-      // Refresh current user
+      if (result.user) {
+        onAuthenticated?.(result.user);
+      }
+
       const user = getCurrentUser();
 
       setCurrentUser(user);
 
-      // Notify global AuthProvider
-      if (user) {
-        onAuthenticated?.(user);
-      }
-
       setMessage(
         result.message ||
-          "Account created successfully."
+          "Account created successfully. Welcome to Mithora Kitchen!"
       );
 
-      // Close after successful signup
       setTimeout(() => {
         onClose();
       }, 700);
@@ -327,15 +448,7 @@ export default function AuthModal({
     try {
       setLoading(true);
 
-      const result =
-        await requestPinResetOTP(email);
-
-      /*
-       * The Worker intentionally returns a generic
-       * success message even if the email isn't registered.
-       *
-       * This prevents email/account enumeration.
-       */
+      const result = await requestPinResetOTP(email);
 
       if (result.error) {
         throw new Error(result.error);
@@ -359,7 +472,7 @@ export default function AuthModal({
   };
 
   // ========================================
-  // VERIFY OTP
+  // VERIFY RESET OTP
   // ========================================
 
   const handleVerifyOtp = (
@@ -375,10 +488,6 @@ export default function AuthModal({
       return;
     }
 
-    /*
-     * The Worker verifies the OTP together with
-     * the new PIN during the reset-pin request.
-     */
     setMode("reset-pin");
   };
 
@@ -422,17 +531,14 @@ export default function AuthModal({
           "PIN reset successful. You can now login."
       );
 
-      // Clear reset information
       setOtp("");
       setPin("");
       setConfirmPin("");
 
-      // Go back to login
       setTimeout(() => {
-        setMode("login");
-
+        setMode("mobile");
         setMessage(
-          "PIN reset successful. Please login with your new PIN."
+          "PIN reset successful. Please login with your mobile number."
         );
       }, 700);
     } catch (err) {
@@ -452,15 +558,25 @@ export default function AuthModal({
 
   const handleLogout = () => {
     logout();
+    onLoggedOut?.();
 
     setCurrentUser(null);
 
     resetForms();
 
-    setMode("login");
+    setMode("mobile");
+  };
 
-    // Notify global AuthProvider
-    onLoggedOut?.();
+  // ========================================
+  // BACK TO MOBILE
+  // ========================================
+
+  const goToMobile = () => {
+    setPin("");
+    setConfirmPin("");
+    setOtp("");
+
+    changeMode("mobile");
   };
 
   // ========================================
@@ -469,11 +585,20 @@ export default function AuthModal({
 
   const getTitle = () => {
     switch (mode) {
-      case "login":
+      case "mobile":
+        return "Welcome to Mithora";
+
+      case "login-pin":
         return "Welcome Back";
 
       case "signup":
         return "Create Your Account";
+
+      case "signup-verify":
+        return "Verify Your Email";
+
+      case "signup-pin":
+        return "Create Your PIN";
 
       case "forgot-pin":
         return "Reset Your PIN";
@@ -489,13 +614,26 @@ export default function AuthModal({
     }
   };
 
+  // ========================================
+  // SUBTITLES
+  // ========================================
+
   const getSubtitle = () => {
     switch (mode) {
-      case "login":
-        return "Login to continue with Mithora Kitchen";
+      case "mobile":
+        return "Enter your mobile number to continue";
+
+      case "login-pin":
+        return `Enter your 4-digit PIN for ${phone}`;
 
       case "signup":
-        return "Create your Mithora Kitchen account";
+        return "Tell us a little about yourself";
+
+      case "signup-verify":
+        return `Enter the OTP sent to ${email}`;
+
+      case "signup-pin":
+        return "Set a secure 4-digit PIN for your account";
 
       case "forgot-pin":
         return "We'll send a verification code to your email";
@@ -533,7 +671,9 @@ export default function AuthModal({
     >
       <div className="auth-modal">
 
-        {/* CLOSE */}
+        {/* ==================================
+            CLOSE
+        ================================== */}
 
         <button
           type="button"
@@ -545,7 +685,9 @@ export default function AuthModal({
           ×
         </button>
 
-        {/* BRAND */}
+        {/* ==================================
+            BRAND
+        ================================== */}
 
         <div className="auth-modal-brand">
 
@@ -565,7 +707,9 @@ export default function AuthModal({
 
         </div>
 
-        {/* LOGGED-IN USER */}
+        {/* ==================================
+            LOGGED-IN USER
+        ================================== */}
 
         {currentUser ? (
           <div className="auth-logged-in">
@@ -607,7 +751,10 @@ export default function AuthModal({
           </div>
         ) : (
           <>
-            {/* HEADING */}
+
+            {/* ==============================
+                HEADING
+            ============================== */}
 
             <div className="auth-modal-heading">
 
@@ -621,7 +768,9 @@ export default function AuthModal({
 
             </div>
 
-            {/* ERROR */}
+            {/* ==============================
+                ERROR
+            ============================== */}
 
             {error && (
               <div
@@ -632,7 +781,9 @@ export default function AuthModal({
               </div>
             )}
 
-            {/* SUCCESS */}
+            {/* ==============================
+                MESSAGE
+            ============================== */}
 
             {message && (
               <div
@@ -644,10 +795,77 @@ export default function AuthModal({
             )}
 
             {/* =================================
-                LOGIN
+                MOBILE
             ================================= */}
 
-            {mode === "login" && (
+            {mode === "mobile" && (
+              <form
+                onSubmit={handleMobileSubmit}
+                className="auth-form"
+              >
+
+                <div className="auth-field">
+
+                  <label htmlFor="auth-mobile">
+                    Mobile Number
+                  </label>
+
+                  <input
+                    id="auth-mobile"
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
+                    placeholder="Enter 10-digit mobile number"
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(
+                        e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10)
+                      )
+                    }
+                    autoComplete="tel"
+                    disabled={loading}
+                    required
+                  />
+
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-primary-button"
+                  disabled={loading}
+                >
+                  {loading
+                    ? "Checking..."
+                    : "Continue"}
+                </button>
+
+                <div className="auth-bottom-text">
+
+                  Already have an account?{" "}
+
+                  <button
+                    type="button"
+                    className="auth-link-button"
+                    onClick={() =>
+                      changeMode("forgot-pin")
+                    }
+                    disabled={loading}
+                  >
+                    Forgot PIN?
+                  </button>
+
+                </div>
+
+              </form>
+            )}
+
+            {/* =================================
+                LOGIN PIN
+            ================================= */}
+
+            {mode === "login-pin" && (
               <form
                 onSubmit={handleLogin}
                 className="auth-form"
@@ -655,38 +873,38 @@ export default function AuthModal({
 
                 <div className="auth-field">
 
-                  <label htmlFor="login-identifier">
-                    Mobile or Email
+                  <label htmlFor="login-mobile">
+                    Mobile Number
                   </label>
 
                   <input
-                    id="login-identifier"
-                    type="text"
-                    placeholder="Enter mobile or email"
-                    value={identifier}
-                    onChange={(e) =>
-                      setIdentifier(e.target.value)
-                    }
-                    autoComplete="username"
-                    disabled={loading}
-                    required
+                    id="login-mobile"
+                    type="tel"
+                    value={phone}
+                    disabled
                   />
 
                 </div>
 
                 <div className="auth-field">
 
-                  <label htmlFor="login-password">
-                    PIN / Password
+                  <label htmlFor="login-pin">
+                    4-Digit PIN
                   </label>
 
                   <input
-                    id="login-password"
+                    id="login-pin"
                     type="password"
-                    placeholder="Enter your PIN or password"
-                    value={password}
+                    inputMode="numeric"
+                    maxLength={4}
+                    placeholder="••••"
+                    value={pin}
                     onChange={(e) =>
-                      setPassword(e.target.value)
+                      setPin(
+                        e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 4)
+                      )
                     }
                     autoComplete="current-password"
                     disabled={loading}
@@ -718,33 +936,27 @@ export default function AuthModal({
                     Forgot PIN?
                   </button>
 
-                  <span className="auth-link-divider">
-                    |
-                  </span>
-
-                  <button
-                    type="button"
-                    className="auth-link-button"
-                    onClick={() =>
-                      changeMode("signup")
-                    }
-                    disabled={loading}
-                  >
-                    Create Account
-                  </button>
-
                 </div>
+
+                <button
+                  type="button"
+                  className="auth-secondary-link"
+                  onClick={goToMobile}
+                  disabled={loading}
+                >
+                  ← Change Mobile Number
+                </button>
 
               </form>
             )}
 
             {/* =================================
-                SIGNUP
+                SIGNUP DETAILS
             ================================= */}
 
             {mode === "signup" && (
               <form
-                onSubmit={handleSignup}
+                onSubmit={handleSignupRequestOtp}
                 className="auth-form"
               >
 
@@ -799,20 +1011,156 @@ export default function AuthModal({
                   <input
                     id="signup-phone"
                     type="tel"
-                    inputMode="numeric"
-                    placeholder="Enter mobile number"
                     value={phone}
+                    disabled
+                  />
+
+                </div>
+
+                <div className="auth-field">
+
+                  <label htmlFor="signup-referral">
+                    Referral Code
+                    <span className="auth-optional">
+                      {" "}Optional
+                    </span>
+                  </label>
+
+                  <input
+                    id="signup-referral"
+                    type="text"
+                    placeholder="Enter referral code"
+                    value={referralCode}
                     onChange={(e) =>
-                      setPhone(
+                      setReferralCode(
                         e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10)
+                          .trim()
+                          .toUpperCase()
                       )
                     }
-                    autoComplete="tel"
+                    autoComplete="off"
+                    disabled={loading}
+                  />
+
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-primary-button"
+                  disabled={loading}
+                >
+                  {loading
+                    ? "Sending OTP..."
+                    : "Continue"}
+                </button>
+
+                <div className="auth-bottom-text">
+
+                  Already have an account?{" "}
+
+                  <button
+                    type="button"
+                    className="auth-link-button"
+                    onClick={goToMobile}
+                    disabled={loading}
+                  >
+                    Login
+                  </button>
+
+                </div>
+
+              </form>
+            )}
+
+            {/* =================================
+                SIGNUP VERIFY OTP
+            ================================= */}
+
+            {mode === "signup-verify" && (
+              <form
+                onSubmit={handleSignupVerifyOtp}
+                className="auth-form"
+              >
+
+                <div className="auth-info-box">
+
+                  We've sent a 6-digit OTP to:
+
+                  <strong>
+                    {email}
+                  </strong>
+
+                </div>
+
+                <div className="auth-field">
+
+                  <label htmlFor="signup-verify-otp">
+                    6-Digit OTP
+                  </label>
+
+                  <input
+                    id="signup-verify-otp"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={(e) =>
+                      setOtp(
+                        e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 6)
+                      )
+                    }
+                    autoComplete="one-time-code"
                     disabled={loading}
                     required
                   />
+
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-primary-button"
+                  disabled={loading}
+                >
+                  {loading
+                    ? "Verifying..."
+                    : "Verify OTP"}
+                </button>
+
+                <button
+                  type="button"
+                  className="auth-secondary-link"
+                  onClick={() =>
+                    changeMode("signup")
+                  }
+                  disabled={loading}
+                >
+                  ← Back
+                </button>
+
+              </form>
+            )}
+
+            {/* =================================
+                SIGNUP PIN
+            ================================= */}
+
+            {mode === "signup-pin" && (
+              <form
+                onSubmit={handleSignupComplete}
+                className="auth-form"
+              >
+
+                <div className="auth-info-box">
+
+                  Email verified successfully.
+
+                  <br />
+
+                  Create your 4-digit PIN to finish
+                  setting up your account.
 
                 </div>
 
@@ -880,21 +1228,6 @@ export default function AuthModal({
                     : "Create Account"}
                 </button>
 
-                <div className="auth-bottom-text">
-
-                  Already have an account?{" "}
-
-                  <button
-                    type="button"
-                    className="auth-link-button"
-                    onClick={goToLogin}
-                    disabled={loading}
-                  >
-                    Login
-                  </button>
-
-                </div>
-
               </form>
             )}
 
@@ -909,9 +1242,10 @@ export default function AuthModal({
               >
 
                 <div className="auth-info-box">
-                  Enter the email address you used
-                  when creating your Mithora Kitchen
-                  account.
+
+                  Enter the email address registered
+                  with your Mithora Kitchen account.
+
                 </div>
 
                 <div className="auth-field">
@@ -948,7 +1282,7 @@ export default function AuthModal({
                 <button
                   type="button"
                   className="auth-secondary-link"
-                  onClick={goToLogin}
+                  onClick={goToMobile}
                   disabled={loading}
                 >
                   ← Back to Login
@@ -958,7 +1292,7 @@ export default function AuthModal({
             )}
 
             {/* =================================
-                VERIFY OTP
+                VERIFY RESET OTP
             ================================= */}
 
             {mode === "verify-otp" && (
@@ -1011,23 +1345,6 @@ export default function AuthModal({
                 >
                   Verify OTP
                 </button>
-
-                <div className="auth-bottom-text">
-
-                  Didn't receive the OTP?{" "}
-
-                  <button
-                    type="button"
-                    className="auth-link-button"
-                    onClick={() =>
-                      changeMode("forgot-pin")
-                    }
-                    disabled={loading}
-                  >
-                    Send Again
-                  </button>
-
-                </div>
 
               </form>
             )}
@@ -1109,7 +1426,7 @@ export default function AuthModal({
                 <button
                   type="button"
                   className="auth-secondary-link"
-                  onClick={goToLogin}
+                  onClick={goToMobile}
                   disabled={loading}
                 >
                   ← Back to Login
@@ -1121,12 +1438,16 @@ export default function AuthModal({
           </>
         )}
 
-        {/* FOOTER */}
+        {/* ==================================
+            FOOTER
+        ================================== */}
 
         <div className="auth-modal-footer">
+
           <span>
             Homemade food, made with care.
           </span>
+
         </div>
 
       </div>

@@ -16,9 +16,12 @@ import {
   type User,
 } from "@/lib/auth";
 
-type AuthMode =
-  | "login"
+export type AuthMode =
+  | "mobile"
+  | "login-pin"
   | "signup"
+  | "signup-verify"
+  | "signup-pin"
   | "forgot-pin"
   | "verify-otp"
   | "reset-pin";
@@ -26,33 +29,33 @@ type AuthMode =
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
-
   openAuth: (mode?: AuthMode) => void;
   closeAuth: () => void;
-
   logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+const AuthContext = createContext<
+  AuthContextType | undefined
+>(undefined);
 
 export function AuthProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(() => {
-    return getCurrentUser();
-  });
+  const [user, setUser] =
+    useState<User | null>(() =>
+      getCurrentUser()
+    );
 
-  const [authOpen, setAuthOpen] = useState(false);
+  const [authOpen, setAuthOpen] =
+    useState(false);
 
   const [authMode, setAuthMode] =
-    useState<AuthMode>("login");
+    useState<AuthMode>("mobile");
 
   const openAuth = useCallback(
-    (mode: AuthMode = "login") => {
+    (mode: AuthMode = "mobile") => {
       setAuthMode(mode);
       setAuthOpen(true);
     },
@@ -84,7 +87,9 @@ export function AuthProvider({
         open={authOpen}
         onClose={closeAuth}
         initialMode={authMode}
-        onAuthenticated={(authenticatedUser) => {
+        onAuthenticated={(
+          authenticatedUser: User
+        ) => {
           setUser(authenticatedUser);
         }}
         onLoggedOut={() => {
@@ -96,11 +101,12 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
     throw new Error(
-      "useAuth must be used inside an AuthProvider"
+      "useAuth must be used inside AuthProvider"
     );
   }
 

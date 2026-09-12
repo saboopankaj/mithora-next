@@ -177,7 +177,7 @@ export default function Header() {
                   className="mobile-login-link"
                   onClick={() => {
                     closeMenu();
-                    openAuth("login");
+                    openAuth("mobile");
                   }}
                 >
                   Login / Signup
@@ -256,7 +256,7 @@ export default function Header() {
                 if (isAuthenticated) {
                   setProfileOpen((open) => !open);
                 } else {
-                  openAuth("login");
+                  openAuth("mobile");
                 }
               }}
             >
