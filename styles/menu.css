@@ -3562,64 +3562,533 @@
 }
 
 /* =========================================================
-   FINAL FIX — HERO VISIBILITY + MOBILE/DESKTOP STICKY BAR
-   Everything else remains unchanged.
+   FINAL MITHORA MENU POLISH
+   Header-safe / smooth sticky / Probow-inspired hero /
+   contained mobile product modal
 ========================================================= */
 
-/* The site header is fixed, so the menu page must begin below it. */
+/* The global Mithora header is fixed. Keep menu content below it. */
 .menu-page-shell {
   padding-top: 78px !important;
 }
 
-/* Keep search + category controls directly below the site header. */
+/* ---------------------------------------------------------
+   HERO — centered, clean, Probow-inspired
+--------------------------------------------------------- */
+.menu-page-shell .menu-hero {
+  padding: 48px 0 42px !important;
+  text-align: center;
+}
+
+.menu-page-shell .menu-hero .menu-shell-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-page-shell .menu-hero-eyebrow {
+  display: block;
+  margin: 0 0 13px;
+  color: var(--menu-green);
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.menu-page-shell .menu-hero h1 {
+  max-width: 900px !important;
+  margin: 0 !important;
+  font-size: clamp(46px, 5vw, 68px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.menu-page-shell .menu-hero p {
+  max-width: 760px !important;
+  margin: 17px auto 0 !important;
+  font-size: 17px !important;
+  line-height: 1.55 !important;
+}
+
+.menu-hero-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.menu-hero-badges span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(234, 222, 213, 0.95);
+  border-radius: 999px;
+  background: #fff;
+  color: #3b2d26;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(45, 27, 20, 0.035);
+}
+
+/* ---------------------------------------------------------
+   SEARCH + CATEGORIES — one stable sticky block
+   No scroll-state padding changes = no jerky jump.
+--------------------------------------------------------- */
 .menu-page-shell .menu-sticky-controls {
   position: sticky !important;
   top: 78px !important;
-  z-index: 999 !important;
+  z-index: 900 !important;
+  padding: 12px 0 13px !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
-/* Once the user scrolls, lock the controls in place for reliable
-   behaviour on mobile and desktop browsers. */
-.menu-page-shell-sticky .menu-sticky-controls {
-  position: fixed !important;
-  top: 78px !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  z-index: 1999 !important;
+.menu-page-shell .menu-sticky-controls-scrolled {
+  padding: 12px 0 13px !important;
+  box-shadow: 0 10px 30px rgba(45, 27, 20, 0.07) !important;
 }
 
-/* Reserve the space occupied by the fixed controls so content does
-   not jump upward when the fixed state activates. */
-.menu-page-shell-sticky .menu-content {
-  padding-top: 173px !important;
+.menu-page-shell .menu-category-scroll {
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
 @media (max-width: 768px) {
-  /* Mobile site header is approximately 50px high. */
   .menu-page-shell {
     padding-top: 50px !important;
+  }
+
+  .menu-page-shell .menu-hero {
+    padding: 34px 0 30px !important;
+  }
+
+  .menu-page-shell .menu-hero-eyebrow {
+    margin-bottom: 9px;
+    font-size: 13px;
+  }
+
+  .menu-page-shell .menu-hero h1 {
+    font-size: 34px !important;
+    line-height: 1.03 !important;
+  }
+
+  .menu-page-shell .menu-hero p {
+    max-width: 355px !important;
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  .menu-hero-badges {
+    gap: 7px;
+    margin-top: 16px;
+  }
+
+  .menu-hero-badges span {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 9px;
+  }
+
+  /* Header ends at ~50px on mobile. Keep the menu block exactly there. */
+  .menu-page-shell .menu-sticky-controls {
+    top: 50px !important;
+    z-index: 900 !important;
+    padding: 8px 0 9px !important;
+    transition: none !important;
+  }
+
+  .menu-page-shell .menu-sticky-controls-scrolled {
+    padding: 8px 0 9px !important;
+  }
+
+  .menu-page-shell .menu-search-trigger {
+    height: 48px !important;
+    border-radius: 14px !important;
+  }
+
+  .menu-page-shell .menu-category-scroll {
+    margin-top: 7px !important;
+    padding-bottom: 2px !important;
+  }
+
+  /* Keep the existing desktop-style vertical cards on mobile. */
+  .menu-page-shell .menu-product-card {
+    border-radius: 18px !important;
+  }
+
+  .menu-page-shell .menu-product-image-button {
+    height: 250px !important;
+  }
+
+  /* -------------------------------------------------------
+     MOBILE PRODUCT MODAL
+     Bottom sheet, contained below header, no page scrolling.
+  ------------------------------------------------------- */
+  body:has(.menu-page-shell .menu-product-modal) {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  .menu-page-shell .menu-modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 4000 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none;
+  }
+
+  .menu-page-shell .menu-product-modal {
+    position: relative !important;
+    z-index: 4001 !important;
+    width: 100% !important;
+    max-height: 78vh !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    border-radius: 24px 24px 0 0 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menu-page-shell .menu-modal-image {
+    height: 190px !important;
+  }
+
+  .menu-page-shell .menu-modal-content {
+    padding: 17px 15px 22px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .menu-page-shell .menu-hero {
+    padding-top: 29px !important;
+    padding-bottom: 25px !important;
+  }
+
+  .menu-page-shell .menu-hero h1 {
+    font-size: 30px !important;
+  }
+
+  .menu-page-shell .menu-hero p {
+    font-size: 12px !important;
   }
 
   .menu-page-shell .menu-sticky-controls {
     top: 50px !important;
   }
 
-  .menu-page-shell-sticky .menu-sticky-controls {
-    top: 50px !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
+  .menu-page-shell .menu-product-modal {
+    max-height: 76vh !important;
+  }
+}
+
+
+/* =========================================================
+   FINAL MENU LAYOUT — HEADER / STICKY / PROBOW HERO / CARDS
+   This block intentionally comes last so it wins over older rules.
+========================================================= */
+
+/* The global Mithora header is fixed and is about 78px on desktop. */
+.menu-page-shell {
+  padding-top: 78px !important;
+}
+
+/* Search + categories are the first menu content below the header. */
+.menu-page-shell .menu-sticky-controls {
+  position: sticky !important;
+  top: 78px !important;
+  z-index: 900 !important;
+  margin: 0 !important;
+  padding: 12px 0 13px !important;
+  background: rgba(255, 250, 245, 0.98) !important;
+  border-bottom: 1px solid rgba(226, 211, 201, 0.9) !important;
+  box-shadow: 0 5px 22px rgba(45, 27, 20, 0.045) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  transform: translateZ(0) !important;
+  transition: none !important;
+}
+
+.menu-page-shell .menu-sticky-controls-scrolled {
+  padding: 12px 0 13px !important;
+  box-shadow: 0 8px 26px rgba(45, 27, 20, 0.075) !important;
+}
+
+/* Prevent horizontal category scrolling from affecting page scrolling. */
+.menu-page-shell .menu-category-scroll {
+  overscroll-behavior-x: contain !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.menu-page-shell .menu-category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------------------
+   PROBOW-INSPIRED INTRO
+--------------------------------------------------------- */
+.menu-page-shell .menu-hero {
+  padding: 48px 0 42px !important;
+  text-align: center !important;
+  background: #fffaf0 !important;
+  border-bottom: 0 !important;
+}
+
+.menu-page-shell .menu-hero .menu-shell-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.menu-page-shell .menu-hero-eyebrow {
+  display: block !important;
+  margin: 0 0 12px !important;
+  color: #1f5b32 !important;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  letter-spacing: 0.01em !important;
+}
+
+.menu-page-shell .menu-hero h1 {
+  max-width: 1000px !important;
+  margin: 0 !important;
+  color: #13251a !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(48px, 5vw, 72px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.045em !important;
+  font-weight: 700 !important;
+}
+
+.menu-page-shell .menu-hero h1 em {
+  color: #285d32 !important;
+  font-style: italic !important;
+  font-weight: 600 !important;
+}
+
+.menu-page-shell .menu-hero p {
+  max-width: 820px !important;
+  margin: 18px auto 0 !important;
+  color: #5d625d !important;
+  font-size: 17px !important;
+  line-height: 1.65 !important;
+}
+
+.menu-page-shell .menu-hero-badges {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-top: 22px !important;
+}
+
+.menu-page-shell .menu-hero-badges span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  border: 1px solid #e5e0d4 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: #263028 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 3px 12px rgba(45, 27, 20, 0.035) !important;
+}
+
+/* ---------------------------------------------------------
+   4–5 CARDS ON DESKTOP
+--------------------------------------------------------- */
+.menu-page-shell .menu-product-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+  gap: 20px !important;
+}
+
+.menu-page-shell .menu-product-image-button {
+  height: 265px !important;
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+@media (max-width: 768px) {
+  .menu-page-shell {
+    padding-top: 50px !important;
   }
 
-  .menu-page-shell-sticky .menu-content {
-    padding-top: 114px !important;
+  .menu-page-shell .menu-sticky-controls {
+    top: 50px !important;
+    z-index: 900 !important;
+    padding: 8px 0 9px !important;
+    transition: none !important;
+  }
+
+  .menu-page-shell .menu-sticky-controls-scrolled {
+    padding: 8px 0 9px !important;
+  }
+
+  .menu-page-shell .menu-search-trigger {
+    height: 48px !important;
+    border-radius: 14px !important;
+  }
+
+  .menu-page-shell .menu-category-scroll {
+    margin-top: 7px !important;
+    padding-bottom: 2px !important;
+    gap: 7px !important;
+  }
+
+  .menu-page-shell .menu-category-pill {
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 11px !important;
+  }
+
+  .menu-page-shell .menu-hero {
+    padding: 31px 0 28px !important;
+  }
+
+  .menu-page-shell .menu-hero-eyebrow {
+    margin-bottom: 8px !important;
+    font-size: 13px !important;
+  }
+
+  .menu-page-shell .menu-hero h1 {
+    max-width: 100% !important;
+    font-size: 34px !important;
+    line-height: 1.04 !important;
+  }
+
+  .menu-page-shell .menu-hero p {
+    max-width: 350px !important;
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  .menu-page-shell .menu-hero-badges {
+    gap: 6px !important;
+    margin-top: 15px !important;
+  }
+
+  .menu-page-shell .menu-hero-badges span {
+    min-height: 31px !important;
+    padding: 0 9px !important;
+    font-size: 9px !important;
+  }
+
+  /* One full-width card per row, with a shorter image. */
+  .menu-page-shell .menu-product-grid {
+    grid-template-columns: 1fr !important;
+    gap: 13px !important;
+  }
+
+  .menu-page-shell .menu-product-card {
+    border-radius: 17px !important;
+  }
+
+  .menu-page-shell .menu-product-image-button {
+    height: 180px !important;
+  }
+
+  .menu-page-shell .menu-product-body {
+    padding: 13px 15px 15px !important;
+  }
+
+  .menu-page-shell .menu-product-title-row h3 {
+    font-size: 17px !important;
+  }
+
+  .menu-page-shell .menu-product-description {
+    margin-top: 6px !important;
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+  }
+
+  .menu-page-shell .menu-product-bottom {
+    margin-top: 12px !important;
+  }
+
+  .menu-page-shell .menu-price-block strong {
+    font-size: 20px !important;
+  }
+
+  .menu-page-shell .menu-btn-primary,
+  .menu-page-shell .menu-btn-notify {
+    min-width: 100px !important;
+    min-height: 40px !important;
+  }
+
+  /* Contained mobile bottom sheet; background cannot scroll. */
+  body:has(.menu-page-shell .menu-product-modal) {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  .menu-page-shell .menu-modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+    z-index: 4000 !important;
+  }
+
+  .menu-page-shell .menu-product-modal {
+    width: 100% !important;
+    max-height: 76vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    border-radius: 24px 24px 0 0 !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .menu-page-shell .menu-modal-image {
+    height: 175px !important;
+  }
+
+  .menu-page-shell .menu-modal-content {
+    padding: 15px 15px 20px !important;
+  }
+}
+
+@media (min-width: 1500px) {
+  .menu-page-shell .menu-product-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   }
 }
 
 @media (max-width: 390px) {
-  .menu-page-shell .menu-sticky-controls,
-  .menu-page-shell-sticky .menu-sticky-controls {
-    top: 50px !important;
+  .menu-page-shell .menu-hero {
+    padding: 27px 0 24px !important;
+  }
+
+  .menu-page-shell .menu-hero h1 {
+    font-size: 30px !important;
+  }
+
+  .menu-page-shell .menu-product-image-button {
+    height: 165px !important;
   }
 }

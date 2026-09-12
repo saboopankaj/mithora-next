@@ -485,6 +485,7 @@ export default function MenuShell() {
   ) {
     setModalProduct(product);
     document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
   }
 
   function closeProduct() {
@@ -492,6 +493,7 @@ export default function MenuShell() {
 
     if (!searchOpen) {
       document.body.style.overflow = "";
+      document.body.style.overscrollBehavior = "";
     }
   }
 
@@ -553,37 +555,8 @@ export default function MenuShell() {
     <section className="menu-page-shell">
 
       {/* =================================================
-          SHORT HERO
-      ================================================= */}
-
-      <section className="menu-hero">
-        <div className="menu-shell-container">
-          <span className="menu-hero-eyebrow">
-            Fresh from the MITHORA kitchen
-          </span>
-
-          <h1>
-            Homemade food,
-            <br />
-            made with care.
-          </h1>
-
-          <p>
-            Freshly prepared meals, snacks, tiffin and festive favourites.
-          </p>
-
-          <div className="menu-hero-badges">
-            <span>✦ 100% pure veg</span>
-            <span>⊘ No preservatives</span>
-            <span>♨ Made fresh daily</span>
-          </div>
-        </div>
-      </section>
-
-      {/* =================================================
-          NORMAL SEARCH + CATEGORY BAR
-
-          Search is now BELOW the fixed header.
+          SEARCH + CATEGORY BAR
+          Directly below the fixed site header.
       ================================================= */}
 
       <section className="menu-sticky-controls">
@@ -599,11 +572,7 @@ export default function MenuShell() {
                 viewBox="0 0 24 24"
                 aria-hidden="true"
               >
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="7"
-                />
+                <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-4-4" />
               </svg>
             </span>
@@ -615,45 +584,58 @@ export default function MenuShell() {
           </button>
 
           <div className="menu-category-scroll">
-
             <button
               type="button"
               className={`menu-category-pill ${
-                selectedCategory === "all"
-                  ? "active"
-                  : ""
+                selectedCategory === "all" ? "active" : ""
               }`}
-              onClick={() =>
-                selectCategory("all")
-              }
+              onClick={() => selectCategory("all")}
             >
               All Items
             </button>
 
-            {categories.map(
-              (category) => (
-                <button
-                  type="button"
-                  key={category.id}
-                  className={`menu-category-pill ${
-                    String(
-                      selectedCategory
-                    ) ===
-                    String(category.id)
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    selectCategory(
-                      String(category.id)
-                    )
-                  }
-                >
-                  {category.name}
-                </button>
-              )
-            )}
+            {categories.map((category) => (
+              <button
+                type="button"
+                key={category.id}
+                className={`menu-category-pill ${
+                  String(selectedCategory) === String(category.id)
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => selectCategory(String(category.id))}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* =================================================
+          HERO
+          Probow-inspired centered introduction.
+      ================================================= */}
+
+      <section className="menu-hero">
+        <div className="menu-shell-container">
+          <span className="menu-hero-eyebrow">
+            Fresh from the MITHORA kitchen
+          </span>
+
+          <h1>
+            The <em>MITHORA</em> Menu
+          </h1>
+
+          <p>
+            Homemade vegetarian food, made fresh to order. Explore our meals,
+            snacks, tiffin and festive favourites.
+          </p>
+
+          <div className="menu-hero-badges">
+            <span>✦ 100% pure veg</span>
+            <span>⊘ No preservatives</span>
+            <span>♨ Made fresh daily</span>
           </div>
         </div>
       </section>
