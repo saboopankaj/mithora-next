@@ -1292,3 +1292,9 @@
         line-height: 1.65;
     }
 }
+.mobile-user-greeting {
+  padding: 12px 16px 8px;
+  color: #2D1B14;
+  font-size: 14px;
+  font-weight: 700;
+}

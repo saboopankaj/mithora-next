@@ -6,7 +6,12 @@ import { useAuth } from "@/components/auth/AuthContext";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { openAuth } = useAuth();
+  const {
+    user,
+    isAuthenticated,
+    openAuth,
+    logout,
+  } = useAuth();
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -114,19 +119,40 @@ export default function Header() {
             </li>
 
 
-            {/* MOBILE LOGIN */}
-            <li className="mobile-login-item">
-              <button
-                type="button"
-                className="mobile-login-link"
-                onClick={() => {
-                  closeMenu();
-                  openAuth("login");
-                }}
-              >
-                Login / Signup
-              </button>
-            </li>
+            {/* MOBILE AUTH */}
+            {isAuthenticated ? (
+              <>
+                <li className="mobile-user-greeting">
+                  Hello, {user?.name || "there"} 👋
+                </li>
+
+                <li className="mobile-login-item">
+                  <button
+                    type="button"
+                    className="mobile-login-link"
+                    onClick={() => {
+                      logout();
+                      closeMenu();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="mobile-login-item">
+                <button
+                  type="button"
+                  className="mobile-login-link"
+                  onClick={() => {
+                    closeMenu();
+                    openAuth("login");
+                  }}
+                >
+                  Login / Signup
+                </button>
+              </li>
+            )}
 
           </ul>
         </nav>
@@ -169,12 +195,22 @@ export default function Header() {
           </a>
 
 
-          {/* LOGIN */}
+          {/* LOGIN / USER */}
           <button
             type="button"
             className="login-btn"
-            aria-label="Login / Signup"
-            onClick={() => openAuth("login")}
+            aria-label={
+              isAuthenticated
+                ? `Logout ${user?.name || "user"}`
+                : "Login / Signup"
+            }
+            onClick={() => {
+              if (isAuthenticated) {
+                logout();
+              } else {
+                openAuth("login");
+              }
+            }}
           >
             <svg
               viewBox="0 0 24 24"
