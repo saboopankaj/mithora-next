@@ -56,7 +56,12 @@ type TimelineItem = {
 };
 
 export default function AccountPage() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const {
+  user,
+  isAuthenticated,
+  authReady,
+  logout,
+} = useAuth();
 
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("orders");
@@ -102,17 +107,17 @@ export default function AccountPage() {
      AUTH
      ========================================================= */
 
-  useEffect(() => {
-    if (!mounted) return;
+useEffect(() => {
+  if (!mounted || !authReady) return;
 
-    if (!isAuthenticated || !token) {
-      window.location.href = "/";
-      return;
-    }
+  if (!isAuthenticated || !token) {
+    window.location.href = "/";
+    return;
+  }
 
-    loadOrders();
-    loadProfile();
-  }, [mounted, isAuthenticated]);
+  loadOrders();
+  loadProfile();
+}, [mounted, authReady, isAuthenticated]);
 
   /* =========================================================
      PROFILE
@@ -500,9 +505,13 @@ export default function AccountPage() {
      PREVENT HYDRATION MISMATCH
      ========================================================= */
 
-  if (!mounted || !isAuthenticated) {
-    return null;
-  }
+if (!mounted || !authReady) {
+  return null;
+}
+
+if (!isAuthenticated) {
+  return null;
+}
 
   /* =========================================================
      UI
