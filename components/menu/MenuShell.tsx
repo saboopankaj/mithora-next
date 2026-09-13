@@ -11,7 +11,8 @@ import ProductModal from "./ProductModal";
 import MenuLoader from "./MenuLoader";
 import MenuEmptyState from "./MenuEmptyState";
 import type { Category, CategoryAvailability, Product, Cart } from "./types";
-import { WHATSAPP_NUMBER, readCart, writeCart, isFeatured } from "./menu-utils";
+import { WHATSAPP_NUMBER, isFeatured } from "./menu-utils";
+import { useCart } from "@/components/cart/CartProvider";
 
 export default function MenuShell() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -24,7 +25,6 @@ export default function MenuShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
   const [featuredIndex, setFeaturedIndex] = useState(0);
-  const [cartVersion, setCartVersion] = useState(0);
 
   useEffect(() => {
     const updateMenuOffsets = () => {
@@ -86,11 +86,7 @@ export default function MenuShell() {
     return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => {
-    const refreshCart = () => setCartVersion((value) => value + 1);
-    window.addEventListener("cart:updated", refreshCart);
-    return () => window.removeEventListener("cart:updated", refreshCart);
-  }, []);
+
 
   const featuredProducts = useMemo(() => products.filter((product) => isFeatured(product) && Array.isArray(product.variants) && product.variants.length > 0), [products]);
   const searchText = searchQuery.trim().toLowerCase();
@@ -108,7 +104,11 @@ export default function MenuShell() {
     return result;
   }, [products, selectedCategory, searchText, searchOpen]);
 
-  const cart = useMemo<Cart>(() => { void cartVersion; return readCart(); }, [cartVersion]);
+const {
+  cart,
+  addItem,
+  updateQty,
+} = useCart();
 
   function openSearch() { setSearchOpen(true); setSelectedCategory("all"); }
   function closeSearch() { setSearchOpen(false); setSearchQuery(""); }
@@ -130,17 +130,30 @@ export default function MenuShell() {
     }, 100);
   }
 
-  function handleCart(variantId: number | string, delta: number) {
-    const currentCart = readCart();
-    const existing = currentCart.items.find((item) => String(item.variant_id) === String(variantId));
-    if (!existing && delta > 0) currentCart.items.push({ variant_id: variantId, qty: 1 });
-    else if (existing) {
-      const nextQty = existing.qty + delta;
-      if (nextQty <= 0) currentCart.items = currentCart.items.filter((item) => String(item.variant_id) !== String(variantId));
-      else existing.qty = nextQty;
-    }
-    writeCart(currentCart); setCartVersion((value) => value + 1);
+function handleCart(
+  variantId: number | string,
+  delta: number,
+) {
+  const currentItem = cart.items.find(
+    (item) =>
+      String(item.variant_id) === String(variantId),
+  );
+
+  const currentQty = currentItem?.qty || 0;
+  const nextQty = currentQty + delta;
+
+  if (nextQty <= 0) {
+    updateQty(variantId, 0);
+    return;
   }
+
+  if (delta > 0) {
+    addItem(variantId, delta);
+    return;
+  }
+
+  updateQty(variantId, nextQty);
+}
 
   function notifyWhatsApp(product: Product) {
     const message = `I want to be notified when ${product.name} is available.`;

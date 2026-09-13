@@ -7,7 +7,8 @@ import "@/styles/menu.css";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { AuthProvider } from "@/components/auth/AuthContext";
-
+import CartProvider from "@/components/cart/CartProvider";
+import CartStickyBar from "@/components/cart/CartStickyBar";
 export const metadata = {
   title: "Mithora Kitchen | Homemade Food in Jaipur",
   description:
@@ -22,13 +23,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          <Header />
+<AuthProvider>
+  <CartProvider>
+    <Header />
 
-          {children}
+    {children}
 
-          <Footer />
-        </AuthProvider>
+    <CartStickyBar />
+
+    <Footer />
+  </CartProvider>
+</AuthProvider>
       </body>
     </html>
   );
