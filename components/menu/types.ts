@@ -1,12 +1,15 @@
 export type Category = {
   id: number | string;
   name: string;
+  image_path?: string | null;
+  icon_svg?: string | null;
 
-  image_path?: string;
-
-  icon_svg?: string;
-
-  [key: string]: unknown;
+  slot_wise?: number;
+  prep_time_minutes?: number;
+  delivery_time_minutes?: number;
+  shipping_type?: string;
+  next_day_delivery?: number;
+  subscription_allowed?: number;
 };
 
 export type Variant = {
@@ -18,23 +21,39 @@ export type Variant = {
   [key: string]: unknown;
 };
 
+export type ProductBadge = {
+  id: number | string;
+  name: string;
+  slug: string;
+  display_text: string;
+  icon?: string | null;
+  priority?: number;
+};
+
+export type ProductTag = {
+  id: number | string;
+  name: string;
+  slug: string;
+};
+
 export type Product = {
   id: number | string;
-  category_id: number | string;
   name: string;
-  description?: string;
-  image_path?: string;
+  description?: string | null;
+  image_path?: string | null;
+  category_id: number | string;
 
-  avg_rating?: number | string;
-  review_count?: number | string;
-  is_featured?: number | boolean | string;
+  category_name?: string | null;
 
-  tags?: string[];
-  badge?: string;
+  avg_rating?: number | null;
+  review_count?: number | null;
 
-  variants?: Variant[];
+  is_featured?: number | boolean;
 
-  [key: string]: unknown;
+ variants?: Variant[];
+
+  badges?: ProductBadge[];
+  tags?: ProductTag[];
 };
 
 export type CategoryAvailability = {

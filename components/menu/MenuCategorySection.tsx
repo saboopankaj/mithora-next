@@ -28,7 +28,17 @@ export default function MenuCategorySection({
     >
       <div className="menu-category-heading">
         <div className="menu-category-heading-main">
-          <div className="menu-category-heading-icon" aria-hidden="true">🍽️</div>
+          <div className="menu-category-heading-icon" aria-hidden="true">
+  <img
+    src={
+      typeof category.image_path === "string" &&
+      category.image_path.trim()
+        ? category.image_path
+        : "/images/menu/categories/default.png"
+    }
+    alt=""
+  />
+</div>
           <div>
             <h2>{category.name}</h2>
             <span>{products.length} {products.length === 1 ? "item" : "items"}</span>

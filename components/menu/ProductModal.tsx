@@ -1,6 +1,11 @@
 "use client";
-import type { CartItem } from "./types";
-import type { CategoryAvailability, Product } from "./types";
+import type {
+  CartItem,
+  CategoryAvailability,
+  Product,
+  ProductBadge,
+  ProductTag,
+} from "./types";
 import QuantityControl from "./QuantityControl";
 import { canOrderFromAvailability, getDiscount, getNumber } from "./menu-utils";
 
@@ -37,6 +42,19 @@ export default function ProductModal({
   const subscription =
     availability?.delivery_type ===
     "SUBSCRIPTION";
+
+const productBadges: ProductBadge[] = Array.isArray(product.badges)
+  ? product.badges
+  : [];
+
+const productTags: ProductTag[] = Array.isArray(product.tags)
+  ? product.tags
+  : [];
+
+const primaryBadge =
+  [...productBadges].sort(
+    (a, b) => (a.priority ?? 999) - (b.priority ?? 999)
+  )[0];
 
   return (
     <div
@@ -86,6 +104,27 @@ export default function ProductModal({
               <h2>
                 {product.name}
               </h2>
+
+{primaryBadge && (
+  <div className="menu-modal-badge">
+    {primaryBadge.icon ? `${primaryBadge.icon} ` : "★ "}
+    {primaryBadge.display_text}
+  </div>
+)}
+
+{productTags.length > 0 && (
+  <div className="menu-modal-tags">
+    {productTags.map((tag) => (
+      <span
+        key={String(tag.id)}
+        className="menu-modal-tag"
+      >
+        {tag.name}
+      </span>
+    ))}
+  </div>
+)}
+
             </div>
 
             {getNumber(

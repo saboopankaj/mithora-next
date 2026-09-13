@@ -85,6 +85,40 @@
   letter-spacing: -0.015em;
 }
 
+.menu-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff5da;
+  color: #9a6600;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.menu-modal-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.menu-modal-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--menu-green-soft);
+  color: var(--menu-green-dark);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .menu-modal-rating {
   flex: 0 0 auto;
   padding: 8px 10px;

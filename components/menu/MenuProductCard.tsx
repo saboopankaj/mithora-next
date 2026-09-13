@@ -4,6 +4,8 @@ import type {
   CartItem,
   CategoryAvailability,
   Product,
+  ProductBadge,
+  ProductTag,
 } from "./types";
 
 import QuantityControl from "./QuantityControl";
@@ -91,26 +93,18 @@ export default function MenuProductCard({
   const reviewCount =
     getNumber(product.review_count);
 
+  const productBadges: ProductBadge[] = Array.isArray(product.badges)
+  ? product.badges
+  : [];
 
-  /* =====================================================
-     TEMPORARY TAGS
-     Later these can come directly from API
-     ===================================================== */
+const productTags: ProductTag[] = Array.isArray(product.tags)
+  ? product.tags
+  : [];
 
-  const productTags =
-    product.tags ||
-    getDefaultTags(product.name);
-
-
-  /* =====================================================
-     TEMPORARY BADGE
-     Later this can come directly from API
-     ===================================================== */
-
-  const badge =
-    product.badge ||
-    "BESTSELLER";
-
+const primaryBadge =
+  [...productBadges].sort(
+    (a, b) => (a.priority ?? 999) - (b.priority ?? 999)
+  )[0];
 
   return (
     <article
@@ -135,11 +129,12 @@ export default function MenuProductCard({
           loading="lazy"
         />
 
-        {badge && (
-          <span className="menu-card-featured-badge">
-            ★ {badge}
-          </span>
-        )}
+{primaryBadge && (
+  <span className="menu-card-featured-badge">
+    {primaryBadge.icon ? `${primaryBadge.icon} ` : "★ "}
+    {primaryBadge.display_text}
+  </span>
+)}
 
       </div>
 
@@ -159,22 +154,18 @@ export default function MenuProductCard({
 
         {/* TAGS */}
 
-        {productTags.length > 0 && (
-          <div className="menu-product-tags">
-
-            {productTags.map(
-              (tag) => (
-                <span
-                  key={tag}
-                  className="menu-product-tag"
-                >
-                  {tag}
-                </span>
-              )
-            )}
-
-          </div>
-        )}
+{productTags.length > 0 && (
+  <div className="menu-product-tags">
+    {productTags.map((tag) => (
+      <span
+        key={String(tag.id)}
+        className="menu-product-tag"
+      >
+        {tag.name}
+      </span>
+    ))}
+  </div>
+)}
 
 
         {/* DESCRIPTION */}
@@ -327,69 +318,4 @@ export default function MenuProductCard({
 
     </article>
   );
-}
-
-
-/* =========================================================
-   TEMPORARY PRODUCT TAGS
-   ========================================================= */
-
-function getDefaultTags(
-  name: string
-): string[] {
-
-  const lower =
-    name.toLowerCase();
-
-  if (
-    lower.includes("tiffin")
-  ) {
-    return [
-      "Homemade",
-      "Healthy",
-    ];
-  }
-
-  if (
-    lower.includes("salad")
-  ) {
-    return [
-      "Healthy",
-      "Fresh",
-    ];
-  }
-
-  if (
-    lower.includes("dal") ||
-    lower.includes("khichdi")
-  ) {
-    return [
-      "Homemade",
-      "Protein Rich",
-    ];
-  }
-
-  if (
-    lower.includes("roti") ||
-    lower.includes("chapati")
-  ) {
-    return [
-      "Homemade",
-      "Fresh",
-    ];
-  }
-
-  if (
-    lower.includes("poha") ||
-    lower.includes("upma")
-  ) {
-    return [
-      "Healthy",
-      "Light",
-    ];
-  }
-
-  return [
-    "Homemade",
-  ];
 }

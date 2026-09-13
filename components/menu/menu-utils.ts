@@ -19,10 +19,8 @@ export function getDiscount(price: unknown, oldPrice: unknown): number {
 
 export function isFeatured(product: Product): boolean {
   return (
-    product.is_featured === true ||
     product.is_featured === 1 ||
-    product.is_featured === "1" ||
-    product.is_featured === "true"
+    product.is_featured === true
   );
 }
 
