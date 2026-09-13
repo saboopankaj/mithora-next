@@ -1,0 +1,66 @@
+/* =========================================================
+   MITHORA MENU — v2
+   Warm, food-forward ordering interface.
+   Palette: charred cocoa + toasted cream + live-coal orange,
+   with a herb-green accent for "fresh" signals.
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380;9..144,460;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* ---- type ---- */
+  --menu-font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --menu-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ---- color: ink & ground ---- */
+  --menu-ink: #241209;
+  --menu-ink-soft: #6b5346;
+  --menu-ink-faint: #a3897c;
+  --menu-cream: #fbf3e9;
+  --menu-cream-deep: #f3e4d2;
+  --menu-white: #ffffff;
+  --menu-border: #e9dac8;
+  --menu-border-soft: #f0e2d1;
+
+  /* ---- color: brand ---- */
+  --menu-orange: #ff5a29;
+  --menu-orange-dark: #dd431a;
+  --menu-orange-soft: #fff0e6;
+  --menu-coal: #221108;
+  --menu-coal-2: #3d1f10;
+  --menu-coal-3: #6a2f16;
+  --menu-gold: #ffb521;
+
+  /* ---- color: signal ---- */
+  --menu-green: #1f7a3b;
+  --menu-green-dark: #16582b;
+  --menu-green-soft: #e9f4ea;
+  --menu-red: #c8402e;
+  --menu-red-soft: #fdedea;
+
+  /* ---- radius / shadow scale ---- */
+  --menu-r-sm: 10px;
+  --menu-r-md: 14px;
+  --menu-r-lg: 20px;
+  --menu-r-xl: 28px;
+  --menu-r-pill: 999px;
+
+  --menu-shadow-xs: 0 2px 8px rgba(36, 18, 9, 0.05);
+  --menu-shadow-sm: 0 6px 18px rgba(36, 18, 9, 0.07);
+  --menu-shadow-md: 0 14px 34px rgba(36, 18, 9, 0.10);
+  --menu-shadow-lg: 0 28px 70px rgba(36, 18, 9, 0.16);
+
+  --menu-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

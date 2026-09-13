@@ -1,0 +1,43 @@
+/* =========================================================
+   PAGE SHELL
+========================================================= */
+
+html.menu-scroll-locked,
+body.menu-scroll-locked {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+body.menu-scroll-locked {
+  touch-action: none;
+}
+
+.menu-modal-overlay,
+.menu-search-page,
+.menu-product-modal,
+.menu-search-page-top {
+  touch-action: auto;
+}
+
+.menu-page-shell {
+  min-height: 100vh;
+  font-family: var(--menu-font-sans);
+  color: var(--menu-ink);
+  background:
+    radial-gradient(circle at 8% 10%, rgba(255, 181, 33, 0.10), transparent 32%),
+    radial-gradient(circle at 92% 28%, rgba(255, 90, 41, 0.08), transparent 30%),
+    var(--menu-cream);
+  padding-top: var(--menu-header-height, 78px);
+}
+
+.menu-shell-container {
+  width: min(1380px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--menu-orange);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+

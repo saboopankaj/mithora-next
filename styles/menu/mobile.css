@@ -1,0 +1,123 @@
+/* =========================================================
+   MOBILE — SAME GEOMETRY, SMALLER SCALE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .menu-product-body {
+    padding: 11px 11px 12px !important;
+  }
+
+  /* One-line title */
+  .menu-product-title-row {
+    min-height: 22px !important;
+    height: 22px !important;
+  }
+
+  .menu-product-title-row h3 {
+    min-height: 22px !important;
+    height: 22px !important;
+
+    font-size: 14px !important;
+    line-height: 22px !important;
+  }
+
+  /* Fixed 2-line description */
+  .menu-product-description {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+
+    margin-top: 6px !important;
+
+    font-size: 10.5px !important;
+    line-height: 18px !important;
+
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .menu-product-description:empty {
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+
+  /* Read more sits on second line area */
+  .menu-read-more {
+    height: 13px !important;
+    line-height: 13px !important;
+
+    margin-top: -13px !important;
+
+    font-size: 9px !important;
+  }
+
+  /* Small options button */
+  .menu-options-link {
+    height: 23px !important;
+
+    margin-top: 6px !important;
+    padding: 0 7px !important;
+
+    border-radius: 6px !important;
+
+    font-size: 8.5px !important;
+    line-height: 23px !important;
+  }
+
+  /* Bottom row */
+  .menu-product-bottom {
+    min-height: 40px !important;
+
+    padding-top: 8px !important;
+    gap: 6px !important;
+  }
+
+  /* Price */
+  .menu-price-block {
+    min-width: 55px !important;
+    height: 40px !important;
+
+    gap: 1px !important;
+  }
+
+  .menu-price-block span {
+    font-size: 8px !important;
+    line-height: 10px !important;
+  }
+
+  .menu-price-block strong {
+    min-height: 23px !important;
+
+    padding: 1px 6px !important;
+
+    border-radius: 5px !important;
+
+    font-size: 15px !important;
+    line-height: 21px !important;
+  }
+
+  /* Fixed mobile action width */
+  .menu-product-action {
+    flex: 0 0 88px !important;
+    width: 88px !important;
+  }
+
+  .menu-btn-primary,
+  .menu-btn-notify,
+  .menu-quantity-control {
+    width: 88px !important;
+    min-width: 88px !important;
+    max-width: 88px !important;
+
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+
+    font-size: 8.5px !important;
+  }
+
+  .menu-quantity-control button {
+    width: 28px !important;
+  }
+
+}

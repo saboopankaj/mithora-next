@@ -1,0 +1,285 @@
+/* =========================================================
+   PRODUCT GRID + CARD
+========================================================= */
+
+.menu-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 22px;
+}
+
+.menu-product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--menu-white);
+  border: 1px solid var(--menu-border-soft);
+  border-radius: 22px;
+  box-shadow: var(--menu-shadow-sm);
+  transition: transform 0.22s var(--menu-ease), box-shadow 0.22s var(--menu-ease);
+}
+
+.menu-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--menu-shadow-md);
+}
+
+.menu-product-image-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 220px;
+  flex: 0 0 220px;
+  padding: 28px;
+  border: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.32), transparent 48%),
+    linear-gradient(150deg, #eab27c 0%, #d9853f 55%, #c96f2f 100%);
+  cursor: pointer;
+}
+
+.menu-product-image-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 14px 18px rgba(59, 28, 8, 0.28));
+  transition: transform 0.45s var(--menu-ease);
+}
+
+.menu-product-card:hover .menu-product-image-button img {
+  transform: scale(1.045);
+}
+
+.menu-discount-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px 6px 10px;
+  border-radius: var(--menu-r-pill);
+  background: var(--menu-green-dark);
+  color: var(--menu-white);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+}
+
+.menu-discount-badge::before {
+  content: "\2726";
+  font-size: 10px;
+  color: #b6f0c5;
+}
+
+.menu-card-featured-badge {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--menu-coal-3);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.menu-product-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 19px 20px 20px;
+}
+
+/* ---- title slot: fixed 2-line height, so a 1-line title takes the
+   same vertical space as a 2-line one ---- */
+.menu-product-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 50px;
+  flex: 0 0 auto;
+}
+
+.menu-product-title-row h3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--menu-font-display);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--menu-ink);
+}
+
+.menu-rating {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--menu-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.menu-rating span { color: var(--menu-gold); font-size: 13px; }
+.menu-rating strong { font-size: 12.5px; font-weight: 700; }
+.menu-rating small { color: var(--menu-ink-faint); font-size: 10px; }
+
+/* ---- description slot: fixed 2-line height, present or not ---- */
+.menu-product-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 0 0 auto;
+  height: 41px;
+  margin: 9px 0 0;
+  color: var(--menu-ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.menu-product-description.expanded {
+  display: block;
+  height: auto;
+  -webkit-line-clamp: unset;
+}
+
+.menu-read-more {
+  display: none;
+  flex: 0 0 auto;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--menu-green-dark);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ---- footer slot: always pinned to the bottom of the card, so it
+   lands on the same line whether or not an options pill sits above it ---- */
+.menu-product-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.menu-price-block {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+}
+
+.menu-price-block strong {
+  font-family: var(--menu-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  color: var(--menu-ink);
+}
+
+.menu-price-block span {
+  color: var(--menu-ink-faint);
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+.menu-product-action {
+  flex: 0 0 auto;
+}
+
+.menu-btn-primary,
+.menu-btn-notify {
+  width: 118px;
+  height: 42px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--menu-r-sm);
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: transform 0.18s var(--menu-ease), box-shadow 0.18s var(--menu-ease),
+    background 0.18s var(--menu-ease);
+}
+
+.menu-btn-primary {
+  border: 1px solid var(--menu-orange);
+  background: var(--menu-orange);
+  color: var(--menu-white);
+  box-shadow: 0 7px 16px rgba(255, 90, 41, 0.22);
+}
+
+.menu-btn-primary:hover {
+  background: var(--menu-orange-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 90, 41, 0.28);
+}
+
+.menu-btn-notify {
+  border: 1px solid var(--menu-green);
+  background: var(--menu-green-soft);
+  color: var(--menu-green-dark);
+}
+
+.menu-btn-notify:hover {
+  background: #e0f1e4;
+  transform: translateY(-2px);
+}
+
+/* "Customize from N options" pill — sits between the description and
+   the price row, own line, only present on variant products */
+.menu-options-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 10px 0 0;
+  padding: 7px 13px;
+  border: 0;
+  border-radius: var(--menu-r-pill);
+  background: var(--menu-green-soft);
+  color: var(--menu-green-dark);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s var(--menu-ease);
+}
+
+.menu-options-link::before {
+  content: "\2726";
+  font-size: 10px;
+  color: var(--menu-orange);
+}
+
+.menu-options-link:hover {
+  background: #ddeee0;
+}
+

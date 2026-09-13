@@ -1,0 +1,115 @@
+/* =========================================================
+   CATEGORY PILLS
+========================================================= */
+
+.menu-category-scroll {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 1px 1px 3px;
+}
+
+.menu-category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-category-pill {
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 0 8px;
+  border: 1px solid var(--menu-border);
+  border-radius: var(--menu-r-pill);
+  background: var(--menu-white);
+  color: var(--menu-ink-soft);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.18s var(--menu-ease), color 0.18s var(--menu-ease),
+    border-color 0.18s var(--menu-ease);
+}
+
+.menu-category-pill > span {
+  display: inline-block;
+  margin: 0 !important;
+}
+
+.menu-category-pill:hover {
+  border-color: var(--menu-orange);
+  color: var(--menu-orange-dark);
+}
+
+.menu-category-pill.active {
+  background: var(--menu-coal);
+  border-color: var(--menu-coal);
+  color: var(--menu-white);
+  box-shadow: var(--menu-shadow-xs);
+}
+
+.menu-category-icon,
+.menu-category-heading-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--menu-orange-soft);
+  color: var(--menu-orange);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* =========================================================
+   SEARCH RESULT SUMMARY (inline, on the main page)
+========================================================= */
+
+.menu-search-result-summary {
+  margin-top: 28px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-radius: var(--menu-r-lg);
+  border: 1px solid var(--menu-border-soft);
+  background: linear-gradient(135deg, #fff3e8, #fdf7f0);
+}
+
+.menu-search-result-summary div {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.menu-search-result-summary span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--menu-orange-dark);
+}
+
+.menu-search-result-summary strong {
+  font-size: 17px;
+  font-family: var(--menu-font-display);
+  font-weight: 600;
+}
+
+.menu-search-result-summary button {
+  border: 0;
+  background: transparent;
+  color: var(--menu-orange-dark);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
