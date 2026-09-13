@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import type { CartItem } from "./types";
-import type { CategoryAvailability, Product } from "./types";
-import { isFeatured } from "./menu-utils";
+import type {
+  CartItem,
+  CategoryAvailability,
+  Product,
+} from "./types";
+
 import QuantityControl from "./QuantityControl";
+
 import {
   canOrderFromAvailability,
   getActiveVariantFromCart,
   getDiscount,
   getNumber,
   getQuantityForProduct,
+  isFeatured,
 } from "./menu-utils";
 
 export default function MenuProductCard({
@@ -23,16 +28,18 @@ export default function MenuProductCard({
 }: {
   product: Product;
   availability?: CategoryAvailability;
+
   cart: {
     items: CartItem[];
   };
-  onOpen: (
-    product: Product
-  ) => void;
+
+  onOpen: (product: Product) => void;
+
   onAdd: (
     variantId: number | string,
     delta: number
   ) => void;
+
   onNotify: (
     product: Product
   ) => void;
@@ -40,8 +47,7 @@ export default function MenuProductCard({
   const [descriptionExpanded, setDescriptionExpanded] =
     useState(false);
 
-  const variants =
-    product.variants || [];
+  const variants = product.variants || [];
 
   if (!variants.length) {
     return null;
@@ -85,9 +91,10 @@ export default function MenuProductCard({
       oldPrice
     );
 
-  const rating = getNumber(
-    product.avg_rating
-  );
+  const rating =
+    getNumber(
+      product.avg_rating
+    );
 
   const reviewCount =
     getNumber(
@@ -97,6 +104,7 @@ export default function MenuProductCard({
   return (
     <article className="menu-product-card">
 
+      {/* IMAGE */}
       <button
         type="button"
         className="menu-product-image-button"
@@ -121,14 +129,18 @@ export default function MenuProductCard({
 
         {isFeatured(product) && (
           <span className="menu-card-featured-badge">
-            ★ FEATURED
+            ★ BESTSELLER
           </span>
         )}
       </button>
 
+
+      {/* CONTENT */}
       <div className="menu-product-body">
 
+        {/* TITLE */}
         <div className="menu-product-title-row">
+
           <h3>
             {product.name}
           </h3>
@@ -136,28 +148,34 @@ export default function MenuProductCard({
           {rating >= 0.5 && (
             <div className="menu-rating">
               <span>★</span>
+
               <strong>
                 {rating.toFixed(1)}
               </strong>
+
               <small>
                 ({reviewCount})
               </small>
             </div>
           )}
+
         </div>
 
-        {product.description && (
-          <>
-            <p
-              className={`menu-product-description ${
-                descriptionExpanded
-                  ? "expanded"
-                  : ""
-              }`}
-            >
-              {product.description}
-            </p>
 
+        {/* DESCRIPTION */}
+        <div className="menu-description-area">
+
+          <p
+            className={`menu-product-description ${
+              descriptionExpanded
+                ? "expanded"
+                : ""
+            }`}
+          >
+            {product.description || ""}
+          </p>
+
+          {product.description && (
             <button
               type="button"
               className="menu-read-more"
@@ -171,26 +189,33 @@ export default function MenuProductCard({
                 ? "Read less"
                 : "Read more"}
             </button>
-          </>
-        )}
+          )}
 
+        </div>
+
+
+        {/* PRICE + BUTTON */}
         <div className="menu-product-bottom">
 
           <div className="menu-price-block">
-            <strong>
-              ₹{price}
-            </strong>
 
             {oldPrice > price && (
               <span>
                 ₹{oldPrice}
               </span>
             )}
+
+            <strong>
+              ₹{price}
+            </strong>
+
           </div>
+
 
           <div className="menu-product-action">
 
             {quantity > 0 ? (
+
               <QuantityControl
                 quantity={quantity}
                 onDecrease={() =>
@@ -206,7 +231,9 @@ export default function MenuProductCard({
                   )
                 }
               />
+
             ) : !canOrder ? (
+
               <button
                 type="button"
                 className="menu-btn-notify"
@@ -216,7 +243,9 @@ export default function MenuProductCard({
               >
                 NOTIFY ME
               </button>
+
             ) : isMulti ? (
+
               <button
                 type="button"
                 className="menu-btn-primary"
@@ -228,7 +257,9 @@ export default function MenuProductCard({
                   ? "SUBSCRIBE"
                   : "CUSTOMIZE"}
               </button>
+
             ) : (
+
               <button
                 type="button"
                 className="menu-btn-primary"
@@ -239,32 +270,17 @@ export default function MenuProductCard({
                   )
                 }
               >
-                ADD
+                CUSTOMIZE
               </button>
+
             )}
 
           </div>
+
         </div>
 
-        {isMulti &&
-          quantity === 0 && (
-            <button
-              type="button"
-              className="menu-options-link"
-              onClick={() =>
-                onOpen(product)
-              }
-            >
-              {variants.length}{" "}
-              options available
-            </button>
-          )}
-
       </div>
+
     </article>
   );
 }
-
-/* =====================================================
-   FEATURED
-===================================================== */

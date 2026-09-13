@@ -1,245 +1,492 @@
 /* =========================================================
-   FINAL PRODUCT CARD ALIGNMENT
-   Fixed title / description / price / button geometry
-========================================================= */
+   MITHORA MENU — UNIFORM PRODUCT CARD
+   ========================================================= */
 
-/* ---------- PRODUCT TITLE: ONE LINE ONLY ---------- */
+.menu-product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 430px;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.menu-product-image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 230px;
+  min-height: 230px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f4efe2;
+}
+
+.menu-product-image-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   BESTSELLER
+   ========================================================= */
+
+.menu-card-featured-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #176b35;
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+
+  letter-spacing: 0.02em;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   DISCOUNT BADGE
+   ========================================================= */
+
+.menu-discount-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 8px;
+
+  border-radius: 6px;
+
+  background: #e5eee0;
+  color: #245b2d;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.menu-product-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  padding: 18px 20px 20px;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
 
 .menu-product-title-row {
-  min-height: 27px !important;
-  height: 27px !important;
-  align-items: center !important;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  min-height: 30px;
 }
 
 .menu-product-title-row h3 {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
+  margin: 0;
 
-  min-height: 27px !important;
-  height: 27px !important;
+  overflow: hidden;
 
-  margin: 0 !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.25;
 
-  overflow: hidden !important;
-  white-space: nowrap !important;
-  text-overflow: ellipsis !important;
+  color: #173d24;
 
-  font-size: 18px !important;
-  line-height: 27px !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
-/* Rating stays on the same title row */
-.menu-product-title-row .menu-rating {
-  flex: 0 0 auto !important;
+/* =========================================================
+   RATING
+   ========================================================= */
+
+.menu-rating {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+
+  font-size: 11px;
+  color: #245b2d;
 }
 
 
-/* ---------- DESCRIPTION: EXACTLY TWO LINES ---------- */
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.menu-description-area {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 88px;
+  margin-top: 8px;
+}
 
 .menu-product-description {
-  position: relative !important;
+  display: -webkit-box;
 
-  height: 42px !important;
-  min-height: 42px !important;
-  max-height: 42px !important;
+  margin: 0;
 
-  margin: 8px 0 0 !important;
+  overflow: hidden;
 
-  overflow: hidden !important;
+  color: #657064;
 
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2 !important;
+  font-size: 15px;
+  line-height: 1.55;
 
-  font-size: 13px !important;
-  line-height: 21px !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.menu-product-description.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
 }
 
 
-/* Even empty descriptions reserve exactly the same space */
-.menu-product-description:empty {
-  min-height: 42px !important;
-  height: 42px !important;
-}
-
-
-/* ---------- READ MORE ----------
-   Keep it visually attached to the second description row
---------------------------------------------------------- */
+/* =========================================================
+   READ MORE
+   ========================================================= */
 
 .menu-read-more {
-  display: inline-block !important;
+  align-self: flex-start;
 
-  height: 15px !important;
-  line-height: 15px !important;
+  margin-top: 5px;
+  padding: 0;
 
-  margin: -16px 0 0 !important;
-  padding: 0 !important;
+  border: 0;
+  background: transparent;
 
-  position: relative !important;
-  z-index: 2 !important;
+  color: #145c2c;
 
-  font-size: 10px !important;
-  font-weight: 800 !important;
+  font-size: 13px;
+  font-weight: 700;
 
-  color: var(--menu-green-dark) !important;
+  text-decoration: underline;
 
-  background: var(--menu-white) !important;
+  cursor: pointer;
 }
 
 
-/* ---------- OPTIONS BUTTON ----------
-   "2 options available" / "3 options available"
---------------------------------------------------------- */
-
-.menu-options-link {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  width: fit-content !important;
-  min-width: 0 !important;
-  height: 26px !important;
-
-  margin: 8px 0 0 !important;
-  padding: 0 9px !important;
-
-  border: 1px solid #d8eadb !important;
-  border-radius: 7px !important;
-
-  background: var(--menu-green-soft) !important;
-  color: var(--menu-green-dark) !important;
-
-  font-size: 9px !important;
-  line-height: 26px !important;
-  font-weight: 800 !important;
-
-  white-space: nowrap !important;
-}
-
-
-/* remove decorative star */
-.menu-options-link::before {
-  display: none !important;
-}
-
-
-/* ---------- BOTTOM ROW ----------
-   Price and button ALWAYS occupy same row
---------------------------------------------------------- */
+/* =========================================================
+   BOTTOM SECTION
+   ========================================================= */
 
 .menu-product-bottom {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
 
-  width: 100% !important;
-  min-height: 48px !important;
+  min-height: 74px;
 
-  margin-top: auto !important;
-  padding-top: 12px !important;
+  margin-top: auto;
+  padding-top: 16px;
 
-  gap: 12px !important;
+  border-top: 1px dashed #ded8ca;
 }
 
 
-/* ---------- PRICE ----------
-   Strike price ABOVE, selling price BELOW
---------------------------------------------------------- */
+/* =========================================================
+   PRICE
+   ========================================================= */
 
 .menu-price-block {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 
-  gap: 2px !important;
+  min-width: 0;
 
-  min-width: 72px !important;
-  height: 48px !important;
+  white-space: nowrap;
 }
 
-
-/* Selling price */
 .menu-price-block strong {
-  order: 2 !important;
+  order: 1;
 
-  display: inline-flex !important;
-  align-items: center !important;
+  color: #145c2c;
 
-  min-height: 27px !important;
-  padding: 2px 7px !important;
-
-  border-radius: 6px !important;
-
-  background: #fff3d5 !important;
-  color: var(--menu-ink) !important;
-
-  font-family: var(--menu-font-sans) !important;
-  font-size: 17px !important;
-  line-height: 23px !important;
-  font-weight: 900 !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: 800;
 }
 
-
-/* Strike price */
 .menu-price-block span {
-  order: 1 !important;
+  order: 2;
 
-  display: block !important;
+  color: #858585;
 
-  margin: 0 !important;
+  font-size: 13px;
+  font-weight: 500;
 
-  color: var(--menu-ink-faint) !important;
-
-  font-size: 10px !important;
-  line-height: 13px !important;
-
-  text-decoration: line-through !important;
+  text-decoration: line-through;
 }
 
 
-/* ---------- ACTION BUTTON ----------
-   Every button exactly same width
---------------------------------------------------------- */
+/* =========================================================
+   ACTION
+   ========================================================= */
 
 .menu-product-action {
-  flex: 0 0 118px !important;
-  width: 118px !important;
-  margin-left: auto !important;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  width: 136px;
+  min-width: 136px;
 }
 
-.menu-btn-primary,
+.menu-product-action > button {
+  width: 136px;
+  min-width: 136px;
+  height: 54px;
+
+  border-radius: 16px;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   CUSTOMIZE
+   ========================================================= */
+
+.menu-btn-primary {
+  border: 0;
+
+  background: #347536;
+  color: #fff;
+
+  box-shadow: 0 8px 18px rgba(52, 117, 54, 0.18);
+}
+
+.menu-btn-primary:hover {
+  background: #28622c;
+}
+
+
+/* =========================================================
+   NOTIFY
+   ========================================================= */
+
 .menu-btn-notify {
-  width: 118px !important;
-  min-width: 118px !important;
-  max-width: 118px !important;
+  border: 1px solid #347536;
 
-  height: 42px !important;
-  min-height: 42px !important;
-  max-height: 42px !important;
-
-  padding: 0 8px !important;
-
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  white-space: nowrap !important;
-
-  font-size: 10.5px !important;
+  background: #fff;
+  color: #245b2d;
 }
 
 
-/* Quantity control must also match */
-.menu-quantity-control {
-  width: 118px !important;
-  min-width: 118px !important;
-  max-width: 118px !important;
+/* =========================================================
+   QUANTITY CONTROL
+   ========================================================= */
 
-  height: 42px !important;
+.menu-product-action .menu-quantity-control {
+  width: 136px;
+  min-width: 136px;
+  height: 54px;
 }
 
 
+/* =========================================================
+   DESKTOP — 4 CARDS
+   ========================================================= */
+
+@media (min-width: 1200px) {
+  .menu-product-card {
+    min-height: 440px;
+  }
+
+  .menu-product-image-button {
+    height: 230px;
+    min-height: 230px;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .menu-product-card {
+    min-height: 420px;
+  }
+
+  .menu-product-image-button {
+    height: 220px;
+    min-height: 220px;
+  }
+
+  .menu-product-body {
+    padding: 16px 18px 18px;
+  }
+
+  .menu-product-title-row h3 {
+    font-size: 19px;
+  }
+
+  .menu-product-description {
+    font-size: 14px;
+  }
+
+  .menu-product-action,
+  .menu-product-action > button,
+  .menu-product-action .menu-quantity-control {
+    width: 120px;
+    min-width: 120px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE — 2 CARDS
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .menu-product-card {
+    min-height: 0;
+    height: 100%;
+    border-radius: 16px;
+  }
+
+  .menu-product-image-button {
+    height: 125px;
+    min-height: 125px;
+  }
+
+  .menu-card-featured-badge {
+    top: 8px;
+    right: 8px;
+
+    padding: 5px 7px;
+
+    font-size: 8px;
+  }
+
+  .menu-discount-badge {
+    left: 8px;
+    bottom: 8px;
+
+    padding: 4px 6px;
+
+    font-size: 9px;
+  }
+
+  .menu-product-body {
+    padding: 11px 11px 12px;
+  }
+
+  .menu-product-title-row {
+    min-height: 21px;
+  }
+
+  .menu-product-title-row h3 {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
+  .menu-rating {
+    display: none;
+  }
+
+  .menu-description-area {
+    min-height: 68px;
+    margin-top: 5px;
+  }
+
+  .menu-product-description {
+    font-size: 11px;
+    line-height: 1.45;
+
+    -webkit-line-clamp: 2;
+  }
+
+  .menu-read-more {
+    margin-top: 3px;
+
+    font-size: 10px;
+  }
+
+  .menu-product-bottom {
+    gap: 7px;
+
+    min-height: 50px;
+
+    margin-top: auto;
+    padding-top: 9px;
+  }
+
+  .menu-price-block {
+    gap: 4px;
+  }
+
+  .menu-price-block strong {
+    font-size: 18px;
+  }
+
+  .menu-price-block span {
+    font-size: 9px;
+  }
+
+  .menu-product-action,
+  .menu-product-action > button,
+  .menu-product-action .menu-quantity-control {
+    width: 92px;
+    min-width: 92px;
+  }
+
+  .menu-product-action > button {
+    height: 38px;
+
+    border-radius: 11px;
+
+    font-size: 11px;
+  }
+
+  .menu-product-action .menu-quantity-control {
+    height: 38px;
+  }
+}
