@@ -1,5 +1,6 @@
 /* =========================================================
-   MITHORA KITCHEN — HEADER
+   MITHORA KITCHEN — HEADER (ENLARGED & POLISHED)
+   Preserves all sticky behaviors, layouts, and classes.
    ========================================================= */
 
 #site-header {
@@ -12,12 +13,14 @@
 
     z-index: 1000;
 
-    background: rgba(255, 253, 248, 0.96);
+    background: rgba(255, 253, 248, 0.97);
 
-    border-bottom: 1px solid rgba(45, 27, 20, 0.08);
+    border-bottom: 1px solid rgba(45, 27, 20, 0.09);
 
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+
+    box-shadow: 0 4px 22px rgba(45, 27, 20, 0.07);
 
     transition:
         background 0.3s ease,
@@ -25,7 +28,7 @@
 }
 
 #site-header.scrolled {
-    background: rgba(255, 253, 248, 0.98);
+    background: rgba(255, 253, 248, 0.99);
 
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.16);
@@ -37,15 +40,16 @@
    ========================================================= */
 
 #site-header .header-container {
-    width: min(1240px, calc(100% - 40px));
-    height: 78px;
+    width: min(1280px, calc(100% - 48px));
+    /* Increased height for a more prominent, premium feel */
+    height: 90px;
 
     margin: 0 auto;
 
     display: flex;
     align-items: center;
 
-    gap: 28px;
+    gap: 36px;
 
     position: relative;
 }
@@ -68,9 +72,10 @@
     display: block;
 
     width: auto;
-    height: 48px;
+    /* Increased size from 48px to 60px */
+    height: 60px;
 
-    max-width: 180px;
+    max-width: 210px;
 
     object-fit: contain;
 }
@@ -92,7 +97,7 @@
     align-items: center;
     justify-content: center;
 
-    gap: 21px;
+    gap: 28px;
 
     margin: 0;
     padding: 0;
@@ -107,10 +112,11 @@
 #site-header .nav-link {
     display: block;
 
-    color: rgba(45, 27, 20, 0.88);
+    color: #2d1b14;
 
     font-family: inherit;
-    font-size: 11px;
+    /* Increased font size from 11px/12px to 14px */
+    font-size: 14px;
     font-weight: 700;
 
     white-space: nowrap;
@@ -134,7 +140,7 @@
     display: flex;
     align-items: center;
 
-    gap: 8px;
+    gap: 12px;
 
     flex: 0 0 auto;
 }
@@ -166,11 +172,12 @@
 /* Call */
 
 #site-header .header-call-btn {
-    height: 38px;
+    /* Increased dimensions for larger appearance */
+    height: 46px;
 
-    padding: 0 13px;
+    padding: 0 18px;
 
-    gap: 7px;
+    gap: 9px;
 
     border-radius: 999px;
 
@@ -178,23 +185,23 @@
     color: #2d1b14;
 
     font-family: inherit;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 800;
 }
 
 #site-header .header-call-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
 
-    flex: 0 0 15px;
+    flex: 0 0 18px;
 }
 
 
 /* WhatsApp */
 
 #site-header .header-whatsapp-btn {
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
 
     border-radius: 50%;
 
@@ -203,16 +210,16 @@
 }
 
 #site-header .header-whatsapp-btn svg {
-    width: 19px;
-    height: 19px;
+    width: 22px;
+    height: 22px;
 }
 
 
 /* Login */
 
 #site-header .login-btn {
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
 
     padding: 0;
 
@@ -224,8 +231,8 @@
 }
 
 #site-header .login-btn svg {
-    width: 19px;
-    height: 19px;
+    width: 22px;
+    height: 22px;
 }
 
 
@@ -245,8 +252,8 @@
 #site-header .mobile-menu-toggle {
     display: none;
 
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
 
     padding: 0;
 
@@ -267,8 +274,8 @@
 #site-header .mobile-menu-toggle span {
     display: block;
 
-    width: 19px;
-    height: 2px;
+    width: 21px;
+    height: 2.5px;
 
     border-radius: 999px;
 
@@ -283,7 +290,7 @@
 /* Hamburger → X */
 
 #site-header .mobile-menu-toggle.active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(7.5px) rotate(45deg);
 }
 
 #site-header .mobile-menu-toggle.active span:nth-child(2) {
@@ -291,7 +298,7 @@
 }
 
 #site-header .mobile-menu-toggle.active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-7.5px) rotate(-45deg);
 }
 
 
@@ -309,16 +316,21 @@
 @media (max-width: 1100px) {
 
     #site-header .header-container {
-        width: min(100% - 28px, 100%);
-        gap: 16px;
+        width: min(100% - 32px, 100%);
+        height: 80px;
+        gap: 20px;
     }
 
     #site-header .nav-menu {
-        gap: 13px;
+        gap: 16px;
     }
 
     #site-header .nav-link {
-        font-size: 10px;
+        font-size: 12px;
+    }
+
+    #site-header .logo img {
+        height: 52px;
     }
 
 }
@@ -349,13 +361,13 @@
         width: 100%;
         max-width: 100%;
 
-        height: 66px;
+        height: 72px;
 
         margin: 0;
 
         padding:
             0
-            14px;
+            16px;
 
         gap: 0;
 
@@ -368,14 +380,14 @@
     #site-header .logo {
         min-width: 0;
 
-        max-width: 145px;
+        max-width: 160px;
 
         overflow: hidden;
     }
 
     #site-header .logo img {
-        height: 40px;
-        max-width: 145px;
+        height: 46px;
+        max-width: 160px;
     }
 
 
@@ -384,7 +396,7 @@
     #site-header .header-actions {
         margin-left: auto;
 
-        gap: 6px;
+        gap: 8px;
 
         min-width: 0;
     }
@@ -393,8 +405,8 @@
     /* Call */
 
     #site-header .header-call-btn {
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
 
         padding: 0;
 
@@ -406,34 +418,34 @@
     }
 
     #site-header .header-call-btn svg {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
 
 
     /* WhatsApp */
 
     #site-header .header-whatsapp-btn {
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
     }
 
     #site-header .header-whatsapp-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 
 
     /* Login */
 
     #site-header .login-btn {
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
     }
 
     #site-header .login-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 
 
@@ -442,7 +454,7 @@
     #site-header .mobile-menu-toggle {
         display: flex;
 
-        flex: 0 0 40px;
+        flex: 0 0 42px;
     }
 
 
@@ -453,15 +465,15 @@
     #site-header nav {
         position: fixed;
 
-        top: 66px;
+        top: 72px;
         left: 0;
 
         width: 100%;
         max-width: 100vw;
 
-        height: calc(100dvh - 66px);
+        height: calc(100dvh - 72px);
 
-        padding: 18px 16px 30px;
+        padding: 22px 18px 36px;
 
         box-sizing: border-box;
 
@@ -470,7 +482,7 @@
 
         background: #fffdf8;
 
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(45, 27, 20, 0.08);
 
         transform: translateX(100%);
 
@@ -521,12 +533,12 @@
     #site-header .nav-link {
         width: 100%;
 
-        min-height: 49px;
+        min-height: 54px;
 
         display: flex;
         align-items: center;
 
-        padding: 0 7px;
+        padding: 0 10px;
 
         box-sizing: border-box;
 
@@ -534,7 +546,7 @@
 
         color: rgba(45, 27, 20, 0.90);
 
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 700;
     }
 
@@ -548,22 +560,22 @@
     #site-header .mobile-login-item {
         display: block;
 
-        margin-top: 15px;
+        margin-top: 18px;
     }
 
     #site-header .mobile-login-link {
         width: 100%;
 
-        height: 48px;
+        height: 52px;
 
         border: 0;
-        border-radius: 10px;
+        border-radius: 12px;
 
         background: #f4c430;
         color: #2d1b14;
 
         font-family: inherit;
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 800;
 
         cursor: pointer;
@@ -579,29 +591,29 @@
 @media (max-width: 380px) {
 
     #site-header .header-container {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     #site-header .logo img {
-        height: 37px;
-        max-width: 130px;
+        height: 40px;
+        max-width: 140px;
     }
 
     #site-header .header-actions {
-        gap: 5px;
+        gap: 6px;
     }
 
     #site-header .header-call-btn,
     #site-header .header-whatsapp-btn,
     #site-header .login-btn {
-        width: 33px;
-        height: 33px;
+        width: 35px;
+        height: 35px;
     }
 
     #site-header .mobile-menu-toggle {
-        width: 37px;
-        flex-basis: 37px;
+        width: 38px;
+        flex-basis: 38px;
     }
 
 }
@@ -631,12 +643,12 @@
 
 /* Mobile action icon */
 .mobile-action-icon {
-    width: 22px;
+    width: 24px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-right: 8px;
-    font-size: 16px;
+    margin-right: 10px;
+    font-size: 17px;
 }
 
 
@@ -666,8 +678,8 @@
     }
 
     .mobile-profile-btn {
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
 
         padding: 0;
 
@@ -697,8 +709,8 @@
     }
 
     .mobile-profile-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 
 
@@ -709,10 +721,10 @@
     .mobile-profile-dropdown {
         position: absolute;
 
-        top: calc(100% + 10px);
+        top: calc(100% + 12px);
         right: 0;
 
-        width: 270px;
+        width: 280px;
 
         background: #ffffff;
 
@@ -722,7 +734,7 @@
         box-shadow:
             0 18px 45px rgba(45, 27, 20, 0.16);
 
-        padding: 8px;
+        padding: 10px;
 
         z-index: 1100;
 
@@ -735,16 +747,16 @@
         display: flex;
         align-items: center;
 
-        gap: 11px;
+        gap: 12px;
 
-        padding: 11px 10px;
+        padding: 12px 10px;
     }
 
     .mobile-profile-avatar {
-        width: 42px;
-        height: 42px;
+        width: 46px;
+        height: 46px;
 
-        flex: 0 0 42px;
+        flex: 0 0 46px;
 
         border-radius: 50%;
 
@@ -755,7 +767,7 @@
         align-items: center;
         justify-content: center;
 
-        font-size: 17px;
+        font-size: 19px;
         font-weight: 800;
     }
 
@@ -765,13 +777,13 @@
         display: flex;
         flex-direction: column;
 
-        gap: 3px;
+        gap: 4px;
     }
 
     .mobile-profile-welcome strong {
         color: #2d1b14;
 
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 800;
 
         line-height: 1.3;
@@ -780,7 +792,7 @@
     .mobile-profile-welcome span {
         color: #7a6a62;
 
-        font-size: 11px;
+        font-size: 12px;
 
         overflow: hidden;
         text-overflow: ellipsis;
@@ -807,7 +819,7 @@
         width: 100%;
         height: 1px;
 
-        margin: 18px 0 4px;
+        margin: 20px 0 6px;
 
         background: rgba(45, 27, 20, 0.10);
     }
@@ -816,14 +828,14 @@
     .mobile-login-item {
         display: block;
 
-        margin-top: 8px;
+        margin-top: 10px;
     }
 
 
     .mobile-call-item {
         display: block;
 
-        margin-top: 8px;
+        margin-top: 10px;
     }
 
 
@@ -831,18 +843,18 @@
     .mobile-call-link {
         width: 100%;
 
-        min-height: 48px;
+        min-height: 52px;
 
-        padding: 0 16px;
+        padding: 0 18px;
 
-        border-radius: 10px;
+        border-radius: 12px;
 
         display: flex;
         align-items: center;
 
         font-family: inherit;
 
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 800;
 
         text-decoration: none;
@@ -877,7 +889,7 @@
 }
 
 /* =========================================================
-   MITHORA KITCHEN — FOOTER
+   MITHORA KITCHEN — FOOTER (ENLARGED & POLISHED)
    ========================================================= */
 
 #site-footer {
@@ -899,11 +911,11 @@
    ========================================================= */
 
 #site-footer .footer-container {
-    width: min(1240px, calc(100% - 48px));
+    width: min(1280px, calc(100% - 56px));
 
     margin: 0 auto;
-
-    padding: 72px 0 58px;
+    /* Expanded padding for a weightier, more spacious footer look */
+    padding: 92px 0 72px;
 
     display: grid;
 
@@ -914,7 +926,7 @@
         0.9fr
         1.15fr;
 
-    gap: 42px;
+    gap: 48px;
 
     box-sizing: border-box;
 }
@@ -931,40 +943,43 @@
 #site-footer .footer-logo {
     display: inline-flex;
 
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 #site-footer .footer-logo img {
     display: block;
 
     width: auto;
-    height: 52px;
+    /* Increased size from 52px to 64px */
+    height: 64px;
 
-    max-width: 190px;
+    max-width: 220px;
 
     object-fit: contain;
 }
 
 #site-footer .footer-brand h3 {
-    margin: 0 0 9px;
+    margin: 0 0 11px;
 
     color: #ffffff;
 
-    font-size: 19px;
+    /* Increased text size */
+    font-size: 21px;
     font-weight: 800;
 
     line-height: 1.25;
 }
 
 #site-footer .footer-brand > p {
-    max-width: 300px;
+    max-width: 320px;
 
     margin: 0;
 
-    color: rgba(255, 255, 255, 0.58);
+    color: rgba(255, 255, 255, 0.60);
 
-    font-size: 12px;
-    line-height: 1.7;
+    /* Increased font size for readability */
+    font-size: 14px;
+    line-height: 1.75;
 }
 
 
@@ -978,13 +993,13 @@
     align-items: center;
     justify-content: center;
 
-    min-height: 42px;
+    min-height: 48px;
 
-    margin-top: 20px;
+    margin-top: 24px;
 
-    padding: 0 17px;
+    padding: 0 20px;
 
-    border-radius: 9px;
+    border-radius: 10px;
 
     background: #f4c430;
 
@@ -992,7 +1007,7 @@
 
     text-decoration: none;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
 
     transition:
@@ -1014,27 +1029,27 @@
 #site-footer .footer-social {
     display: flex;
 
-    gap: 8px;
+    gap: 10px;
 
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 #site-footer .social-btn {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border: 1px solid rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
 
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.78);
 
     text-decoration: none;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 800;
 
     transition:
@@ -1061,11 +1076,12 @@
 }
 
 #site-footer .footer-column h4 {
-    margin: 4px 0 18px;
+    margin: 4px 0 20px;
 
     color: #ffffff;
 
-    font-size: 14px;
+    /* Increased title size */
+    font-size: 16px;
     font-weight: 800;
 
     letter-spacing: 0.04em;
@@ -1079,14 +1095,15 @@
 }
 
 #site-footer .footer-links li {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
 }
 
 #site-footer .footer-links a {
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.60);
 
-    font-size: 13px;
-    line-height: 1.55;
+    /* Increased link size */
+    font-size: 14px;
+    line-height: 1.6;
 
     text-decoration: none;
 
@@ -1103,26 +1120,26 @@
    ========================================================= */
 
 #site-footer .footer-contact {
-    margin-top: 24px;
-    padding-top: 17px;
+    margin-top: 28px;
+    padding-top: 20px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 #site-footer .footer-contact strong {
     display: block;
 
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.78);
 
-    font-size: 10px;
+    font-size: 11px;
 }
 
 #site-footer .footer-contact a {
     color: #f4c430;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
 
     text-decoration: none;
@@ -1138,10 +1155,10 @@
 }
 
 #site-footer .delivery-area {
-    padding: 22px;
+    padding: 26px;
 
-    border: 1px solid rgba(244, 196, 48, 0.18);
-    border-radius: 16px;
+    border: 1px solid rgba(244, 196, 48, 0.20);
+    border-radius: 18px;
 
     background: rgba(255, 255, 255, 0.035);
 }
@@ -1149,46 +1166,46 @@
 #site-footer .delivery-label {
     display: block;
 
-    margin-bottom: 9px;
+    margin-bottom: 10px;
 
     color: #f4c430;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
 
     letter-spacing: 0.1em;
 }
 
 #site-footer .delivery-area h4 {
-    margin: 0 0 14px;
+    margin: 0 0 16px;
 
     color: #ffffff;
 
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 800;
 }
 
 #site-footer .delivery-area p {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
 
-    color: rgba(255, 255, 255, 0.56);
+    color: rgba(255, 255, 255, 0.60);
 
-    font-size: 10px;
-    line-height: 1.65;
+    font-size: 12px;
+    line-height: 1.7;
 }
 
 #site-footer .delivery-area strong {
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.82);
 }
 
 #site-footer .delivery-note {
-    padding-top: 10px;
+    padding-top: 12px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 
-    font-size: 9px !important;
+    font-size: 11px !important;
 
-    color: rgba(255, 255, 255, 0.38) !important;
+    color: rgba(255, 255, 255, 0.42) !important;
 }
 
 
@@ -1197,13 +1214,13 @@
    ========================================================= */
 
 #site-footer .footer-bottom {
-    width: min(1240px, calc(100% - 48px));
+    width: min(1280px, calc(100% - 56px));
 
     margin: 0 auto;
 
-    padding: 20px 0 24px;
+    padding: 24px 0 28px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
 
     display: flex;
 
@@ -1217,9 +1234,9 @@
 #site-footer .privacy-note {
     margin: 0;
 
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(255, 255, 255, 0.42);
 
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.5;
 }
 
@@ -1240,7 +1257,7 @@
             1fr
             1fr;
 
-        gap: 35px;
+        gap: 40px;
     }
 
     #site-footer .footer-delivery {
@@ -1260,14 +1277,14 @@
         width: 100%;
 
         padding:
-            52px
-            18px
-            40px;
+            64px
+            20px
+            48px;
 
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
 
-        gap: 34px 24px;
+        gap: 38px 24px;
 
         box-sizing: border-box;
     }
@@ -1280,19 +1297,19 @@
     }
 
     #site-footer .footer-logo img {
-        height: 46px;
+        height: 52px;
 
-        max-width: 170px;
+        max-width: 185px;
     }
 
     #site-footer .footer-brand h3 {
-        font-size: 17px;
+        font-size: 19px;
     }
 
     #site-footer .footer-brand > p {
-        max-width: 330px;
+        max-width: 340px;
 
-        font-size: 11px;
+        font-size: 13px;
     }
 
 
@@ -1303,17 +1320,17 @@
     }
 
     #site-footer .footer-column h4 {
-        margin-bottom: 15px;
+        margin-bottom: 16px;
 
-        font-size: 11px;
+        font-size: 13px;
     }
 
     #site-footer .footer-links li {
-        margin-bottom: 9px;
+        margin-bottom: 10px;
     }
 
     #site-footer .footer-links a {
-        font-size: 10px;
+        font-size: 12px;
     }
 
 
@@ -1324,7 +1341,7 @@
     }
 
     #site-footer .delivery-area {
-        padding: 18px;
+        padding: 20px;
     }
 
 
@@ -1334,9 +1351,9 @@
         width: 100%;
 
         padding:
-            18px
-            18px
-            24px;
+            20px
+            20px
+            28px;
 
         box-sizing: border-box;
 
@@ -1344,12 +1361,12 @@
 
         align-items: flex-start;
 
-        gap: 8px;
+        gap: 10px;
     }
 
     #site-footer .copyright,
     #site-footer .privacy-note {
-        font-size: 8.5px;
+        font-size: 10px;
 
         text-align: left;
     }
@@ -1364,22 +1381,22 @@
 @media (max-width: 380px) {
 
     #site-footer .footer-container {
-        padding-left: 14px;
-        padding-right: 14px;
+        padding-left: 16px;
+        padding-right: 16px;
 
         column-gap: 16px;
     }
 
     #site-footer .footer-brand h3 {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     #site-footer .footer-links a {
-        font-size: 9.5px;
+        font-size: 11px;
     }
 
     #site-footer .delivery-area {
-        padding: 16px;
+        padding: 18px;
     }
 
 }
@@ -1399,7 +1416,7 @@
 }
 #site-header .nav-link {
     color: #2d1b14;
-    font-size: 12px;
+    font-size: 14px;
 }
 #site-header .login-btn {
     background: rgba(45, 27, 20, 0.07);
@@ -1419,11 +1436,11 @@
     #site-header .nav-link {
         color: #2d1b14;
         font-size: 15px;
-        min-height: 52px;
+        min-height: 54px;
         border-bottom-color: rgba(45, 27, 20, 0.08);
     }
     #site-header .mobile-login-link {
-        font-size: 14px;
+        font-size: 15px;
     }
 }
 
@@ -1711,7 +1728,7 @@
 .profile-item-icon {
   width: 26px;
   text-align: center;
-  font-size: 15px;
+    font-size: 15px;
 }
 
 

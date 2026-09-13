@@ -70,20 +70,18 @@ export default function MenuProductCard({
       availability
     );
 
-  const subscription =
+  const isSubscription =
     availability?.delivery_type ===
     "SUBSCRIPTION";
 
   const isMulti =
     variants.length > 1;
 
-  const price = getNumber(
-    activeVariant.price
-  );
+  const price =
+    getNumber(activeVariant.price);
 
-  const oldPrice = getNumber(
-    activeVariant.old_price
-  );
+  const oldPrice =
+    getNumber(activeVariant.old_price);
 
   const discount =
     getDiscount(
@@ -92,26 +90,27 @@ export default function MenuProductCard({
     );
 
   const rating =
-    getNumber(
-      product.avg_rating
-    );
+    getNumber(product.avg_rating);
 
   const reviewCount =
-    getNumber(
-      product.review_count
-    );
+    getNumber(product.review_count);
+
+  const openModal = () => {
+    onOpen(product);
+  };
 
   return (
-    <article className="menu-product-card">
+    <article
+      className="menu-product-card"
+      onClick={openModal}
+    >
 
-      {/* IMAGE */}
-      <button
-        type="button"
-        className="menu-product-image-button"
-        onClick={() =>
-          onOpen(product)
-        }
-      >
+      {/* =================================================
+          IMAGE
+          ================================================= */}
+
+      <div className="menu-product-image-button">
+
         <img
           src={
             product.image_path ||
@@ -121,24 +120,23 @@ export default function MenuProductCard({
           loading="lazy"
         />
 
-        {discount > 0 && (
-          <span className="menu-discount-badge">
-            {discount}% OFF
-          </span>
-        )}
-
         {isFeatured(product) && (
           <span className="menu-card-featured-badge">
             ★ BESTSELLER
           </span>
         )}
-      </button>
+
+      </div>
 
 
-      {/* CONTENT */}
+      {/* =================================================
+          CONTENT
+          ================================================= */}
+
       <div className="menu-product-body">
 
         {/* TITLE */}
+
         <div className="menu-product-title-row">
 
           <h3>
@@ -162,7 +160,10 @@ export default function MenuProductCard({
         </div>
 
 
-        {/* DESCRIPTION */}
+        {/* =================================================
+            DESCRIPTION
+            ================================================= */}
+
         <div className="menu-description-area">
 
           <p
@@ -179,11 +180,13 @@ export default function MenuProductCard({
             <button
               type="button"
               className="menu-read-more"
-              onClick={() =>
+              onClick={(event) => {
+                event.stopPropagation();
+
                 setDescriptionExpanded(
                   (value) => !value
-                )
-              }
+                );
+              }}
             >
               {descriptionExpanded
                 ? "Read less"
@@ -194,25 +197,52 @@ export default function MenuProductCard({
         </div>
 
 
-        {/* PRICE + BUTTON */}
-        <div className="menu-product-bottom">
+        {/* =================================================
+            PRICE + ACTION
+            ================================================= */}
+
+        <div
+          className="menu-product-bottom"
+          onClick={(event) =>
+            event.stopPropagation()
+          }
+        >
+
+          {/* PRICE */}
 
           <div className="menu-price-block">
 
-            {oldPrice > price && (
-              <span>
-                ₹{oldPrice}
-              </span>
-            )}
+            <div className="menu-price-top">
 
-            <strong>
+              {oldPrice > price && (
+                <span className="menu-old-price">
+                  ₹{oldPrice}
+                </span>
+              )}
+
+              {discount > 0 && (
+                <span className="menu-discount-inline">
+                  {discount}% OFF
+                </span>
+              )}
+
+            </div>
+
+            <strong className="menu-selling-price">
               ₹{price}
             </strong>
 
           </div>
 
 
-          <div className="menu-product-action">
+          {/* ACTION */}
+
+          <div
+            className="menu-product-action"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
 
             {quantity > 0 ? (
 
@@ -236,7 +266,7 @@ export default function MenuProductCard({
 
               <button
                 type="button"
-                className="menu-btn-notify"
+                className="menu-btn-primary"
                 onClick={() =>
                   onNotify(product)
                 }
@@ -244,18 +274,24 @@ export default function MenuProductCard({
                 NOTIFY ME
               </button>
 
+            ) : isSubscription ? (
+
+              <button
+                type="button"
+                className="menu-btn-primary"
+                onClick={openModal}
+              >
+                SUBSCRIBE
+              </button>
+
             ) : isMulti ? (
 
               <button
                 type="button"
                 className="menu-btn-primary"
-                onClick={() =>
-                  onOpen(product)
-                }
+                onClick={openModal}
               >
-                {subscription
-                  ? "SUBSCRIBE"
-                  : "CUSTOMIZE"}
+                CUSTOMIZE
               </button>
 
             ) : (
@@ -270,7 +306,7 @@ export default function MenuProductCard({
                   )
                 }
               >
-                CUSTOMIZE
+                ADD
               </button>
 
             )}
