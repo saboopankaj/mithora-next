@@ -1,0 +1,191 @@
+/* Mithora Checkout */
+
+.mk-checkout-page {
+  min-height: 100vh;
+  background: #fffaf3;
+  color: #2d1b14;
+  padding-bottom: 105px;
+}
+
+.mk-checkout-header {
+  grid-template-columns: 48px 1fr 48px;
+  z-index: 100;
+}
+
+.mk-checkout-header > div {
+  text-align: center;
+}
+
+.mk-checkout-header h1 {
+  margin-top: 2px;
+}
+
+.mk-checkout-layout {
+  width: min(760px, calc(100% - 32px));
+  margin: 22px auto;
+}
+
+.mk-checkout-card {
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.mk-checkout-card-heading h2 {
+  font-size: 19px;
+}
+
+.mk-address-details {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff8f2;
+  line-height: 1.55;
+}
+
+.mk-address-details p {
+  margin: 4px 0 0;
+  color: #67564f;
+}
+
+.mk-checkout-note {
+  margin: 8px 2px 16px;
+  color: #796860;
+  font-size: 13px;
+}
+
+.mk-address-form {
+  margin-top: 18px;
+}
+
+.mk-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.mk-address-form label {
+  display: grid;
+  gap: 6px;
+  color: #5d4c45;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mk-form-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.mk-location-link {
+  padding: 0;
+}
+
+.mk-checkout-order-items {
+  margin: 18px 0;
+  display: grid;
+  gap: 10px;
+}
+
+.mk-checkout-order-items > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 13px;
+}
+
+.mk-checkout-order-items span {
+  color: #66554e;
+}
+
+.mk-edit-cart-link {
+  color: #ff6b35;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.mk-payment-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 250;
+  padding: 10px max(16px, calc((100vw - 760px) / 2)) calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.97);
+  border-top: 1px solid rgba(45,27,20,.1);
+  box-shadow: 0 -8px 30px rgba(45,27,20,.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  backdrop-filter: blur(12px);
+}
+
+.mk-payment-footer > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.mk-payment-footer > div:first-child span {
+  color: #74635b;
+  font-size: 12px;
+}
+
+.mk-payment-footer > div:first-child strong {
+  font-size: 21px;
+}
+
+.mk-payment-footer-action {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.mk-payment-footer-action small {
+  color: #75655d;
+}
+
+.mk-payment-footer button {
+  min-width: 190px;
+}
+
+@media (max-width: 650px) {
+  .mk-checkout-layout {
+    width: min(100% - 20px, 620px);
+  }
+
+  .mk-checkout-card {
+    padding: 17px;
+    border-radius: 14px;
+  }
+
+  .mk-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mk-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .mk-form-actions button {
+    width: 100%;
+  }
+
+  .mk-payment-footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .mk-payment-footer-action {
+    display: block;
+  }
+
+  .mk-payment-footer-action small {
+    display: none;
+  }
+
+  .mk-payment-footer button {
+    min-width: 150px;
+  }
+}

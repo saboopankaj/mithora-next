@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mithora Cart → Checkout → Payment Modules
 
-## Getting Started
+This dump is designed to be added to the existing `mithora-next` project.
 
-First, run the development server:
+## Included
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Modular cart state with localStorage persistence
+- Cart item add/update/remove
+- Global cart count
+- Sticky "View Cart" bar
+- `/cart` page
+- Pincode entry/change
+- Browser "Use my location" flow through the existing geocode API
+- Pincode suggestions
+- Coupon drawer and coupon application
+- Server-side cart validation through `/api/cart/sync`
+- Reusable long-distance/external-zone popup for Cart and Checkout
+- `/checkout` page
+- Saved address selection
+- Add-new-address form
+- Mark-default address support
+- Razorpay checkout
+- Payment success/failure handling
+- API helpers
+- Types
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Existing backend endpoints used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `POST /api/cart/sync`
+- `POST /api/cart/save`
+- `GET /api/coupons`
+- `GET /api/location/suggest?q=...`
+- `GET /api/location/google-geocode?lat=...&lng=...`
+- `GET /api/pincode/:pin`
+- `GET /api/user/addresses`
+- `POST /api/user/addresses`
+- `PATCH /api/user/addresses/:id/set-default`
+- `POST /api/checkout/create-order`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Important security note
 
-## Learn More
+The browser never decides the final payable amount.
 
-To learn more about Next.js, take a look at the following resources:
+Cart totals displayed by Next.js are based on `/api/cart/sync`. Before creating the Razorpay order, the Worker should validate/recalculate the cart again from D1 rather than trusting a client-supplied `validatedCart.total`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A Worker patch outline is included under `worker-patch/`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Install
 
-## Deploy on Vercel
+Copy the `components`, `lib`, `app`, and `styles` folders into the existing Next.js project.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Then make the small integration changes described in `INTEGRATION.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
