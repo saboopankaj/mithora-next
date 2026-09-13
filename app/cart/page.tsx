@@ -1,12 +1,10 @@
 "use client";
-
+import { useCart } from "@/components/cart/CartProvider";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import CartProvider, {
-  useCart,
-} from "@/components/cart/CartProvider";
+//import CartProvider from "@/components/cart/CartProvider"; // for gloval cart funtions
 import CartItem from "@/components/cart/CartItem";
 import CartPincode from "@/components/cart/CartPincode";
 import CartSummary from "@/components/cart/CartSummary";
@@ -135,10 +133,14 @@ function CartPageContent() {
   );
 }
 
-export default function CartPage() {
+/*export default function CartPage() {
   return (
     <CartProvider>
       <CartPageContent />
     </CartProvider>
   );
+}*/ // to manage global cart from layout.tsx
+
+export default function CartPage() {
+  return <CartPageContent />;
 }

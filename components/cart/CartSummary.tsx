@@ -22,7 +22,7 @@ export default function CartSummary() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
 
-  useEffect(() => {
+useEffect(() => {
   if (!cart.coupon_code || !validatedCart) return;
 
   const couponInfo = validatedCart.coupon_info;
@@ -31,16 +31,21 @@ export default function CartSummary() {
   if (couponInfo?.status === "error") {
     setCouponMessage(
       couponInfo.message ||
-        "⚠️ Minimum order not reached. Add more to use this coupon, or remove it to check other offers.",
+        "⚠️ Add more to use this coupon, or remove it to check other offers.",
     );
     return;
   }
 
-  if (discount <= 0) {
+  if (discount > 0) {
     setCouponMessage(
-      "⚠️ Minimum order not reached. Add more to use this coupon, or remove it to check other offers.",
+      `🎉 Yay! You saved ${money(discount)} with ${cart.coupon_code}.`,
     );
+    return;
   }
+
+  setCouponMessage(
+    "⚠️ Add more to use this coupon, or remove it to check other offers.",
+  );
 }, [cart.coupon_code, validatedCart]);
 
 useEffect(() => {
