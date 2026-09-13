@@ -11,7 +11,7 @@ export default function MenuHero() {
           made with care.
         </h1>
         <p>
-          Freshly prepared meals, snacks, tiffin and festive favourites.
+          Freshly prepared, snacks, tiffin and festive favourites.
         </p>
         <div className="menu-hero-badges" aria-label="Mithora benefits">
           <span>✦ 100% pure veg</span>
