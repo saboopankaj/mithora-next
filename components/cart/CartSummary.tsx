@@ -43,6 +43,12 @@ export default function CartSummary() {
   }
 }, [cart.coupon_code, validatedCart]);
 
+useEffect(() => {
+  if (!cart.coupon_code || validatedCart) return;
+
+  validate();
+}, [cart.coupon_code, validatedCart, validate]);
+
 async function applyCoupon(code: string) {
   setCouponMessage("");
   setCoupon(code);
