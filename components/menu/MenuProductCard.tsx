@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type {
   CartItem,
   CategoryAvailability,
@@ -44,9 +43,6 @@ export default function MenuProductCard({
     product: Product
   ) => void;
 }) {
-  const [descriptionExpanded, setDescriptionExpanded] =
-    useState(false);
-
   const variants = product.variants || [];
 
   if (!variants.length) {
@@ -95,21 +91,40 @@ export default function MenuProductCard({
   const reviewCount =
     getNumber(product.review_count);
 
-  const openModal = () => {
-    onOpen(product);
-  };
+
+  /* =====================================================
+     TEMPORARY TAGS
+     Later these can come directly from API
+     ===================================================== */
+
+  const productTags =
+    product.tags ||
+    getDefaultTags(product.name);
+
+
+  /* =====================================================
+     TEMPORARY BADGE
+     Later this can come directly from API
+     ===================================================== */
+
+  const badge =
+    product.badge ||
+    "BESTSELLER";
+
 
   return (
     <article
       className="menu-product-card"
-      onClick={openModal}
+      onClick={() =>
+        onOpen(product)
+      }
     >
 
       {/* =================================================
           IMAGE
           ================================================= */}
 
-      <div className="menu-product-image-button">
+      <div className="menu-product-image">
 
         <img
           src={
@@ -120,9 +135,9 @@ export default function MenuProductCard({
           loading="lazy"
         />
 
-        {isFeatured(product) && (
+        {badge && (
           <span className="menu-card-featured-badge">
-            ★ BESTSELLER
+            ★ {badge}
           </span>
         )}
 
@@ -135,44 +150,38 @@ export default function MenuProductCard({
 
       <div className="menu-product-body">
 
-        {/* TITLE */}
+        {/* PRODUCT NAME */}
 
-        <div className="menu-product-title-row">
-
-          <h3>
-            {product.name}
-          </h3>
-
-          {rating >= 0.5 && (
-            <div className="menu-rating">
-              <span>★</span>
-
-              <strong>
-                {rating.toFixed(1)}
-              </strong>
-
-              <small>
-                ({reviewCount})
-              </small>
-            </div>
-          )}
-
-        </div>
+        <h3 className="menu-product-title">
+          {product.name}
+        </h3>
 
 
-        {/* =================================================
-            DESCRIPTION
-            ================================================= */}
+        {/* TAGS */}
+
+        {productTags.length > 0 && (
+          <div className="menu-product-tags">
+
+            {productTags.map(
+              (tag) => (
+                <span
+                  key={tag}
+                  className="menu-product-tag"
+                >
+                  {tag}
+                </span>
+              )
+            )}
+
+          </div>
+        )}
+
+
+        {/* DESCRIPTION */}
 
         <div className="menu-description-area">
 
-          <p
-            className={`menu-product-description ${
-              descriptionExpanded
-                ? "expanded"
-                : ""
-            }`}
-          >
+          <p className="menu-product-description">
             {product.description || ""}
           </p>
 
@@ -182,15 +191,10 @@ export default function MenuProductCard({
               className="menu-read-more"
               onClick={(event) => {
                 event.stopPropagation();
-
-                setDescriptionExpanded(
-                  (value) => !value
-                );
+                onOpen(product);
               }}
             >
-              {descriptionExpanded
-                ? "Read less"
-                : "Read more"}
+              Read more
             </button>
           )}
 
@@ -279,7 +283,9 @@ export default function MenuProductCard({
               <button
                 type="button"
                 className="menu-btn-primary"
-                onClick={openModal}
+                onClick={() =>
+                  onOpen(product)
+                }
               >
                 SUBSCRIBE
               </button>
@@ -289,7 +295,9 @@ export default function MenuProductCard({
               <button
                 type="button"
                 className="menu-btn-primary"
-                onClick={openModal}
+                onClick={() =>
+                  onOpen(product)
+                }
               >
                 CUSTOMIZE
               </button>
@@ -319,4 +327,69 @@ export default function MenuProductCard({
 
     </article>
   );
+}
+
+
+/* =========================================================
+   TEMPORARY PRODUCT TAGS
+   ========================================================= */
+
+function getDefaultTags(
+  name: string
+): string[] {
+
+  const lower =
+    name.toLowerCase();
+
+  if (
+    lower.includes("tiffin")
+  ) {
+    return [
+      "Homemade",
+      "Healthy",
+    ];
+  }
+
+  if (
+    lower.includes("salad")
+  ) {
+    return [
+      "Healthy",
+      "Fresh",
+    ];
+  }
+
+  if (
+    lower.includes("dal") ||
+    lower.includes("khichdi")
+  ) {
+    return [
+      "Homemade",
+      "Protein Rich",
+    ];
+  }
+
+  if (
+    lower.includes("roti") ||
+    lower.includes("chapati")
+  ) {
+    return [
+      "Homemade",
+      "Fresh",
+    ];
+  }
+
+  if (
+    lower.includes("poha") ||
+    lower.includes("upma")
+  ) {
+    return [
+      "Healthy",
+      "Light",
+    ];
+  }
+
+  return [
+    "Homemade",
+  ];
 }

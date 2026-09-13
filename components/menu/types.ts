@@ -20,10 +20,16 @@ export type Product = {
   name: string;
   description?: string;
   image_path?: string;
+
   avg_rating?: number | string;
   review_count?: number | string;
   is_featured?: number | boolean | string;
+
+  tags?: string[];
+  badge?: string;
+
   variants?: Variant[];
+
   [key: string]: unknown;
 };
 

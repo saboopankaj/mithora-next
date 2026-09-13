@@ -1,5 +1,5 @@
 /* =========================================================
-   MITHORA MENU — UNIFORM PRODUCT CARD
+   MITHORA MENU — FINAL PRODUCT CARD
    ========================================================= */
 
 .menu-product-card {
@@ -8,18 +8,19 @@
 
   width: 100%;
   height: 100%;
-  min-height: 440px;
+  min-height: 470px;
 
   overflow: hidden;
 
   background: #fffdf8;
+
   border: 1px solid rgba(45, 27, 20, 0.08);
   border-radius: 18px;
 
   cursor: pointer;
 
   box-shadow:
-    0 8px 24px rgba(45, 27, 20, 0.06);
+    0 7px 22px rgba(45, 27, 20, 0.06);
 
   transition:
     transform 0.2s ease,
@@ -30,7 +31,7 @@
   transform: translateY(-3px);
 
   box-shadow:
-    0 14px 32px rgba(45, 27, 20, 0.10);
+    0 14px 30px rgba(45, 27, 20, 0.11);
 }
 
 
@@ -38,70 +39,73 @@
    IMAGE
    ========================================================= */
 
-.menu-product-image-button {
+.menu-product-image {
   position: relative;
 
   width: 100%;
-  height: 230px;
-  min-height: 230px;
+  height: 235px;
+  min-height: 235px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   overflow: hidden;
 
-  background: #f4efe2;
+  background: #f5eee1;
 }
 
-.menu-product-image-button img {
+.menu-product-image img {
   display: block;
 
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
-
-  transition:
-    transform 0.35s ease;
-}
-
-.menu-product-card:hover
-.menu-product-image-button img {
-  transform: scale(1.025);
+  /*
+   * Entire image stays visible.
+   * No stretching.
+   */
+  object-fit: contain;
 }
 
 
 /* =========================================================
-   BESTSELLER
+   BADGE
    ========================================================= */
 
 .menu-card-featured-badge {
   position: absolute;
 
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  right: 12px;
 
   display: inline-flex;
   align-items: center;
 
-  padding: 6px 10px;
+  padding: 7px 10px;
 
   border-radius: 999px;
 
   background: var(--primary-orange, #ff6b35);
-  color: #fff;
+  color: #ffffff;
+
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
 
   font-size: 10px;
   font-weight: 800;
 
   line-height: 1;
 
-  letter-spacing: 0.02em;
-
   box-shadow:
-    0 4px 10px rgba(45, 27, 20, 0.18);
+    0 4px 12px rgba(45, 27, 20, 0.18);
 }
 
 
 /* =========================================================
-   CONTENT
+   BODY
    ========================================================= */
 
 .menu-product-body {
@@ -110,7 +114,7 @@
 
   flex-direction: column;
 
-  padding: 17px 20px 18px;
+  padding: 15px 18px 17px;
 }
 
 
@@ -118,20 +122,11 @@
    TITLE
    ========================================================= */
 
-.menu-product-title-row {
-  display: flex;
-  align-items: center;
-
+.menu-product-title {
   width: 100%;
-  min-height: 28px;
 
-  gap: 8px;
-}
-
-.menu-product-title-row h3 {
-  flex: 1;
-
-  min-width: 0;
+  height: 27px;
+  min-height: 27px;
 
   margin: 0;
 
@@ -147,7 +142,7 @@
   font-size: 20px;
   font-weight: 700;
 
-  line-height: 1.25;
+  line-height: 27px;
 
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -155,20 +150,47 @@
 
 
 /* =========================================================
-   RATING
+   TAGS
    ========================================================= */
 
-.menu-rating {
+.menu-product-tags {
+  display: flex;
+  align-items: center;
+
+  height: 25px;
+  min-height: 25px;
+
+  gap: 6px;
+
+  margin-top: 5px;
+
+  overflow: hidden;
+}
+
+.menu-product-tag {
   flex-shrink: 0;
 
   display: inline-flex;
   align-items: center;
 
-  gap: 3px;
+  height: 22px;
 
-  color: #7b4b22;
+  padding: 0 8px;
 
-  font-size: 11px;
+  border-radius: 999px;
+
+  background: rgba(244, 196, 48, 0.20);
+  color: var(--dark-brown, #2d1b14);
+
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  line-height: 1;
 }
 
 
@@ -179,10 +201,10 @@
 .menu-description-area {
   position: relative;
 
-  height: 66px;
-  min-height: 66px;
+  height: 68px;
+  min-height: 68px;
 
-  margin-top: 7px;
+  margin-top: 5px;
 
   overflow: hidden;
 }
@@ -190,7 +212,8 @@
 .menu-product-description {
   display: -webkit-box;
 
-  height: 48px;
+  width: 100%;
+  height: 46px;
 
   margin: 0;
 
@@ -203,8 +226,8 @@
     Arial,
     sans-serif;
 
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 13px;
+  line-height: 23px;
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -213,7 +236,7 @@
 
 /* =========================================================
    READ MORE
-   Always positioned on second line
+   ALWAYS SECOND LINE
    ========================================================= */
 
 .menu-read-more {
@@ -221,6 +244,8 @@
 
   right: 0;
   bottom: 0;
+
+  height: 21px;
 
   margin: 0;
 
@@ -237,31 +262,14 @@
     Arial,
     sans-serif;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 
-  line-height: 18px;
+  line-height: 21px;
 
   text-decoration: underline;
 
   cursor: pointer;
-}
-
-.menu-read-more:hover {
-  color: var(--dark-brown, #2d1b14);
-}
-
-
-/* =========================================================
-   EXPANDED DESCRIPTION
-   ========================================================= */
-
-.menu-product-description.expanded {
-  height: auto;
-
-  display: block;
-
-  -webkit-line-clamp: unset;
 }
 
 
@@ -274,14 +282,16 @@
   align-items: flex-end;
   justify-content: space-between;
 
-  gap: 14px;
+  width: 100%;
 
-  min-height: 100px;
+  gap: 12px;
+
+  min-height: 105px;
 
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 13px;
 
-  border-top: 1px dashed rgba(45, 27, 20, 0.14);
+  border-top: 1px dashed rgba(45, 27, 20, 0.15);
 }
 
 
@@ -290,16 +300,17 @@
    ========================================================= */
 
 .menu-price-block {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 
   min-width: 0;
 
-  gap: 2px;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  gap: 3px;
 }
-
-
-/* OLD PRICE + DISCOUNT */
 
 .menu-price-top {
   display: flex;
@@ -311,7 +322,7 @@
 }
 
 .menu-old-price {
-  color: #8b817b;
+  color: #8a817b;
 
   font-family:
     Inter,
@@ -325,7 +336,9 @@
 }
 
 
-/* DISCOUNT */
+/* =========================================================
+   DISCOUNT
+   ========================================================= */
 
 .menu-discount-inline {
   display: inline-flex;
@@ -338,14 +351,21 @@
   background: rgba(244, 196, 48, 0.22);
   color: var(--dark-brown, #2d1b14);
 
-  font-size: 10px;
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+
+  font-size: 9px;
   font-weight: 800;
 
   line-height: 1;
 }
 
 
-/* FINAL SELLING PRICE */
+/* =========================================================
+   FINAL PRICE
+   ========================================================= */
 
 .menu-selling-price {
   display: block;
@@ -360,12 +380,12 @@
   font-size: 28px;
   font-weight: 800;
 
-  line-height: 1.1;
+  line-height: 32px;
 }
 
 
 /* =========================================================
-   ACTION
+   BUTTON
    ========================================================= */
 
 .menu-product-action {
@@ -384,7 +404,7 @@
   min-width: 136px;
   height: 54px;
 
-  padding: 0 10px;
+  padding: 0 8px;
 
   border-radius: 14px;
 
@@ -403,21 +423,21 @@
 
 
 /* =========================================================
-   MAIN BUTTON
+   MITHORA BUTTON
    ========================================================= */
 
 .menu-btn-primary {
-  border: 1px solid var(--primary-orange, #ff6b35);
+  border: 0;
 
   background: var(--primary-orange, #ff6b35);
-  color: #fff;
+  color: #ffffff;
 
   box-shadow:
     0 7px 16px rgba(255, 107, 53, 0.18);
 }
 
 .menu-btn-primary:hover {
-  background: #e95c2d;
+  background: #e85c2c;
 }
 
 
@@ -433,18 +453,36 @@
 
 
 /* =========================================================
+   LARGE DESKTOP
+   ========================================================= */
+
+@media (min-width: 1500px) {
+
+  .menu-product-card {
+    min-height: 475px;
+  }
+
+  .menu-product-image {
+    height: 245px;
+    min-height: 245px;
+  }
+}
+
+
+/* =========================================================
    DESKTOP
    ========================================================= */
 
-@media (min-width: 1200px) {
+@media (min-width: 1200px)
+and (max-width: 1499px) {
 
   .menu-product-card {
-    min-height: 440px;
+    min-height: 460px;
   }
 
-  .menu-product-image-button {
-    height: 230px;
-    min-height: 230px;
+  .menu-product-image {
+    height: 225px;
+    min-height: 225px;
   }
 }
 
@@ -457,24 +495,24 @@
 and (max-width: 1199px) {
 
   .menu-product-card {
-    min-height: 420px;
+    min-height: 440px;
   }
 
-  .menu-product-image-button {
-    height: 220px;
-    min-height: 220px;
+  .menu-product-image {
+    height: 215px;
+    min-height: 215px;
   }
 
   .menu-product-body {
-    padding: 16px 18px 18px;
+    padding: 14px 16px 16px;
   }
 
-  .menu-product-title-row h3 {
-    font-size: 19px;
+  .menu-product-title {
+    font-size: 18px;
   }
 
   .menu-product-description {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .menu-product-action,
@@ -506,64 +544,76 @@ and (max-width: 1199px) {
 
   /* IMAGE */
 
-  .menu-product-image-button {
-    height: 120px;
-    min-height: 120px;
+  .menu-product-image {
+    height: 115px;
+    min-height: 115px;
   }
 
 
   /* BADGE */
 
   .menu-card-featured-badge {
-    top: 7px;
-    right: 7px;
+    top: 6px;
+    right: 6px;
 
     padding: 5px 7px;
 
-    font-size: 8px;
+    font-size: 7px;
   }
 
 
   /* BODY */
 
   .menu-product-body {
-    padding: 10px 10px 11px;
+    padding: 9px 9px 10px;
   }
 
 
   /* TITLE */
 
-  .menu-product-title-row {
+  .menu-product-title {
+    height: 20px;
     min-height: 20px;
-  }
 
-  .menu-product-title-row h3 {
     font-size: 14px;
-    line-height: 1.3;
+    line-height: 20px;
   }
 
 
-  /* HIDE RATING ON MOBILE */
+  /* TAGS */
 
-  .menu-rating {
-    display: none;
+  .menu-product-tags {
+    height: 20px;
+    min-height: 20px;
+
+    gap: 4px;
+
+    margin-top: 3px;
+  }
+
+  .menu-product-tag {
+    height: 18px;
+
+    padding: 0 6px;
+
+    font-size: 7px;
   }
 
 
   /* DESCRIPTION */
 
   .menu-description-area {
-    height: 52px;
-    min-height: 52px;
+    height: 50px;
+    min-height: 50px;
 
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   .menu-product-description {
-    height: 36px;
+    height: 34px;
 
-    font-size: 10.5px;
-    line-height: 1.7;
+    font-size: 9.5px;
+    line-height: 17px;
 
     -webkit-line-clamp: 2;
   }
@@ -572,47 +622,50 @@ and (max-width: 1199px) {
   /* READ MORE */
 
   .menu-read-more {
-    font-size: 9.5px;
+    height: 17px;
 
-    line-height: 16px;
+    font-size: 8px;
 
-    padding-left: 5px;
+    line-height: 17px;
+
+    padding-left: 4px;
   }
 
 
   /* BOTTOM */
 
   .menu-product-bottom {
-    gap: 6px;
+    gap: 5px;
 
-    min-height: 69px;
+    min-height: 67px;
 
-    padding-top: 9px;
+    padding-top: 8px;
   }
 
 
   /* PRICE */
 
   .menu-price-top {
-    min-height: 15px;
+    min-height: 14px;
 
     gap: 4px;
   }
 
   .menu-old-price {
-    font-size: 8px;
+    font-size: 7px;
   }
 
   .menu-discount-inline {
-    padding: 3px 5px;
+    padding: 3px 4px;
 
-    border-radius: 5px;
+    border-radius: 4px;
 
-    font-size: 8px;
+    font-size: 6.5px;
   }
 
   .menu-selling-price {
     font-size: 18px;
+    line-height: 21px;
   }
 
 
@@ -621,19 +674,19 @@ and (max-width: 1199px) {
   .menu-product-action,
   .menu-product-action > button,
   .menu-product-action .menu-quantity-control {
-    width: 92px;
-    min-width: 92px;
+    width: 88px;
+    min-width: 88px;
   }
 
   .menu-product-action > button {
-    height: 38px;
+    height: 37px;
 
     border-radius: 10px;
 
-    font-size: 9px;
+    font-size: 8.5px;
   }
 
   .menu-product-action .menu-quantity-control {
-    height: 38px;
+    height: 37px;
   }
 }
