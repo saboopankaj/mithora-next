@@ -22,27 +22,40 @@ export default function CartSummary() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
 
-  async function applyCoupon(code: string) {
-    setCoupon(code);
-    const response = await validate();
+async function applyCoupon(code: string) {
+  setCouponMessage("");
+  setCoupon(code);
 
-    if (!response.validatedCart) {
-      setCouponMessage(response.error || response.message || "Coupon could not be applied.");
-      return;
-    }
+  const response = await validate();
 
-    if (
-      response.validatedCart.coupon_info &&
-      response.validatedCart.coupon_info.status === "error"
-    ) {
-      setCouponMessage(
-        response.validatedCart.coupon_info.message || "Coupon is not applicable.",
-      );
-      return;
-    }
-
-    setCouponMessage("Coupon applied.");
+  if (!response.validatedCart) {
+    setCouponMessage(
+      response.error ||
+        response.message ||
+        "Coupon could not be applied.",
+    );
+    return;
   }
+
+  const couponInfo = response.validatedCart.coupon_info;
+
+  if (couponInfo?.status === "error") {
+    setCouponMessage(
+      couponInfo.message || "Coupon is not applicable.",
+    );
+    return;
+  }
+
+  const discount = Number(response.validatedCart.discount || 0);
+
+  if (discount > 0) {
+    setCouponMessage(
+      `🎉 Yay! You saved ${money(discount)} with ${code}.`,
+    );
+  } else {
+    setCouponMessage("🎉 Coupon applied successfully.");
+  }
+}
 
   if (!validatedCart) {
     return (
@@ -114,12 +127,16 @@ export default function CartSummary() {
         {cart.coupon_code ? (
           <div className="mk-applied-coupon">
             <span>Coupon <strong>{cart.coupon_code}</strong></span>
-            <button type="button" onClick={async () => {
-              removeCoupon();
-              await validate();
-            }}>
-              REMOVE
-            </button>
+<button
+  type="button"
+  onClick={async () => {
+    removeCoupon();
+    setCouponMessage("Coupon removed. You can apply another offer anytime.");
+    await validate();
+  }}
+>
+  REMOVE
+</button>
           </div>
         ) : (
           <button
@@ -143,12 +160,13 @@ export default function CartSummary() {
         </Link>
       </section>
 
-      <CouponDrawer
-        open={couponOpen}
-        onClose={() => setCouponOpen(false)}
-        currentCode={cart.coupon_code}
-        onApply={applyCoupon}
-      />
+<CouponDrawer
+  open={couponOpen}
+  onClose={() => setCouponOpen(false)}
+  currentCode={cart.coupon_code}
+  subtotal={validatedCart?.subtotal ?? 0}
+  onApply={applyCoupon}
+/>
     </>
   );
 }

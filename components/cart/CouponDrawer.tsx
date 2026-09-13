@@ -9,6 +9,7 @@ type Props = {
   onClose: () => void;
   currentCode?: string;
   onApply: (code: string) => Promise<void> | void;
+  subtotal?: number;
 };
 
 export default function CouponDrawer({
@@ -16,6 +17,7 @@ export default function CouponDrawer({
   onClose,
   currentCode,
   onApply,
+  subtotal = 0,
 }: Props) {
   const { isAuthenticated } = useAuth();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -96,12 +98,15 @@ export default function CouponDrawer({
     coupon.discount_value ?? coupon.discount ?? 0,
   );
 
-  const discountText =
-    coupon.discount_type === "percentage"
-      ? `${discountValue}% OFF`
-      : discountValue > 0
-        ? `₹${discountValue} OFF`
-        : "Special offer";
+const isPercentage =
+  coupon.discount_type === "percent" ||
+  coupon.discount_type === "percentage";
+
+const discountText = isPercentage
+  ? `${discountValue}% OFF`
+  : discountValue > 0
+    ? `₹${discountValue} OFF`
+    : "Special offer";
 
   return (
     <div
@@ -120,20 +125,33 @@ export default function CouponDrawer({
             <p>{coupon.description}</p>
           )}
 
-          {minimumOrder > 0 && (
-            <small>
-              Minimum order: ₹{minimumOrder.toFixed(0)}
-            </small>
-          )}
+{minimumOrder > 0 && (
+  <small>
+    Minimum order: ₹{minimumOrder.toFixed(0)}
+  </small>
+)}
+
+{minimumOrder > subtotal && (
+  <div className="mk-coupon-locked-message">
+    Add ₹{(minimumOrder - subtotal).toFixed(0)} more to unlock
+  </div>
+)}
         </div>
 
-        <button
-          type="button"
-          disabled={currentCode === coupon.code}
-          onClick={() => onApply(coupon.code)}
-        >
-          {currentCode === coupon.code ? "APPLIED" : "APPLY"}
-        </button>
+<button
+  type="button"
+  disabled={
+    currentCode === coupon.code ||
+    minimumOrder > subtotal
+  }
+  onClick={() => onApply(coupon.code)}
+>
+  {currentCode === coupon.code
+    ? "APPLIED"
+    : minimumOrder > subtotal
+      ? `ADD ₹${(minimumOrder - subtotal).toFixed(0)} MORE`
+      : "APPLY"}
+</button>
       </div>
     </div>
   );
