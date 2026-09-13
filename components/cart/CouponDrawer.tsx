@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuth } from "@/components/auth/AuthContext";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import type { Coupon } from "./types";
@@ -17,6 +17,7 @@ export default function CouponDrawer({
   currentCode,
   onApply,
 }: Props) {
+  const { isAuthenticated } = useAuth();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(false);
   const [manual, setManual] = useState("");
@@ -83,42 +84,79 @@ export default function CouponDrawer({
           <div className="mk-coupon-loading">Loading available coupons…</div>
         ) : coupons.length ? (
           <div className="mk-coupon-list">
-            {coupons.map((coupon, index) => {
-              const code = String(coupon.code || "");
-              const minimum =
-                coupon.min_order_value ?? coupon.min_order ?? 0;
-              const discount =
-                coupon.discount_value ?? coupon.discount ?? "";
+            {coupons.map((coupon) => {
+  const minimumOrder = Number(
+    coupon.min_order_amount ??
+      coupon.min_order_value ??
+      coupon.min_order ??
+      0,
+  );
 
-              return (
-                <div className="mk-coupon-card" key={`${code}-${index}`}>
-                  <div>
-                    <strong>{code}</strong>
-                    <p>{coupon.description || "Special savings on your order."}</p>
-                    {discount !== "" && (
-                      <small>
-                        {coupon.discount_type === "percent"
-                          ? `${discount}% off`
-                          : `₹${discount} off`}
-                        {minimum ? ` · Min order ₹${minimum}` : ""}
-                      </small>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await onApply(code);
-                      onClose();
-                    }}
-                  >
-                    {currentCode === code ? "APPLIED" : "APPLY"}
-                  </button>
-                </div>
-              );
-            })}
+  const discountValue = Number(
+    coupon.discount_value ?? coupon.discount ?? 0,
+  );
+
+  const discountText =
+    coupon.discount_type === "percentage"
+      ? `${discountValue}% OFF`
+      : discountValue > 0
+        ? `₹${discountValue} OFF`
+        : "Special offer";
+
+  return (
+    <div
+      key={coupon.id ?? coupon.code}
+      className="mk-coupon-card"
+    >
+      <div className="mk-coupon-card-main">
+        <div>
+          <strong>{coupon.code}</strong>
+
+          <div className="mk-coupon-discount">
+            {discountText}
+          </div>
+
+          {coupon.description && (
+            <p>{coupon.description}</p>
+          )}
+
+          {minimumOrder > 0 && (
+            <small>
+              Minimum order: ₹{minimumOrder.toFixed(0)}
+            </small>
+          )}
+        </div>
+
+        <button
+          type="button"
+          disabled={currentCode === coupon.code}
+          onClick={() => onApply(coupon.code)}
+        >
+          {currentCode === coupon.code ? "APPLIED" : "APPLY"}
+        </button>
+      </div>
+    </div>
+  );
+})}
           </div>
         ) : (
-          <div className="mk-coupon-empty">No coupons available right now.</div>
+          <div className="mk-coupon-empty">
+  {isAuthenticated ? (
+    <>
+      <strong>No available offers</strong>
+      <span>
+        There are no coupons currently linked to your account.
+      </span>
+    </>
+  ) : (
+    <>
+      <strong>Log in to see available coupons & offers</strong>
+      <span>
+        Sign in to view coupons linked to your account and apply them to your order.
+      </span>
+    </>
+  )}
+</div>
         )}
       </aside>
     </div>

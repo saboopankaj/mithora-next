@@ -1,13 +1,18 @@
+import { getAuthToken } from "./auth";
+
 export const API_BASE = "";
 
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const token = getAuthToken();
+
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     },
     credentials: "include",

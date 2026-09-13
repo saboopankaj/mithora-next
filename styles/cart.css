@@ -645,3 +645,24 @@
     max-height: 88vh;
   }
 }
+.mk-free-delivery-message {
+  margin-top: 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.mk-distance-warning {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
