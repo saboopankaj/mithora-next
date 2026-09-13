@@ -158,7 +158,11 @@ export default function MenuShell() {
       <section className="menu-sticky-controls">
         <div className="menu-shell-container">
           <MenuSearchBar value={searchQuery} onOpen={openSearch} />
-          <MenuCategories categories={categories} selectedCategory={selectedCategory} onSelect={selectCategory} />
+          <MenuCategories
+  categories={categories}
+  activeCategory={selectedCategory}
+  onSelect={setSelectedCategory}
+/>
         </div>
       </section>
 

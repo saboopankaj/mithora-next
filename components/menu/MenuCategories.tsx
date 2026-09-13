@@ -4,32 +4,80 @@ import type { Category } from "./types";
 
 export default function MenuCategories({
   categories,
-  selectedCategory,
+  activeCategory,
   onSelect,
 }: {
   categories: Category[];
-  selectedCategory: string;
+  activeCategory: string;
   onSelect: (categoryId: string) => void;
 }) {
   return (
-    <div className="menu-category-scroll">
-      <button
-        type="button"
-        className={`menu-category-pill ${selectedCategory === "all" ? "active" : ""}`}
-        onClick={() => onSelect("all")}
-      >
-        <span>All Items</span>
-      </button>
-      {categories.map((category) => (
+    <div className="menu-categories-wrapper">
+      <div className="menu-categories">
+
+        {/* ALL ITEMS */}
+
         <button
           type="button"
-          key={category.id}
-          className={`menu-category-pill ${String(selectedCategory) === String(category.id) ? "active" : ""}`}
-          onClick={() => onSelect(String(category.id))}
+          className={`menu-category-item ${
+            activeCategory === "all"
+              ? "active"
+              : ""
+          }`}
+          onClick={() => onSelect("all")}
         >
-          <span>{category.name}</span>
+          <div className="menu-category-image">
+            <img
+              src="/images/menu/categories/all-items.png"
+              alt="All Items"
+            />
+          </div>
+
+          <span>All Items</span>
         </button>
-      ))}
+
+
+        {/* API CATEGORIES */}
+
+        {categories.map((category) => (
+          <button
+            type="button"
+            key={String(category.id)}
+            className={`menu-category-item ${
+              activeCategory ===
+              String(category.id)
+                ? "active"
+                : ""
+            }`}
+            onClick={() =>
+              onSelect(
+                String(category.id)
+              )
+            }
+          >
+
+            <div className="menu-category-image">
+
+              <img
+                src={
+                  typeof category.image_path ===
+                  "string"
+                    ? category.image_path
+                    : "/images/menu/categories/default.png"
+                }
+                alt={category.name}
+              />
+
+            </div>
+
+            <span>
+              {category.name}
+            </span>
+
+          </button>
+        ))}
+
+      </div>
     </div>
   );
 }
