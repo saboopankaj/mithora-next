@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./CartProvider";
 import CouponDrawer from "./CouponDrawer";
@@ -22,6 +22,27 @@ export default function CartSummary() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
 
+  useEffect(() => {
+  if (!cart.coupon_code || !validatedCart) return;
+
+  const couponInfo = validatedCart.coupon_info;
+  const discount = Number(validatedCart.discount || 0);
+
+  if (couponInfo?.status === "error") {
+    setCouponMessage(
+      couponInfo.message ||
+        "⚠️ Minimum order not reached. Add more to use this coupon, or remove it to check other offers.",
+    );
+    return;
+  }
+
+  if (discount <= 0) {
+    setCouponMessage(
+      "⚠️ Minimum order not reached. Add more to use this coupon, or remove it to check other offers.",
+    );
+  }
+}, [cart.coupon_code, validatedCart]);
+
 async function applyCoupon(code: string) {
   setCouponMessage("");
   setCoupon(code);
@@ -38,6 +59,7 @@ async function applyCoupon(code: string) {
   }
 
   const couponInfo = response.validatedCart.coupon_info;
+  const discount = Number(response.validatedCart.discount || 0);
 
   if (couponInfo?.status === "error") {
     setCouponMessage(
@@ -46,14 +68,12 @@ async function applyCoupon(code: string) {
     return;
   }
 
-  const discount = Number(response.validatedCart.discount || 0);
-
   if (discount > 0) {
     setCouponMessage(
       `🎉 Yay! You saved ${money(discount)} with ${code}.`,
     );
   } else {
-    setCouponMessage("🎉 Coupon applied successfully.");
+    setCouponMessage("Coupon applied successfully.");
   }
 }
 
