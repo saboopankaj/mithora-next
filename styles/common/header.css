@@ -1,0 +1,1277 @@
+/* =========================================================
+   MITHORA KITCHEN — PREMIUM HEADER
+   Desktop + Tablet + Mobile
+   ========================================================= */
+
+
+/* =========================================================
+   HEADER SHELL
+   ========================================================= */
+
+#site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    max-width: 100vw;
+
+    z-index: 1000;
+
+    background: rgba(255, 253, 248, 0.98);
+
+    border-bottom: 1px solid rgba(45, 27, 20, 0.08);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    box-shadow:
+        0 3px 18px rgba(45, 27, 20, 0.055);
+
+    transition:
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+#site-header.scrolled {
+    background: rgba(255, 253, 248, 0.99);
+
+    box-shadow:
+        0 7px 28px rgba(45, 27, 20, 0.10);
+}
+
+
+/* =========================================================
+   HEADER CONTAINER
+   ========================================================= */
+
+#site-header .header-container {
+    width: min(1420px, calc(100% - 48px));
+
+    height: 76px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 26px;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+#site-header .logo {
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    height: 58px;
+
+    text-decoration: none;
+}
+
+#site-header .logo img {
+    display: block;
+
+    width: auto;
+    height: 52px;
+
+    max-width: 190px;
+
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+#site-header nav {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#site-header .nav-menu {
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    margin: 0;
+    padding: 0;
+}
+
+#site-header .nav-menu li {
+    margin: 0;
+    padding: 0;
+
+    flex: 0 0 auto;
+}
+
+#site-header .nav-link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 42px;
+
+    padding: 0 11px;
+
+    color: #30251e;
+
+    font-family:
+        var(--mk-font-heading,
+        "Outfit",
+        "Plus Jakarta Sans",
+        Arial,
+        sans-serif);
+
+    font-size: 14px;
+    font-weight: 650;
+
+    line-height: 1;
+
+    letter-spacing: -0.01em;
+
+    white-space: nowrap;
+
+    text-decoration: none;
+
+    transition:
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+/* Gold underline */
+
+#site-header .nav-link::after {
+    content: "";
+
+    position: absolute;
+
+    left: 11px;
+    right: 11px;
+    bottom: 2px;
+
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: #f4c430;
+
+    transform: scaleX(0);
+
+    transform-origin: center;
+
+    transition:
+        transform 0.18s ease;
+}
+
+#site-header .nav-link:hover {
+    color: #a66d00;
+}
+
+#site-header .nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+
+/* Active page */
+
+#site-header .nav-link.active,
+#site-header .nav-link[aria-current="page"] {
+    color: #a66d00;
+}
+
+#site-header .nav-link.active::after,
+#site-header .nav-link[aria-current="page"]::after {
+    transform: scaleX(1);
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+#site-header .header-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    flex: 0 0 auto;
+}
+
+
+/* Small divider before actions */
+
+#site-header .header-actions::before {
+    content: "";
+
+    width: 1px;
+    height: 30px;
+
+    margin-right: 6px;
+
+    background: rgba(45, 27, 20, 0.10);
+}
+
+
+/* =========================================================
+   HIDE DESKTOP GREETING
+   ========================================================= */
+
+#site-header .desktop-user-greeting {
+    display: none !important;
+}
+
+
+/* =========================================================
+   COMMON ACTION STYLES
+   ========================================================= */
+
+#site-header .header-call-btn,
+#site-header .header-whatsapp-btn,
+#site-header .login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    border: 0;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+
+/* =========================================================
+   CALL BUTTON
+   ========================================================= */
+
+#site-header .header-call-btn {
+    height: 42px;
+
+    min-width: 92px;
+
+    padding: 0 17px;
+
+    gap: 8px;
+
+    border-radius: 999px;
+
+    background: #f4c430;
+
+    color: #2d1b14;
+
+    font-family:
+        var(--mk-font-heading,
+        "Outfit",
+        "Plus Jakarta Sans",
+        Arial,
+        sans-serif);
+
+    font-size: 14px;
+    font-weight: 750;
+
+    box-shadow:
+        0 4px 12px rgba(196, 145, 20, 0.14);
+}
+
+#site-header .header-call-btn svg {
+    width: 17px;
+    height: 17px;
+
+    flex: 0 0 17px;
+}
+
+#site-header .header-call-btn:hover {
+    background: #f7c934;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 17px rgba(196, 145, 20, 0.20);
+}
+
+
+/* =========================================================
+   WHATSAPP
+   ========================================================= */
+
+#site-header .header-whatsapp-btn {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #18b957;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 4px 12px rgba(24, 185, 87, 0.13);
+}
+
+#site-header .header-whatsapp-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+#site-header .header-whatsapp-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 17px rgba(24, 185, 87, 0.20);
+}
+
+
+/* =========================================================
+   DESKTOP PROFILE
+   ========================================================= */
+
+#site-header .desktop-profile-wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+
+/* Profile button */
+
+#site-header .login-btn {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(45, 27, 20, 0.07);
+
+    background: rgba(45, 27, 20, 0.055);
+
+    color: #2d1b14;
+}
+
+#site-header .login-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+#site-header .login-btn:hover,
+#site-header .login-btn.profile-active {
+    background: rgba(45, 27, 20, 0.09);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 14px rgba(45, 27, 20, 0.07);
+}
+
+
+/* =========================================================
+   DESKTOP PROFILE DROPDOWN
+   ========================================================= */
+
+#site-header .profile-dropdown {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 270px;
+
+    padding: 8px;
+
+    background: #ffffff;
+
+    border:
+        1px solid rgba(45, 27, 20, 0.08);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 18px 45px rgba(45, 27, 20, 0.15);
+
+    z-index: 1100;
+
+    animation:
+        profileDropdownIn 0.16s ease-out;
+}
+
+@keyframes profileDropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Profile header */
+
+#site-header .profile-dropdown-header {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 11px 10px;
+}
+
+
+/* Avatar */
+
+#site-header .profile-avatar {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    border-radius: 50%;
+
+    background: #f4c430;
+    color: #2d1b14;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* User info */
+
+#site-header .profile-user-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+#site-header .profile-user-info strong {
+    color: #2d1b14;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+#site-header .profile-user-info span {
+    color: #7a6a62;
+
+    font-size: 11px;
+
+    line-height: 1.3;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Divider */
+
+#site-header .profile-dropdown-divider {
+    height: 1px;
+
+    background:
+        rgba(45, 27, 20, 0.08);
+
+    margin:
+        4px 4px 6px;
+}
+
+
+/* Dropdown item */
+
+#site-header .profile-dropdown-item {
+    width: 100%;
+
+    border: 0;
+
+    background: transparent;
+
+    border-radius: 10px;
+
+    padding: 11px 10px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    text-align: left;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease;
+}
+
+#site-header .profile-dropdown-item:hover {
+    background: #fef7e0;
+}
+
+#site-header .profile-item-icon {
+    width: 26px;
+
+    text-align: center;
+
+    font-size: 15px;
+}
+
+#site-header .profile-dropdown-item.logout-item {
+    color: #a33a2b;
+}
+
+#site-header .profile-dropdown-item.logout-item:hover {
+    background: #fff1ee;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+#site-header .mobile-menu-toggle {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background:
+        rgba(45, 27, 20, 0.07);
+
+    cursor: pointer;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+#site-header .mobile-menu-toggle span {
+    display: block;
+
+    width: 21px;
+    height: 2.5px;
+
+    border-radius: 999px;
+
+    background: #2d1b14;
+
+    transition:
+        transform 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+/* Hamburger → X */
+
+#site-header .mobile-menu-toggle.active span:nth-child(1) {
+    transform:
+        translateY(7.5px)
+        rotate(45deg);
+}
+
+#site-header .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+#site-header .mobile-menu-toggle.active span:nth-child(3) {
+    transform:
+        translateY(-7.5px)
+        rotate(-45deg);
+}
+
+
+/* =========================================================
+   MOBILE-ONLY ELEMENTS — HIDDEN DESKTOP
+   ========================================================= */
+
+#site-header .mobile-profile-wrapper {
+    display: none;
+}
+
+#site-header .mobile-login-item {
+    display: none;
+}
+
+#site-header .mobile-menu-divider {
+    display: none;
+}
+
+#site-header .mobile-call-item {
+    display: none;
+}
+
+#site-header .mobile-user-greeting {
+    display: none;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) and (min-width: 768px) {
+
+    #site-header .header-container {
+        width: min(100% - 32px, 100%);
+
+        height: 72px;
+
+        gap: 16px;
+    }
+
+    #site-header .logo img {
+        height: 48px;
+
+        max-width: 170px;
+    }
+
+    #site-header .nav-menu {
+        gap: 0;
+    }
+
+    #site-header .nav-link {
+        height: 40px;
+
+        padding: 0 8px;
+
+        font-size: 12px;
+    }
+
+    #site-header .nav-link::after {
+        left: 8px;
+        right: 8px;
+    }
+
+    #site-header .header-actions {
+        gap: 7px;
+    }
+
+    #site-header .header-actions::before {
+        margin-right: 3px;
+    }
+
+    #site-header .header-call-btn {
+        height: 40px;
+
+        min-width: 82px;
+
+        padding: 0 13px;
+
+        font-size: 13px;
+    }
+
+    #site-header .header-whatsapp-btn,
+    #site-header .login-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE HEADER
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+
+    /* Header */
+
+    #site-header {
+        width: 100%;
+        max-width: 100vw;
+
+        left: 0;
+        right: 0;
+    }
+
+
+    /* Container */
+
+    #site-header .header-container {
+        width: 100%;
+        max-width: 100%;
+
+        height: 72px;
+
+        margin: 0;
+
+        padding:
+            0 16px;
+
+        gap: 0;
+
+        box-sizing: border-box;
+    }
+
+
+    /* Logo */
+
+    #site-header .logo {
+        min-width: 0;
+
+        max-width: 160px;
+
+        height: 52px;
+
+        overflow: hidden;
+    }
+
+    #site-header .logo img {
+        height: 46px;
+
+        max-width: 160px;
+    }
+
+
+    /* Actions */
+
+    #site-header .header-actions {
+        margin-left: auto;
+
+        gap: 8px;
+
+        min-width: 0;
+    }
+
+
+    /* Remove desktop divider */
+
+    #site-header .header-actions::before {
+        display: none;
+    }
+
+
+    /* Call icon only */
+
+    #site-header .header-call-btn {
+        width: 38px;
+        height: 38px;
+
+        min-width: 38px;
+
+        padding: 0;
+
+        border-radius: 50%;
+    }
+
+    #site-header .header-call-btn span {
+        display: none;
+    }
+
+    #site-header .header-call-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    /* WhatsApp */
+
+    #site-header .header-whatsapp-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    #site-header .header-whatsapp-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+
+    /* Desktop profile hidden */
+
+    #site-header .desktop-profile-wrapper {
+        display: none;
+    }
+
+
+    /* Mobile profile */
+
+    #site-header .mobile-profile-wrapper {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+    }
+
+    #site-header .mobile-profile-btn {
+        width: 38px;
+        height: 38px;
+
+        padding: 0;
+
+        border: 0;
+
+        border-radius: 50%;
+
+        background:
+            rgba(45, 27, 20, 0.07);
+
+        color: #2d1b14;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    #site-header .mobile-profile-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    #site-header .mobile-profile-btn.profile-active {
+        background: #f4c430;
+    }
+
+    #site-header .mobile-profile-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+
+    /* Hamburger */
+
+    #site-header .mobile-menu-toggle {
+        display: flex;
+
+        flex:
+            0 0 42px;
+    }
+
+
+    /* =====================================================
+       MOBILE NAV DRAWER
+       ===================================================== */
+
+    #site-header nav {
+        position: fixed;
+
+        top: 72px;
+        left: 0;
+
+        width: 100%;
+        max-width: 100vw;
+
+        height:
+            calc(100dvh - 72px);
+
+        padding:
+            22px 18px 36px;
+
+        box-sizing: border-box;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        background: #fffdf8;
+
+        border-top:
+            1px solid rgba(45, 27, 20, 0.08);
+
+        transform:
+            translateX(100%);
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        transition:
+            transform 0.28s ease,
+            opacity 0.28s ease,
+            visibility 0.28s ease;
+    }
+
+    #site-header nav.nav-open {
+        transform: translateX(0);
+
+        opacity: 1;
+
+        visibility: visible;
+    }
+
+
+    /* Mobile list */
+
+    #site-header .nav-menu {
+        width: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        justify-content: flex-start;
+
+        gap: 0;
+
+        padding: 0;
+        margin: 0;
+    }
+
+    #site-header .nav-menu li {
+        width: 100%;
+
+        flex: none;
+    }
+
+
+    /* Mobile links */
+
+    #site-header .nav-link {
+        width: 100%;
+
+        min-height: 54px;
+
+        display: flex;
+
+        align-items: center;
+
+        padding: 0 10px;
+
+        box-sizing: border-box;
+
+        border-bottom:
+            1px solid rgba(45, 27, 20, 0.08);
+
+        color:
+            rgba(45, 27, 20, 0.90);
+
+        font-size: 15px;
+
+        font-weight: 700;
+    }
+
+    #site-header .nav-link::after {
+        display: none;
+    }
+
+    #site-header .nav-link:hover {
+        color: #a66d00;
+    }
+
+
+    /* =====================================================
+       MOBILE MENU ACTIONS
+       ===================================================== */
+
+    #site-header .mobile-menu-divider {
+        display: block;
+
+        width: 100%;
+        height: 1px;
+
+        margin:
+            20px 0 6px;
+
+        background:
+            rgba(45, 27, 20, 0.10);
+    }
+
+    #site-header .mobile-login-item {
+        display: block;
+
+        margin-top: 10px;
+    }
+
+    #site-header .mobile-call-item {
+        display: block;
+
+        margin-top: 10px;
+    }
+
+    #site-header .mobile-login-link,
+    #site-header .mobile-call-link {
+        width: 100%;
+
+        min-height: 52px;
+
+        padding: 0 18px;
+
+        border-radius: 12px;
+
+        display: flex;
+
+        align-items: center;
+
+        font-family: inherit;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        box-sizing: border-box;
+    }
+
+    #site-header .mobile-login-link {
+        border: 0;
+
+        background: #f4c430;
+
+        color: #2d1b14;
+    }
+
+    #site-header .mobile-call-link {
+        border:
+            1px solid rgba(45, 27, 20, 0.10);
+
+        background: #ffffff;
+
+        color: #2d1b14;
+    }
+
+    #site-header .mobile-login-link:hover,
+    #site-header .mobile-call-link:hover {
+        transform: translateY(-1px);
+    }
+
+
+    /* =====================================================
+       MOBILE PROFILE DROPDOWN
+       ===================================================== */
+
+    #site-header .mobile-profile-dropdown {
+        position: absolute;
+
+        top:
+            calc(100% + 12px);
+
+        right: 0;
+
+        width: 280px;
+
+        background: #ffffff;
+
+        border:
+            1px solid rgba(45, 27, 20, 0.08);
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 18px 45px rgba(45, 27, 20, 0.16);
+
+        padding: 10px;
+
+        z-index: 1100;
+
+        animation:
+            profileDropdownIn 0.16s ease-out;
+    }
+
+    #site-header .mobile-profile-welcome {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        padding: 12px 10px;
+    }
+
+    #site-header .mobile-profile-avatar {
+        width: 46px;
+        height: 46px;
+
+        flex: 0 0 46px;
+
+        border-radius: 50%;
+
+        background: #f4c430;
+
+        color: #2d1b14;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    #site-header .mobile-profile-welcome > div:last-child {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 4px;
+    }
+
+    #site-header .mobile-profile-welcome strong {
+        color: #2d1b14;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    #site-header .mobile-profile-welcome span {
+        color: #7a6a62;
+
+        font-size: 12px;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+
+    #site-header .mobile-action-icon {
+        width: 24px;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        margin-right: 10px;
+
+        font-size: 17px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    #site-header .header-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    #site-header .logo img {
+        height: 40px;
+
+        max-width: 140px;
+    }
+
+    #site-header .header-actions {
+        gap: 6px;
+    }
+
+    #site-header .header-call-btn,
+    #site-header .header-whatsapp-btn,
+    #site-header .mobile-profile-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+    #site-header .mobile-menu-toggle {
+        width: 38px;
+
+        flex-basis: 38px;
+    }
+
+}
+
+
+/* =========================================================
+   DESKTOP / MOBILE VISIBILITY
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    #site-header .mobile-user-greeting {
+        display: none;
+    }
+
+    #site-header .mobile-login-item {
+        display: none;
+    }
+
+    #site-header .mobile-profile-wrapper {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #site-header,
+    #site-header *,
+    #site-header *::before,
+    #site-header *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+
+}

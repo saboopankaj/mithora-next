@@ -1,5 +1,6 @@
 import "./globals.css";
 import "@/styles/layout.css";
+import "@/styles/common/header.css";
 //import "@/styles/home.css";
 import "../styles/home/home-catering.css";
 import "../styles/home/home-discovery.css";
