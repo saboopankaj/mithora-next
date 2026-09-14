@@ -1,3 +1,25 @@
+export type Address = {
+  id?: number | string;
+  user_id?: number | string;
+  full_name?: string;
+  name?: string;
+  phone?: string;
+  house_flat?: string;
+  house?: string;
+  street?: string;
+  landmark?: string;
+  area?: string;
+  area_name?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  pin?: string;
+  is_default?: number | boolean;
+  [key: string]: unknown;
+};
+
+export type Customer = { name?: string; phone?: string; email?: string };
+
 export type CartItem = {
   variant_id: number | string;
   qty: number;

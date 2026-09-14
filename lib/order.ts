@@ -1,5 +1,5 @@
 import { apiFetch } from "./api";
-import type { Address, Customer } from "../components/checkout/types";
+import type { Address, Customer } from "../components/cart/types";
 
 export async function fetchAddresses() {
   return apiFetch<{ addresses?: Address[] } | Address[]>("/api/user/addresses");

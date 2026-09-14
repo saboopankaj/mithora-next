@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 import { clearCart, clearGuestCart, getArea, getPincode, getCartItemCount, getCartOwner, loadCart, loadCartFromServer, markGuestCart, mergeCarts, saveCart, saveCartToServer, setCartOwner, syncCart, setPincode as persistPincode, type LocalCart } from "@/lib/cart";
-import type { Address } from "@/components/checkout/types";
+import type { Address } from "./types";
 import type { CartItem, CartSyncResponse, ValidatedCart } from "./types";
 
 type CartContextValue = {
