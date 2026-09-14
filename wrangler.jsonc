@@ -1,16 +1,24 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "mithora-next-dev",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2026-09-12",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "observability": {
-    "enabled": true
-  }
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "mithora-next-dev",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2026-09-12",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "mithora_dev_db",
+			"database_name": "mithora_dev_db",
+			"database_id": "2db09153-36c6-4cf4-a92c-0db755d7fd53",
+			"remote": true
+		}
+	]
 }

@@ -5,6 +5,7 @@ import "@/styles/auth.css";
 import "@/styles/account.css";
 import "@/styles/menu.css";
 import "@/styles/cart.css";
+import "../styles/order-confirmation.css";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { AuthProvider } from "@/components/auth/AuthContext";
