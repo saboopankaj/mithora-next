@@ -189,3 +189,7 @@
     min-width: 150px;
   }
 }
+
+
+.mk-checkout-auth-gate, .mk-checkout-location-gate { text-align: center; margin-top: 24px; }
+.mk-checkout-auth-gate p, .mk-checkout-location-gate p { color: #6b5a52; line-height: 1.55; }

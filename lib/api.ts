@@ -2,12 +2,8 @@ import { getAuthToken } from "./auth";
 
 export const API_BASE = "";
 
-export async function apiFetch<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
+export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getAuthToken();
-
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -20,24 +16,15 @@ export async function apiFetch<T>(
 
   const text = await response.text();
   let data: unknown = null;
-
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = text;
-  }
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
 
   if (!response.ok) {
-    const message =
-      typeof data === "object" &&
-      data !== null &&
-      "error" in data &&
-      typeof (data as { error?: unknown }).error === "string"
-        ? (data as { error: string }).error
+    const message = typeof data === "object" && data !== null && "error" in data && typeof (data as { error?: unknown }).error === "string"
+      ? (data as { error: string }).error
+      : typeof data === "object" && data !== null && "message" in data && typeof (data as { message?: unknown }).message === "string"
+        ? (data as { message: string }).message
         : `Request failed (${response.status})`;
-
     throw new Error(message);
   }
-
   return data as T;
 }

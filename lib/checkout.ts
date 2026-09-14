@@ -1,44 +1,29 @@
 import { apiFetch } from "./api";
-import type { Address } from "../components/checkout/types";
-import type { ValidatedCart } from "../components/cart/types";
+import type { Address, Customer } from "../components/checkout/types";
 
 export async function fetchAddresses() {
-  return apiFetch<{ addresses?: Address[] }>("/api/user/addresses");
+  return apiFetch<{ addresses?: Address[] } | Address[]>("/api/user/addresses");
 }
 
 export async function createAddress(address: Partial<Address>) {
-  return apiFetch<{ success?: boolean; address?: Address }>(
-    "/api/user/addresses",
-    {
-      method: "POST",
-      body: JSON.stringify(address),
-    },
-  );
+  return apiFetch<{ success?: boolean; id?: number | string; address?: Address }>("/api/user/addresses", { method: "POST", body: JSON.stringify(address) });
 }
 
 export async function setDefaultAddress(id: number | string) {
-  return apiFetch<{ success?: boolean }>(
-    `/api/user/addresses/${encodeURIComponent(String(id))}/set-default`,
-    { method: "PATCH" },
-  );
+  return apiFetch<{ success?: boolean }>(`/api/user/addresses/${encodeURIComponent(String(id))}/set-default`, { method: "PATCH" });
 }
 
 export async function createCheckoutOrder(payload: {
-  validatedCart: ValidatedCart;
-  address: Address;
-  customer?: unknown;
+  items: { variant_id: number | string; qty: number }[];
+  coupon_code?: string;
+  address_id: number | string;
+  customer?: Customer;
 }) {
   return apiFetch<{
-    success?: boolean;
-    key?: string;
-    order?: {
-      id: string;
-      amount: number;
-      currency?: string;
-    };
-    order_no?: string;
-  }>("/api/checkout/create-order", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+    success?: boolean; ok?: boolean;
+    key?: string; razorpay_key_id?: string;
+    order?: { id: string; amount: number; currency?: string };
+    razorpay_order?: { id: string; amount: number; currency?: string };
+    order_no?: string; order_id?: number | string;
+  }>("/api/checkout/create-order", { method: "POST", body: JSON.stringify(payload) });
 }

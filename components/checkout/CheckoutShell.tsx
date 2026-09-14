@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { getCurrentUser, getAuthToken } from "@/lib/auth";
+import { useAuth } from "@/components/auth/AuthContext";
 import { fetchAddresses, setDefaultAddress, createCheckoutOrder } from "@/lib/checkout";
 import { useCart } from "@/components/cart/CartProvider";
 
@@ -52,11 +53,12 @@ function loadRazorpay(): Promise<void> {
 
 export default function CheckoutShell() {
   const router = useRouter();
+  const { isAuthenticated, openAuth } = useAuth();
   const {
     cart,
     validatedCart,
     validate,
-    persist,
+    pincode,
     clear,
   } = useCart();
 
@@ -70,42 +72,48 @@ export default function CheckoutShell() {
 
   const loadAddresses = useCallback(async () => {
     const result = await fetchAddresses();
-    const list = result.addresses || [];
+    const list = Array.isArray(result) ? result : (result.addresses || []);
     setAddresses(list);
 
-    const defaultAddress =
-      list.find((address) => address.is_default) || list[0] || null;
+    const matching = /^\d{6}$/.test(pincode)
+      ? list.find((address) => String(address.pincode || address.pin || "") === pincode)
+      : null;
+    const defaultAddress = matching || list.find((address) => address.is_default) || list[0] || null;
 
     setSelected(defaultAddress);
     return defaultAddress;
-  }, []);
+  }, [pincode]);
 
   useEffect(() => {
-    if (!getAuthToken() || !getCurrentUser()) {
-      router.replace(`/?next=${encodeURIComponent("/checkout")}`);
+    if (!isAuthenticated || !getAuthToken() || !getCurrentUser()) {
+      if (typeof window !== "undefined") sessionStorage.setItem("mithora_after_login", "/checkout");
+      openAuth("mobile");
       return;
     }
 
-    if (!cart.items.length) {
-      router.replace("/cart");
-      return;
-    }
+    if (!cart.items.length) { router.replace("/cart"); return; }
+    if (!/^\d{6}$/.test(pincode)) { return; }
 
     void (async () => {
       try {
         const address = await loadAddresses();
-        const response = await validate(address);
-
-        if (response.validatedCart?.is_external_zone) {
-          setDistanceOpen(true);
+        if (address && String(address.pincode || address.pin || "") !== pincode) {
+          // Keep the cart-selected delivery pincode as the checkout gate; the user can choose a matching address.
         }
+        const response = await validate(address);
+        if (response.validatedCart?.is_external_zone) setDistanceOpen(true);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load checkout.");
       }
     })();
-  }, [cart.items.length, loadAddresses, router, validate]);
+  }, [cart.items.length, loadAddresses, router, validate, isAuthenticated, openAuth, pincode]);
 
   async function selectAddress(address: Address) {
+    const addressPin = String(address.pincode || address.pin || "");
+    if (/^\d{6}$/.test(pincode) && addressPin && addressPin !== pincode) {
+      setError("This address has a different pincode. Please change the delivery location on Review Order first.");
+      return;
+    }
     setSelected(address);
     setPickerOpen(false);
     setError("");
@@ -117,6 +125,12 @@ export default function CheckoutShell() {
   }
 
   async function saveNewAddress(address: Address) {
+    const addressPin = String(address.pincode || address.pin || "");
+    if (/^\d{6}$/.test(pincode) && addressPin && addressPin !== pincode) {
+      setError("The new address pincode must match the delivery location selected on Review Order.");
+      return;
+    }
+
     setAddresses((current) => {
       const exists = address.id != null &&
         current.some((entry) => String(entry.id) === String(address.id));
@@ -149,83 +163,45 @@ export default function CheckoutShell() {
   }
 
   async function placeOrder() {
-    if (!selected || !validatedCart) {
-      setError("Please select a delivery address.");
-      return;
-    }
+    if (!selected || !selected.id) { setError("Please select a saved delivery address."); return; }
+    if (!/^\d{6}$/.test(pincode)) { setError("Please enter or detect your delivery pincode first."); return; }
+    if (!cart.items.length) { setError("Your cart is empty."); return; }
 
-    setPaymentLoading(true);
-    setError("");
-
+    setPaymentLoading(true); setError("");
     try {
-      // Refresh from the server immediately before payment.
-      const latest = await validate(selected);
-      const freshCart = latest.validatedCart;
-
-      if (!freshCart) {
-        throw new Error("Unable to validate your cart.");
-      }
-
-      await persist();
-      await loadRazorpay();
-
-      const customer: Customer = {
-        name: selected.full_name || selected.name,
-        phone: selected.phone,
-        email: getCurrentUser()?.email,
-      };
-
+      // Server revalidates the raw cart, current DB prices, coupon, shipping and final amount.
       const result = await createCheckoutOrder({
-        validatedCart: freshCart,
-        address: selected,
-        customer,
+        items: cart.items,
+        coupon_code: cart.coupon_code || "",
+        address_id: selected.id,
+        customer: { name: selected.full_name || selected.name, phone: selected.phone, email: getCurrentUser()?.email },
       });
 
-      if (!result.order?.id || !result.key) {
-        throw new Error("Payment order could not be created.");
-      }
+      const order = result.order || result.razorpay_order;
+      const key = result.key || result.razorpay_key_id;
+      if (!order?.id || !key) throw new Error("Payment order could not be created.");
 
+      await loadRazorpay();
       const RazorpayConstructor = window.Razorpay;
-      if (!RazorpayConstructor) {
-        throw new Error("Razorpay is not available.");
-      }
+      if (!RazorpayConstructor) throw new Error("Razorpay is not available.");
 
+      const customer: Customer = { name: selected.full_name || selected.name, phone: selected.phone, email: getCurrentUser()?.email };
       const razorpay = new RazorpayConstructor({
-        key: result.key,
-        amount: result.order.amount,
-        currency: result.order.currency || "INR",
-        order_id: result.order.id,
-        name: "Mithora Kitchen",
-        description: "Mithora Kitchen Order",
-        prefill: {
-          name: customer.name || "",
-          email: customer.email || "",
-          contact: customer.phone || "",
-        },
-        theme: {
-          color: "#FF6B35",
-        },
-        handler: async (payment: {
-          razorpay_payment_id?: string;
-          razorpay_order_id?: string;
-          razorpay_signature?: string;
-        }) => {
+        key, amount: order.amount, currency: order.currency || "INR", order_id: order.id,
+        name: "Mithora Kitchen", description: "Mithora Kitchen Order",
+        prefill: { name: customer.name || "", email: customer.email || "", contact: customer.phone || "" },
+        theme: { color: "#FF6B35" },
+        handler: (payment: { razorpay_payment_id?: string }) => {
+          // Local cart is cleared after Razorpay success; the webhook also clears the server cart after capture.
           clear();
-
           const params = new URLSearchParams();
-          if (result.order?.id) params.set("order_id", result.order.id);
+          if (order.id) params.set("order_id", order.id);
           if (result.order_no) params.set("order_no", result.order_no);
-          if (payment.razorpay_payment_id) {
-            params.set("payment_id", payment.razorpay_payment_id);
-          }
-
+          if (payment.razorpay_payment_id) params.set("payment_id", payment.razorpay_payment_id);
           router.replace(`/order-success?${params.toString()}`);
         },
-        modal: {
-          ondismiss: () => setPaymentLoading(false),
-        },
+        modal: { ondismiss: () => setPaymentLoading(false) },
       });
-
       razorpay.open();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Payment could not be started.");
@@ -233,14 +209,25 @@ export default function CheckoutShell() {
     }
   }
 
-  const canPay = !!selected && !!validatedCart && !formOpen;
+  const canPay = !!isAuthenticated && !!selected?.id && /^\d{6}$/.test(pincode) && !!validatedCart && !formOpen && !paymentLoading;
 
   const customerName = useMemo(
     () => getCurrentUser()?.name || "",
     [],
   );
 
-  if (!getAuthToken()) return null;
+  if (!isAuthenticated || !getAuthToken()) {
+    return (
+      <main className="mk-checkout-page">
+        <section className="mk-checkout-card mk-checkout-auth-gate">
+          <span className="mk-cart-eyebrow">LOGIN REQUIRED</span>
+          <h2>Please login to continue</h2>
+          <p>Your cart is kept safely on this device until you sign in.</p>
+          <button type="button" className="mk-primary-button" onClick={() => openAuth("mobile")}>LOGIN / SIGN UP</button>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="mk-checkout-page">
@@ -281,6 +268,15 @@ export default function CheckoutShell() {
             <div className="mk-checkout-note">
               Ordering as <strong>{customerName}</strong>
             </div>
+          )}
+
+          {!/^\d{6}$/.test(pincode) && (
+            <section className="mk-checkout-card mk-checkout-location-gate">
+              <span className="mk-cart-eyebrow">DELIVERY LOCATION</span>
+              <h2>Add your pincode on Review Order</h2>
+              <p>Checkout and payment will be enabled after your delivery location is detected or entered.</p>
+              <Link href="/cart" className="mk-primary-button">← GO TO REVIEW ORDER</Link>
+            </section>
           )}
 
           <CheckoutSummary />

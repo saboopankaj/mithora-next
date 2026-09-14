@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./CartProvider";
+import { useAuth } from "@/components/auth/AuthContext";
+import { useRouter } from "next/navigation";
 import CouponDrawer from "./CouponDrawer";
 
 function money(value: number | undefined) {
@@ -10,6 +12,8 @@ function money(value: number | undefined) {
 }
 
 export default function CartSummary() {
+  const router = useRouter();
+  const { isAuthenticated, openAuth } = useAuth();
   const {
     cart,
     validatedCart,
@@ -17,6 +21,7 @@ export default function CartSummary() {
     setCoupon,
     removeCoupon,
     validate,
+    pincode,
   } = useCart();
 
   const [couponOpen, setCouponOpen] = useState(false);
@@ -50,9 +55,18 @@ useEffect(() => {
 
 useEffect(() => {
   if (!cart.coupon_code || validatedCart) return;
+  if (!/^\d{6}$/.test(pincode)) return;
+  void validate();
+}, [cart.coupon_code, validatedCart, validate, pincode]);
 
-  validate();
-}, [cart.coupon_code, validatedCart, validate]);
+useEffect(() => {
+  if (!isAuthenticated || typeof window === "undefined") return;
+  const next = sessionStorage.getItem("mithora_after_login");
+  if (next === "/checkout") {
+    sessionStorage.removeItem("mithora_after_login");
+    router.push("/checkout");
+  }
+}, [isAuthenticated, router]);
 
 async function applyCoupon(code: string) {
   setCouponMessage("");
@@ -186,9 +200,29 @@ async function applyCoupon(code: string) {
           <strong>{money(validatedCart.total)}</strong>
         </div>
 
-        <Link href="/checkout" className="mk-primary-button mk-full-button">
-          Review & Checkout →
-        </Link>
+        <button
+          type="button"
+          className="mk-primary-button mk-full-button"
+          disabled={loading || !validatedCart || !/^\d{6}$/.test(pincode)}
+          onClick={() => {
+            if (!/^\d{6}$/.test(pincode)) return;
+            if (!validatedCart) return;
+            if (!isAuthenticated) {
+              sessionStorage.setItem("mithora_after_login", "/checkout");
+              openAuth("mobile");
+              return;
+            }
+            router.push("/checkout");
+          }}
+        >
+          {!/^\d{6}$/.test(pincode)
+            ? "ADD DELIVERY PINCODE"
+            : !validatedCart
+              ? "CHECK DELIVERY FIRST"
+              : isAuthenticated
+                ? "Review & Checkout →"
+                : "LOGIN TO REVIEW & CHECKOUT →"}
+        </button>
       </section>
 
 <CouponDrawer

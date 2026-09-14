@@ -90,6 +90,8 @@ export default function CartPincode({ onExternalZone }: Props) {
       const response = await validate();
       if (response.validatedCart?.is_external_zone) {
         onExternalZone?.(true);
+      } else if (!response.validatedCart && (response.error || response.message)) {
+        setMessage(response.error || response.message || "Unable to validate delivery.");
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to check pincode.");

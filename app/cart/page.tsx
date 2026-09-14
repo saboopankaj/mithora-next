@@ -12,14 +12,14 @@ import DistanceChargeModal from "@/components/cart/DistanceChargeModal";
 
 function CartPageContent() {
   const router = useRouter();
-  const { cart, validatedCart, validate } = useCart();
+  const { cart, validatedCart, validate, pincode } = useCart();
   const [distanceOpen, setDistanceOpen] = useState(false);
 
   useEffect(() => {
-    if (cart.items.length && !validatedCart) {
+    if (cart.items.length && /^\d{6}$/.test(pincode) && !validatedCart) {
       void validate();
     }
-  }, [cart.items.length, validatedCart, validate]);
+  }, [cart.items.length, pincode, validatedCart, validate]);
 
   useEffect(() => {
     if (validatedCart?.is_external_zone) {
@@ -108,7 +108,7 @@ function CartPageContent() {
             ) : (
               <div className="mk-cart-validation-loading">
                 {validatedCart === null
-                  ? "Validating your order…"
+                  ? (/^\d{6}$/.test(pincode) ? "Validating your order…" : "Enter or detect your delivery pincode to calculate your total.")
                   : "No valid items found."}
               </div>
             )}

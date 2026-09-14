@@ -41,6 +41,12 @@ export default function CheckoutSummary() {
       <div className="mk-summary-lines">
         <div><span>Item Total</span><strong>{money(validatedCart.subtotal)}</strong></div>
         <div><span>Delivery</span><strong>{validatedCart.is_free_delivery ? "FREE" : money(validatedCart.shipping)}</strong></div>
+        {Number(validatedCart.free_delivery_min || 0) > 0 && !validatedCart.is_free_delivery && Number(validatedCart.free_delivery_remaining || 0) > 0 && (
+          <div className="mk-free-delivery-message">🚚 Add ₹{Number(validatedCart.free_delivery_remaining).toFixed(0)} more for FREE delivery</div>
+        )}
+        {Number(validatedCart.free_delivery_min || 0) > 0 && validatedCart.is_free_delivery && (
+          <div className="mk-free-delivery-message">🚚 FREE delivery unlocked</div>
+        )}
         {validatedCart.discount > 0 && (
           <div className="mk-discount-line">
             <span>Discount</span>
@@ -48,6 +54,10 @@ export default function CheckoutSummary() {
           </div>
         )}
       </div>
+
+      {validatedCart.is_external_zone && (
+        <div className="mk-distance-warning">⚠️ Distance charges applied for this location.</div>
+      )}
 
       <div className="mk-summary-total">
         <span>To Pay</span>

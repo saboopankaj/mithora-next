@@ -126,8 +126,14 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
     setLoading(true);
     try {
       const result = await createAddress({
-        ...form,
-        full_name: form.full_name || form.name,
+        name: form.full_name || form.name,
+        phone: form.phone,
+        house: form.house_flat || form.house,
+        street: form.street,
+        landmark: form.landmark,
+        area: form.area || form.area_name,
+        city: form.city,
+        state: form.state,
         pincode: form.pincode || form.pin,
       });
 
