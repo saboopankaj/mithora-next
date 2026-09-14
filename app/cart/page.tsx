@@ -94,7 +94,11 @@ const [error,setError]=useState("");
 ]);
 
 useEffect(() => {
-  if (!isAuthenticated || !selected || !/^\d{6}$/.test(pincode)) {
+  if (
+    !isAuthenticated ||
+    !selected ||
+    !/^\d{6}$/.test(pincode)
+  ) {
     return;
   }
 
@@ -106,7 +110,6 @@ useEffect(() => {
     }
   })();
 }, [
-  cartValidationKey,
   isAuthenticated,
   selected,
   pincode,
