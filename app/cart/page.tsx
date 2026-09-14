@@ -20,10 +20,62 @@ function loadRazorpay(){return new Promise<void>((resolve,reject)=>{if(window.Ra
 
 export default function CartPage(){
  const router=useRouter(); const {isAuthenticated,openAuth}=useAuth(); const {cart,validatedCart,validate,pincode,setPincode,clear}=useCart();
- const [addresses,setAddresses]=useState<Address[]>([]); const [selected,setSelected]=useState<Address|null>(null); const [pickerOpen,setPickerOpen]=useState(false); const [formOpen,setFormOpen]=useState(false); const [distanceOpen,setDistanceOpen]=useState(false); const [paymentLoading,setPaymentLoading]=useState(false); const [error,setError]=useState("");
+ const [addresses,setAddresses]=useState<Address[]>([]);
+const [selected,setSelected]=useState<Address|null>(null);
+const [addressServiceable,setAddressServiceable]=useState<boolean|null>(null);
+const [pickerOpen,setPickerOpen]=useState(false);
+const [formOpen,setFormOpen]=useState(false);
+const [distanceOpen,setDistanceOpen]=useState(false);
+const [paymentLoading,setPaymentLoading]=useState(false);
+const [error,setError]=useState("");
  const loadAddresses=useCallback(async()=>{if(!isAuthenticated)return null;const result=await fetchAddresses();const list=Array.isArray(result)?result:(result.addresses||[]);setAddresses(list);const currentPin=pincode;const chosen=(currentPin&&list.find(a=>String(a.pincode||a.pin||'')===currentPin))||list.find(a=>!!a.is_default)||list[0]||null;setSelected(chosen);return chosen;},[isAuthenticated,pincode]);
  useEffect(()=>{if(!isAuthenticated){setAddresses([]);setSelected(null);return;}void loadAddresses().catch(e=>setError(e instanceof Error?e.message:'Unable to load addresses.'));},[isAuthenticated,loadAddresses]);
  useEffect(()=>{if(!isAuthenticated||!selected)return;const pin=String(selected.pincode||selected.pin||'').replace(/\D/g,'').slice(0,6);if(pin.length!==6)return;if(pin!==pincode)setPincode(pin,String(selected.area||selected.area_name||''));void (async()=>{const r=await validate(selected);if(r.validatedCart?.is_external_zone)setDistanceOpen(true);})();},[selected,isAuthenticated,pincode,setPincode,validate]);
+ useEffect(() => {
+  if (!isAuthenticated || !selected) {
+    setAddressServiceable(null);
+    return;
+  }
+
+  const pin = String(selected.pincode || selected.pin || "")
+    .replace(/\D/g, "")
+    .slice(0, 6);
+
+  if (pin.length !== 6) {
+    setAddressServiceable(false);
+    return;
+  }
+
+  let cancelled = false;
+
+  void fetch(`/api/pincode/${pin}/areas`)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Unable to check delivery serviceability.");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      if (cancelled) return;
+
+      const serviceable =
+        data?.pincode_status === "active" &&
+        Array.isArray(data?.areas) &&
+        data.areas.length > 0;
+
+      setAddressServiceable(serviceable);
+    })
+    .catch(() => {
+      if (!cancelled) {
+        setAddressServiceable(false);
+      }
+    });
+
+  return () => {
+    cancelled = true;
+  };
+}, [selected, isAuthenticated]);
  const cartValidationKey = cart.items
   .map((item) => `${item.variant_id}:${item.qty}`)
   .join("|") + `|coupon:${cart.coupon_code || ""}`;
