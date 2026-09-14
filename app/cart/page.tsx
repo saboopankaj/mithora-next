@@ -24,6 +24,29 @@ export default function CartPage(){
  const loadAddresses=useCallback(async()=>{if(!isAuthenticated)return null;const result=await fetchAddresses();const list=Array.isArray(result)?result:(result.addresses||[]);setAddresses(list);const currentPin=pincode;const chosen=(currentPin&&list.find(a=>String(a.pincode||a.pin||'')===currentPin))||list.find(a=>!!a.is_default)||list[0]||null;setSelected(chosen);return chosen;},[isAuthenticated,pincode]);
  useEffect(()=>{if(!isAuthenticated){setAddresses([]);setSelected(null);return;}void loadAddresses().catch(e=>setError(e instanceof Error?e.message:'Unable to load addresses.'));},[isAuthenticated,loadAddresses]);
  useEffect(()=>{if(!isAuthenticated||!selected)return;const pin=String(selected.pincode||selected.pin||'').replace(/\D/g,'').slice(0,6);if(pin.length!==6)return;if(pin!==pincode)setPincode(pin,String(selected.area||selected.area_name||''));void (async()=>{const r=await validate(selected);if(r.validatedCart?.is_external_zone)setDistanceOpen(true);})();},[selected,isAuthenticated,pincode,setPincode,validate]);
+ const cartValidationKey = cart.items
+  .map((item) => `${item.variant_id}:${item.qty}`)
+  .join("|") + `|coupon:${cart.coupon_code || ""}`;
+
+useEffect(() => {
+  if (!isAuthenticated || !selected || !/^\d{6}$/.test(pincode)) {
+    return;
+  }
+
+  void (async () => {
+    const r = await validate(selected);
+
+    if (r.validatedCart?.is_external_zone) {
+      setDistanceOpen(true);
+    }
+  })();
+}, [
+  cartValidationKey,
+  isAuthenticated,
+  selected,
+  pincode,
+  validate,
+]);
  if(!cart.items.length)return <main className="mk-cart-page"><header className="mk-cart-page-header"><button type="button" onClick={()=>router.back()} aria-label="Back">←</button><h1>Your Cart</h1><span/></header><section className="mk-cart-empty-page"><div className="mk-cart-empty-icon">🛒</div><h2>Your cart is empty</h2><p>Add something delicious from the Mithora menu.</p><Link href="/menu" className="mk-primary-button">BROWSE MENU</Link></section></main>;
  async function chooseAddress(address:Address){setSelected(address);setPickerOpen(false);setError("");const pin=String(address.pincode||address.pin||'').replace(/\D/g,'').slice(0,6);if(pin.length!==6){setError('This address does not have a valid pincode.');return;}setPincode(pin,String(address.area||address.area_name||''));const r=await validate(address);if(!r.validatedCart)setError(r.error||r.message||'Unable to calculate delivery.');if(r.validatedCart?.is_external_zone)setDistanceOpen(true);}
  function addAddress(){setPickerOpen(false);setFormOpen(true);setError("");}
