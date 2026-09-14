@@ -322,13 +322,28 @@ async function applyCoupon(code: string) {
       </section>
 
       {/* COUPON DRAWER */}
-      <CouponDrawer
-        open={couponOpen}
-        onClose={() => setCouponOpen(false)}
-        currentCode={cart.coupon_code}
-        subtotal={validatedCart.subtotal ?? 0}
-        onApply={applyCoupon}
-      />
+<CouponDrawer
+  open={couponOpen}
+  onClose={() => setCouponOpen(false)}
+  currentCode={cart.coupon_code}
+  subtotal={
+    validatedCart
+      ? validatedCart.items.reduce((total, item) => {
+          const currentItem = cart.items.find(
+            (cartItem) =>
+              String(cartItem.variant_id) === String(item.variant_id),
+          );
+
+          return (
+            total +
+            Number(item.price || 0) *
+              Number(currentItem?.qty ?? item.qty ?? 0)
+          );
+        }, 0)
+      : 0
+  }
+  onApply={applyCoupon}
+/>
     </>
   );
 }
