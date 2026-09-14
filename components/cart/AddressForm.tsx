@@ -11,18 +11,33 @@ type Props = {
   onCancel?: () => void;
 };
 
+type PincodeResponse = {
+  areas?: string[];
+  city?: string;
+  state?: string;
+  pincode_status?: string;
+};
+
+type GeocodeResponse = Address & {
+  ok?: boolean;
+  formatted_address?: string;
+};
+
+const PIN_RE = /^\d{6}$/;
+
 export default function AddressForm({ initial, onSaved, onCancel }: Props) {
   const [form, setForm] = useState<Address>(initial || {});
   const [areas, setAreas] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [pinChecking, setPinChecking] = useState(false);
-  const [pinValid, setPinValid] = useState(/^\d{6}$/.test(String(initial?.pincode || initial?.pin || "")));
+  const [pinValid, setPinValid] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setForm(initial || {});
-    setPinValid(/^\d{6}$/.test(String(initial?.pincode || initial?.pin || "")));
+    setAreas(initial?.area || initial?.area_name ? [String(initial.area || initial.area_name)] : []);
+    setPinValid(PIN_RE.test(String(initial?.pincode || initial?.pin || "")));
   }, [initial]);
 
   function update<K extends keyof Address>(key: K, value: Address[K]) {
@@ -31,30 +46,33 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
 
   async function handlePincode(pin: string) {
     update("pincode", pin);
-    setPinValid(false);
+    update("area", "");
     setAreas([]);
+    setPinValid(false);
     setError("");
-    if (!/^\d{6}$/.test(pin)) return;
+
+    if (!PIN_RE.test(pin)) return;
 
     setPinChecking(true);
     try {
-      const result = await apiFetch<unknown>(`/api/pincode/${pin}`);
-      const data = result && typeof result === "object" ? result as Record<string, unknown> : {};
-      const serviceable = data.serviceable ?? data.is_serviceable ?? data.active ?? true;
-      if (serviceable === false) {
-        setError("Delivery is currently unavailable for this pincode.");
-        return;
+      const data = await apiFetch<PincodeResponse>(`/api/pincode/${pin}/areas`);
+      const nextAreas = Array.isArray(data.areas) ? data.areas.map(String).filter(Boolean) : [];
+
+      if (data.pincode_status !== "active" || nextAreas.length === 0) {
+        throw new Error("Delivery is currently unavailable for this pincode.");
       }
-      const nextAreas = Array.isArray(data.areas)
-        ? data.areas.map(String)
-        : Array.isArray(data.area_options) ? data.area_options.map(String) : [];
+
       setAreas(nextAreas);
-      if (data.city) update("city", String(data.city));
-      if (data.state) update("state", String(data.state));
-      if (data.area || data.area_name) update("area", String(data.area || data.area_name));
       setPinValid(true);
+      setForm((current) => ({
+        ...current,
+        pincode: pin,
+        city: String(data.city || ""),
+        state: String(data.state || ""),
+        area: "",
+      }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to validate pincode.");
+      setError(err instanceof Error ? err.message : "Unable to check this pincode.");
     } finally {
       setPinChecking(false);
     }
@@ -65,23 +83,60 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
       setError("Location is not supported by this browser.");
       return;
     }
+
     setDetecting(true);
     setError("");
+
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         try {
-          const result = await apiFetch<unknown>(`/api/location/google-geocode?lat=${coords.latitude}&lng=${coords.longitude}`);
-          const data = result && typeof result === "object" ? result as Record<string, unknown> : {};
-          const pin = String(data.pincode || data.postal_code || data.zip || "").replace(/\D/g, "").slice(0, 6);
-          if (!pin) throw new Error("Could not detect a valid pincode from your location.");
+          const data = await apiFetch<GeocodeResponse>(
+            `/api/location/google-geocode?lat=${coords.latitude}&lng=${coords.longitude}`,
+          );
+
+          const pin = String(data.pincode || "").replace(/\D/g, "").slice(0, 6);
+          if (!PIN_RE.test(pin)) {
+            throw new Error("Could not detect a valid delivery pincode from your location.");
+          }
+
+          const detectedArea = String(data.area || data.area_name || "");
+          const detectedCity = String(data.city || "");
+          const detectedState = String(data.state || "");
+
+          // Geocoding already returns the complete address. Do NOT run the
+          // pincode lookup afterwards, otherwise it can overwrite the detected area.
           setForm((current) => ({
             ...current,
+            name: current.name || "",
+            phone: current.phone || "",
             pincode: pin,
-            area: String(data.area || data.area_name || data.locality || current.area || ""),
-            city: String(data.city || current.city || ""),
-            state: String(data.state || current.state || ""),
+            house: String(data.house || ""),
+            street: String(data.street || ""),
+            area: detectedArea,
+            city: detectedCity,
+            state: detectedState,
+            latitude: Number.isFinite(Number(data.latitude)) ? Number(data.latitude) : coords.latitude,
+            longitude: Number.isFinite(Number(data.longitude)) ? Number(data.longitude) : coords.longitude,
           }));
-          await handlePincode(pin);
+
+          // Confirm the detected pincode is serviceable, while preserving the
+          // exact area returned by geocoding.
+          const pinData = await apiFetch<PincodeResponse>(`/api/pincode/${pin}/areas`);
+          const nextAreas = Array.isArray(pinData.areas) ? pinData.areas.map(String).filter(Boolean) : [];
+          const areaIsServiceable = nextAreas.some((area) => area.toLowerCase() === detectedArea.toLowerCase());
+
+          if (pinData.pincode_status !== "active" || !areaIsServiceable) {
+            setAreas(nextAreas);
+            setPinValid(pinData.pincode_status === "active" && nextAreas.length > 0);
+            throw new Error(
+              nextAreas.length
+                ? "Your detected location is outside our current delivery areas. Please choose a serviceable area."
+                : "Delivery is currently unavailable for this pincode.",
+            );
+          }
+
+          setAreas(nextAreas);
+          setPinValid(true);
         } catch (err) {
           setError(err instanceof Error ? err.message : "Location lookup failed.");
         } finally {
@@ -99,27 +154,30 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setError("");
-    if (!pinValid || !/^\d{6}$/.test(String(form.pincode || ""))) {
+
+    if (!pinValid || !PIN_RE.test(String(form.pincode || ""))) {
       setError("Please enter or detect a valid serviceable pincode first.");
       return;
     }
-    if (!form.full_name && !form.name) return setError("Please enter your full name.");
+    if (!form.area) return setError("Please select your area.");
+    if (!form.name) return setError("Please enter your name.");
     if (!form.phone) return setError("Please enter your phone number.");
-    if (!form.house_flat && !form.house) return setError("Please enter your house / flat.");
-    if (!form.area && !form.area_name) return setError("Please enter or select your area.");
+    if (!form.house) return setError("Please enter your house / flat.");
 
     setLoading(true);
     try {
       const result = await createAddress({
-        name: form.full_name || form.name,
+        name: form.name,
         phone: form.phone,
-        house: form.house_flat || form.house,
+        house: form.house,
         street: form.street,
-        landmark: form.landmark,
-        area: form.area || form.area_name,
+        area: form.area,
         city: form.city,
         state: form.state,
-        pincode: form.pincode || form.pin,
+        pincode: form.pincode,
+        latitude: form.latitude,
+        longitude: form.longitude,
+        is_default: !!form.is_default,
       });
       onSaved(result.address || { ...form, id: result.id });
     } catch (err) {
@@ -129,50 +187,103 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
     }
   }
 
-  const hasValidPin = pinValid && /^\d{6}$/.test(String(form.pincode || ""));
+  const hasValidPin = pinValid && PIN_RE.test(String(form.pincode || ""));
 
   return (
     <form className="mk-address-form" onSubmit={submit}>
       <div className="mk-address-first-step">
-        <label>
-          Delivery pincode
-          <input
-            value={String(form.pincode || form.pin || "")}
-            onChange={(e) => handlePincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-            inputMode="numeric"
-            maxLength={6}
-            autoComplete="postal-code"
-            placeholder="Enter 6-digit pincode"
-            autoFocus
-          />
-        </label>
-        <button type="button" className="mk-location-link mk-address-detect" onClick={useLocation} disabled={detecting}>
-          {detecting ? "Detecting…" : "⌖ Use my location"}
-        </button>
-        {pinChecking && <p className="mk-address-status">Checking delivery availability…</p>}
-        {hasValidPin && !pinChecking && <p className="mk-address-status mk-address-status-ok">✓ Delivery available for this pincode</p>}
+        <div className="mk-address-step-title">How would you like to add your address?</div>
+        <div className="mk-address-pin-row">
+          <label>
+            Pincode
+            <input
+              value={String(form.pincode || "")}
+              onChange={(e) => handlePincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              inputMode="numeric"
+              maxLength={6}
+              autoComplete="postal-code"
+              placeholder="Enter 6-digit pincode"
+              autoFocus
+            />
+          </label>
+          <span className="mk-address-or">OR</span>
+          <button type="button" className="mk-location-button" onClick={useLocation} disabled={detecting}>
+            <span className="mk-location-button-icon">⌖</span>
+            {detecting ? "Detecting…" : "Detect my location"}
+          </button>
+        </div>
+        {pinChecking && <p className="mk-address-status">Checking delivery areas…</p>}
+        {hasValidPin && !pinChecking && <p className="mk-address-status mk-address-status-ok">✓ Pincode is serviceable. Select your area below.</p>}
       </div>
 
       {hasValidPin && !pinChecking && (
         <>
-          <div className="mk-address-form-divider"><span>ADDRESS DETAILS</span></div>
+          <div className="mk-address-form-divider"><span>DELIVERY ADDRESS</span></div>
+
           <div className="mk-form-grid">
-            <label>Full name<input value={String(form.full_name || form.name || "")} onChange={(e) => update("full_name", e.target.value)} autoComplete="name" /></label>
-            <label>Phone<input value={String(form.phone || "")} onChange={(e) => update("phone", e.target.value)} inputMode="tel" autoComplete="tel" /></label>
-            <label>Area{areas.length ? <select value={String(form.area || form.area_name || "")} onChange={(e) => update("area", e.target.value)}><option value="">Select area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}</select> : <input value={String(form.area || form.area_name || "")} onChange={(e) => update("area", e.target.value)} />}</label>
-            <label>House / Flat<input value={String(form.house_flat || form.house || "")} onChange={(e) => update("house_flat", e.target.value)} autoComplete="street-address" /></label>
-            <label>Street<input value={String(form.street || "")} onChange={(e) => update("street", e.target.value)} /></label>
-            <label>Landmark<input value={String(form.landmark || "")} onChange={(e) => update("landmark", e.target.value)} /></label>
-            <label>City<input value={String(form.city || "")} readOnly /></label>
-            <label>State<input value={String(form.state || "")} readOnly /></label>
+            <label>
+              Name
+              <input value={String(form.name || "")} onChange={(e) => update("name", e.target.value)} autoComplete="name" placeholder="Your name" />
+            </label>
+            <label>
+              Phone
+              <input value={String(form.phone || "")} onChange={(e) => update("phone", e.target.value)} inputMode="tel" autoComplete="tel" placeholder="Phone number" />
+            </label>
+
+            <label className="mk-address-field-wide">
+              Area
+              <select value={String(form.area || "")} onChange={(e) => update("area", e.target.value)}>
+                <option value="">Select your area</option>
+                {areas.map((area) => <option key={area} value={area}>{area}</option>)}
+              </select>
+            </label>
+
+            <label>
+              House / Flat
+              <input value={String(form.house || "")} onChange={(e) => update("house", e.target.value)} autoComplete="address-line1" placeholder="House / Flat / Building" />
+            </label>
+            <label>
+              Street
+              <input value={String(form.street || "")} onChange={(e) => update("street", e.target.value)} autoComplete="address-line2" placeholder="Street / Road" />
+            </label>
+
+            <label>
+              City
+              <input value={String(form.city || "")} readOnly />
+            </label>
+            <label>
+              State
+              <input value={String(form.state || "")} readOnly />
+            </label>
+            <label>
+              Pincode
+              <input value={String(form.pincode || "")} readOnly />
+            </label>
           </div>
+
+          <label className="mk-default-address-toggle">
+            <input
+              type="checkbox"
+              checked={!!form.is_default}
+              onChange={(e) => update("is_default", e.target.checked)}
+            />
+            <span>
+              <strong>Make this my default address</strong>
+              <small>Use this address automatically for my next order.</small>
+            </span>
+          </label>
+
           {error && <p className="mk-cart-error">{error}</p>}
+
           <div className="mk-form-actions">
             {onCancel && <button type="button" className="mk-secondary-button" onClick={onCancel}>CANCEL</button>}
-            <button type="submit" className="mk-primary-button" disabled={loading}>{loading ? "SAVING…" : "SAVE ADDRESS"}</button>
+            <button type="submit" className="mk-primary-button" disabled={loading || !form.area}>
+              {loading ? "SAVING…" : "SAVE ADDRESS"}
+            </button>
           </div>
         </>
       )}
+
       {!hasValidPin && error && <p className="mk-cart-error">{error}</p>}
     </form>
   );
