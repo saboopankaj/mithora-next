@@ -1,0 +1,103 @@
+/* Mithora Cart — cart items */
+
+.mk-cart-location,
+.mk-cart-items-section,
+.mk-cart-summary,
+.mk-checkout-card {
+  background: #fff;
+  border: 1px solid rgba(45,27,20,.08);
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(45,27,20,.05);
+}
+
+.mk-cart-location,
+.mk-cart-items-section {
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.mk-cart-items {
+  margin-top: 18px;
+}
+
+.mk-cart-item {
+  display: flex;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(45,27,20,.08);
+}
+
+.mk-cart-item-image {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f7eee5;
+}
+
+.mk-cart-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mk-cart-item-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.mk-cart-item-title-row,
+.mk-cart-item-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.mk-cart-item-title-row h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.mk-cart-item-title-row small {
+  display: block;
+  margin-top: 4px;
+  color: #7b6b63;
+}
+
+.mk-cart-item-bottom {
+  margin-top: 15px;
+}
+
+.mk-cart-item-bottom strong {
+  font-size: 17px;
+}
+
+.mk-cart-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(45,27,20,.15);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.mk-cart-qty button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: #fff2e9;
+  color: #ff6b35;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.mk-add-more {
+  display: inline-block;
+  margin-top: 18px;
+  color: #ff6b35;
+  text-decoration: none;
+  font-weight: 800;
+}

@@ -1,0 +1,13 @@
+/* Mithora Cart — payment footer */
+
+.mk-payment-footer{position:fixed;z-index:220;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid rgba(45,27,20,.12);box-shadow:0 -8px 30px rgba(45,27,20,.08);backdrop-filter:blur(12px);display:flex;justify-content:space-between;align-items:center;gap:16px}
+
+.mk-payment-footer>div:first-child{display:grid;gap:2px}
+
+.mk-payment-footer>div:first-child span{font-size:11px;color:#786860}
+
+.mk-payment-footer>div:first-child strong{font-size:22px}
+
+.mk-payment-footer-action{display:flex;align-items:center;gap:12px}
+
+.mk-payment-footer-action small{color:#75645c}

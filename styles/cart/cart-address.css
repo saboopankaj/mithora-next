@@ -1,0 +1,96 @@
+/* Mithora Cart — address/location */
+
+.mk-cart-location-button,
+.mk-location-link {
+  margin-top: 10px;
+  border: 0;
+  background: transparent;
+  color: #ff6b35;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(20,12,8,.58);
+  padding: 16px;
+}
+
+.mk-drawer-header > button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: #f8eee7;
+  font-size: 24px;
+}
+
+.mk-address-help{margin:8px 0 16px}
+
+.mk-address-details{margin-top:16px;padding:14px;border-radius:12px;background:#fff8f2;line-height:1.55}
+
+.mk-address-details p{margin:4px 0 0;color:#67564f}
+
+.mk-address-form{margin-top:18px}
+
+.mk-address-first-step{padding:16px;border-radius:14px;background:#fff8f2;border:1px solid rgba(45,27,20,.07)}
+
+.mk-address-first-step label,.mk-address-form label{display:grid;gap:6px;color:#5d4c45;font-size:12px;font-weight:800}
+
+.mk-address-first-step input,.mk-address-form input,.mk-address-form select{width:100%;min-height:46px;border:1px solid rgba(45,27,20,.16);border-radius:10px;padding:0 13px;background:#fff;color:#2d1b14;outline:none}
+
+.mk-address-first-step input:focus,.mk-address-form input:focus,.mk-address-form select:focus{border-color:#ff6b35}
+
+.mk-address-detect{margin-top:10px}
+
+.mk-address-status{margin:9px 0 0;font-size:12px;color:#75645c}
+
+.mk-address-status-ok{color:#0b8f66;font-weight:800}
+
+.mk-address-form-divider{margin:20px 0 13px;font-size:11px;font-weight:900;letter-spacing:.12em;color:#ff6b35}
+
+/* Refined address flow + modal */
+.mk-address-step-title{font-size:15px;font-weight:850;color:#2d1b14;margin-bottom:14px}
+
+.mk-address-pin-row{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(190px,.9fr);gap:12px;align-items:end}
+
+.mk-address-or{align-self:center;color:#9a8980;font-size:11px;font-weight:800;letter-spacing:.08em;padding-top:20px}
+
+.mk-location-button{min-height:46px;border:1px solid rgba(255,107,53,.28);border-radius:11px;padding:0 16px;background:#fff;color:#e85d2d;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+
+.mk-location-button:hover{background:#fff7f1;border-color:#ff6b35}
+
+.mk-location-button:disabled{opacity:.6;cursor:wait}
+
+.mk-location-button-icon{font-size:18px}
+
+.mk-address-field-wide{grid-column:1/-1}
+
+.mk-address-drawer{width:min(470px,calc(100vw - 24px));max-height:min(760px,calc(100vh - 32px));margin:16px;border-radius:24px;background:#fff;box-shadow:0 30px 100px rgba(20,12,8,.28);overflow:hidden;display:flex;flex-direction:column}
+
+.mk-overlay{background:rgba(26,17,12,.48);backdrop-filter:blur(5px)}
+
+.mk-drawer-header{padding:22px 22px 18px;border-bottom:1px solid rgba(45,27,20,.08);display:flex;justify-content:space-between;gap:16px}
+
+.mk-drawer-header h2{margin:5px 0 0;font-size:21px;color:#2d1b14}
+
+.mk-drawer-header>button{width:36px;height:36px;border:0;border-radius:50%;background:#f7f2ee;color:#4d3c34;font-size:24px;cursor:pointer}
+
+.mk-address-list{padding:14px;overflow:auto;display:grid;gap:10px}
+
+.mk-address-option{width:100%;text-align:left;padding:15px;border:1px solid rgba(45,27,20,.10);border-radius:15px;background:#fff;cursor:pointer;transition:.18s ease}
+
+.mk-address-option:hover{border-color:rgba(255,107,53,.35);transform:translateY(-1px)}
+
+.mk-address-option.is-selected{border-color:#ff6b35;box-shadow:0 0 0 3px rgba(255,107,53,.09);background:#fffaf6}
+
+.mk-address-option>div{display:flex;align-items:center;gap:8px}
+
+.mk-address-option strong{color:#2d1b14;font-size:14px}
+
+.mk-address-option p{margin:7px 0 9px;color:#71615a;font-size:12px;line-height:1.55}

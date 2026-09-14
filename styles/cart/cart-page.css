@@ -1,0 +1,287 @@
+/* Mithora Cart — page/layout and shared cart shell */
+
+/* Mithora Cart */
+
+.mk-cart-page {
+  min-height: 100vh;
+  padding-bottom: 110px;
+  background: #fffaf3;
+  color: #2d1b14;
+}
+
+.mk-cart-page-header,
+.mk-checkout-header {
+  height: 72px;
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  padding: 0 20px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(45,27,20,.08);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.mk-cart-page-header h1,
+.mk-checkout-header h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 22px;
+}
+
+.mk-cart-page-header button,
+.mk-cart-page-header a,
+.mk-checkout-header button {
+  border: 0;
+  background: transparent;
+  color: #2d1b14;
+  font-size: 24px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.mk-cart-layout {
+  width: min(1180px, calc(100% - 32px));
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+  gap: 24px;
+}
+
+.mk-cart-main-column,
+.mk-cart-side-column {
+  min-width: 0;
+}
+
+.mk-cart-side-column {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+}
+
+.mk-cart-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: #ff6b35;
+}
+
+.mk-cart-section-heading button,
+.mk-checkout-card-heading button {
+  border: 0;
+  background: transparent;
+  color: #ff6b35;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mk-cart-pincode-editor {
+  margin-top: 18px;
+  position: relative;
+}
+
+.mk-cart-pincode-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mk-cart-suggestions {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  top: 78px;
+  background: #fff;
+  border: 1px solid rgba(45,27,20,.1);
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.12);
+  overflow: hidden;
+}
+
+.mk-cart-suggestions button {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(45,27,20,.06);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mk-cart-suggestions span {
+  color: #6b5a52;
+}
+
+.mk-cart-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+
+.mk-cart-remove {
+  border: 0;
+  background: transparent;
+  color: #9a8177;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mk-discount-line {
+  color: #0b8f66;
+}
+
+.mk-discount-line span,
+.mk-discount-line strong {
+  color: inherit;
+}
+
+.mk-cart-sticky {
+  position: fixed;
+  z-index: 200;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.96);
+  border-top: 1px solid rgba(45,27,20,.12);
+  box-shadow: 0 -8px 30px rgba(45,27,20,.08);
+  backdrop-filter: blur(12px);
+}
+
+.mk-cart-sticky-inner {
+  width: min(760px, 100%);
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.mk-cart-sticky-inner > div {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.mk-cart-sticky-inner span {
+  color: #6e5d55;
+}
+
+.mk-cart-sticky-button {
+  min-height: 44px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #ff6b35;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.mk-cart-empty-page {
+  width: min(500px, calc(100% - 32px));
+  margin: 100px auto;
+  text-align: center;
+}
+
+.mk-cart-empty-icon {
+  font-size: 58px;
+}
+
+.mk-cart-empty-page h2 {
+  font-size: 28px;
+}
+
+.mk-cart-error,
+.mk-checkout-error {
+  margin-top: 10px;
+  color: #b13e25;
+  font-size: 13px;
+}
+
+@media (max-width: 820px) {
+  .mk-cart-layout {
+    display: block;
+    width: min(100% - 20px, 620px);
+  }
+
+  .mk-cart-side-column {
+    position: static;
+  }
+
+  .mk-cart-summary {
+    margin-bottom: 20px;
+  }
+
+  .mk-cart-page-header,
+  .mk-checkout-header {
+    height: 62px;
+    padding: 0 10px;
+  }
+
+  .mk-cart-location,
+  .mk-cart-items-section,
+  .mk-cart-summary {
+    border-radius: 14px;
+    padding: 17px;
+  }
+
+  .mk-cart-item-image {
+    width: 76px;
+    height: 76px;
+    flex-basis: 76px;
+  }
+
+  .mk-cart-item-title-row h3 {
+    font-size: 15px;
+  }
+
+  .mk-overlay {
+    padding: 0;
+  }
+
+  .mk-coupon-drawer,
+  .mk-address-drawer {
+    max-height: 88vh;
+  }
+}
+
+/* Address-first cart checkout */
+.mk-cart-address-card{background:#fff;border:1px solid rgba(45,27,20,.08);border-radius:18px;box-shadow:0 10px 35px rgba(45,27,20,.05);padding:22px;margin-bottom:18px}
+
+.mk-cart-address-card h2{margin:5px 0 8px;font-size:20px}
+
+.mk-cart-address-card>p{color:#6e5d55;line-height:1.5}
+
+.mk-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+
+.mk-form-actions{margin-top:18px;display:flex;justify-content:flex-end;gap:9px}
+
+.mk-cart-page{padding-bottom:95px}
+
+@media(max-width:820px){.mk-form-grid{grid-template-columns:1fr}.mk-cart-address-card{padding:17px;border-radius:14px}.mk-payment-footer{gap:10px}.mk-payment-footer-action small{display:none}.mk-payment-footer .mk-primary-button{min-width:150px}.mk-cart-page{padding-bottom:100px}}
+
+.mk-default-address-toggle{margin-top:16px;display:flex!important;align-items:flex-start;gap:10px!important;padding:13px 14px;border:1px solid rgba(45,27,20,.08);border-radius:12px;background:#fffaf6}
+
+.mk-default-address-toggle input{width:18px!important;min-height:18px!important;margin-top:2px;accent-color:#ff6b35}
+
+.mk-default-address-toggle span{display:grid;gap:3px}
+
+.mk-default-address-toggle strong{font-size:13px;color:#2d1b14}
+
+.mk-default-address-toggle small{color:#786860;font-size:11px;font-weight:500}
+
+.mk-default-badge{font-size:9px;font-weight:900;letter-spacing:.08em;color:#0b8f66;background:#ecfdf5;padding:4px 6px;border-radius:6px}
+
+.mk-set-default{display:inline-block;color:#e85d2d;font-size:11px;font-weight:800}
+
+@media(max-width:820px){.mk-address-pin-row{grid-template-columns:1fr}.mk-address-or{text-align:center;padding:0}.mk-location-button{width:100%}.mk-address-field-wide{grid-column:auto}.mk-address-drawer{margin:8px;width:calc(100vw - 16px);max-height:calc(100vh - 16px);border-radius:20px}}
