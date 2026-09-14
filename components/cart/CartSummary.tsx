@@ -38,6 +38,33 @@ export default function CartSummary({
     validate,
   } = useCart();
 
+const displaySubtotal = validatedCart
+  ? validatedCart.items.reduce(
+      (total, item) => {
+        const localItem = cart.items.find(
+          local =>
+            String(local.variant_id) ===
+            String(item.variant_id)
+        );
+
+        if (!localItem) return total;
+
+        return (
+          total +
+          Number(item.price || 0) *
+            localItem.qty
+        );
+      },
+      0
+    )
+  : 0;
+
+const displayTotal = Math.max(
+  0,
+  displaySubtotal -
+    Number(validatedCart?.discount || 0)
+);
+
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
 
@@ -157,9 +184,7 @@ export default function CartSummary({
           {/* ITEM TOTAL */}
           <div>
             <span>Item Total</span>
-            <strong>
-              {money(validatedCart.subtotal)}
-            </strong>
+<strong>{money(displaySubtotal)}</strong>
           </div>
 
           {/* DELIVERY FEE */}
@@ -259,14 +284,14 @@ export default function CartSummary({
         <div className="mk-summary-total">
           <span>To Pay</span>
 
-          <strong>
-            {money(
-              addressReady
-                ? validatedCart.total
-                : Number(validatedCart.subtotal || 0) -
-                    Number(validatedCart.discount || 0)
-            )}
-          </strong>
+<strong>
+  {money(
+    addressReady
+      ? displayTotal +
+        Number(validatedCart.shipping || 0)
+      : displayTotal
+  )}
+</strong>
         </div>
 
         {/* PLACE ORDER */}
