@@ -122,14 +122,22 @@ const mutate = useCallback((next: LocalCart) => {
   const validate = useCallback(async (address?: Address | null) => {
     const current = loadCart(); const currentPin = getPincode();
     if (!current.items.length) { setValidatedCart(null); return { success: true, validatedCart: undefined }; }
-    if (!/^\d{6}$/.test(currentPin)) {
+if (!/^\d{6}$/.test(currentPin)) {
   setLoading(true);
 
   try {
-    const response = await syncCart(current, undefined, undefined);
+    const response = await syncCart(current, "", undefined);
 
     if (response.validatedCart) {
-      setValidatedCart(response.validatedCart);
+      setValidatedCart({
+        ...response.validatedCart,
+        shipping: 0,
+        is_free_delivery: false,
+        free_delivery_min: 0,
+        free_delivery_remaining: 0,
+        is_external_zone: false,
+        distance_charge: 0,
+      });
     } else {
       setValidatedCart(null);
     }
