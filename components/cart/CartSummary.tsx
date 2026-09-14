@@ -86,37 +86,44 @@ const displayTotal = Math.max(
     );
   }, [cart.coupon_code, validatedCart]);
 
-  async function applyCoupon(code: string) {
-    setCouponMessage("");
+async function applyCoupon(code: string) {
+  setCouponMessage("");
 
-    setCoupon(code);
+  setCoupon(code);
 
-    const response = await validate();
+  const response = await validate();
 
-    if (!response.validatedCart) {
-      setCouponMessage(
-        response.error ||
-          response.message ||
-          "Coupon could not be applied."
-      );
-      return;
-    }
-
-    const info = response.validatedCart.coupon_info;
-    const discount = Number(response.validatedCart.discount || 0);
-
-    if (info?.status === "error") {
-      setCouponMessage(
-        info.message || "Coupon is not applicable."
-      );
-    } else {
-      setCouponMessage(
-        discount > 0
-          ? `🎉 Yay! You saved ${money(discount)} with ${code}.`
-          : "Coupon applied successfully."
-      );
-    }
+  if (!response.validatedCart) {
+    setCouponMessage(
+      response.error ||
+        response.message ||
+        "Coupon could not be applied."
+    );
+    return;
   }
+
+  const info = response.validatedCart.coupon_info;
+  const discount = Number(
+    response.validatedCart.discount || 0
+  );
+
+  if (info?.status === "error") {
+    setCouponMessage(
+      info.message ||
+        "Coupon is not applicable."
+    );
+    return;
+  }
+
+  setCouponMessage(
+    discount > 0
+      ? `🎉 Yay! You saved ${money(discount)} with ${code}.`
+      : "Coupon applied successfully."
+  );
+
+  // Close coupon drawer after successful application
+  setCouponOpen(false);
+}
 
   /*
    * No validated cart yet.
