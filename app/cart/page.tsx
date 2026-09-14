@@ -80,6 +80,19 @@ const [error,setError]=useState("");
   .map((item) => `${item.variant_id}:${item.qty}`)
   .join("|") + `|coupon:${cart.coupon_code || ""}`;
 
+  useEffect(() => {
+  if (!isAuthenticated || selected || !cart.items.length) {
+    return;
+  }
+
+  void validate();
+}, [
+  isAuthenticated,
+  selected,
+  cartValidationKey,
+  validate,
+]);
+
 useEffect(() => {
   if (!isAuthenticated || !selected || !/^\d{6}$/.test(pincode)) {
     return;
@@ -104,7 +117,10 @@ useEffect(() => {
  function addAddress(){setPickerOpen(false);setFormOpen(true);setError("");}
  async function saveNewAddress(address:Address){setAddresses(current=>address.id!=null&&current.some(a=>String(a.id)===String(address.id))?current.map(a=>String(a.id)===String(address.id)?address:a):[...current,address]);setFormOpen(false);await chooseAddress(address);}
  async function makeDefault(id:number|string){try{await setDefaultAddress(id);await loadAddresses();}catch(e){setError(e instanceof Error?e.message:'Unable to set default address.');}}
- async function placeOrder(){if(!isAuthenticated){openAuth('mobile');return;}if(!selected?.id){setError('Please select a delivery address.');return;}if(!/^\d{6}$/.test(pincode)){setError('Please add a valid delivery address first.');return;}if(!validatedCart){setError('Please wait while your delivery charges are calculated.');return;}setPaymentLoading(true);setError("");try{const result=await createCheckoutOrder({items:cart.items,coupon_code:cart.coupon_code||'',address_id:selected.id});const order=result.order||result.razorpay_order;const key=result.key||result.razorpay_key_id;if(!order?.id||!key)throw new Error('Payment order could not be created.');await loadRazorpay();if(!window.Razorpay)throw new Error('Razorpay is not available.');const customer:Customer={name:selected.full_name||selected.name,phone:selected.phone,email:getCurrentUser()?.email};const razorpay=new window.Razorpay({key,amount:order.amount,currency:order.currency||'INR',order_id:order.id,name:'Mithora Kitchen',description:'Mithora Kitchen Order',prefill:{name:customer.name||'',email:customer.email||'',contact:customer.phone||''},theme:{color:'#FF6B35'},handler:(payment:{razorpay_payment_id?:string})=>{clear();const params=new URLSearchParams();params.set('order_id',order.id);if(result.order_no)params.set('order_no',String(result.order_no));if(payment.razorpay_payment_id)params.set('payment_id',payment.razorpay_payment_id);router.replace(`/order-success?${params.toString()}`);},modal:{ondismiss:()=>setPaymentLoading(false)}});razorpay.open();}catch(e){setError(e instanceof Error?e.message:'Payment could not be started.');setPaymentLoading(false);}}
+ async function placeOrder(){if(!isAuthenticated){openAuth('mobile');return;}if(!selected?.id){setError('Please select a delivery address.');return;}if(!/^\d{6}$/.test(pincode)){setError('Please add a valid delivery address first.');return;}
+ if(!validatedCart){setError('Please wait while your delivery charges are calculated.');
+  return;}
+  setPaymentLoading(true);setError("");try{const result=await createCheckoutOrder({items:cart.items,coupon_code:cart.coupon_code||'',address_id:selected.id});const order=result.order||result.razorpay_order;const key=result.key||result.razorpay_key_id;if(!order?.id||!key)throw new Error('Payment order could not be created.');await loadRazorpay();if(!window.Razorpay)throw new Error('Razorpay is not available.');const customer:Customer={name:selected.full_name||selected.name,phone:selected.phone,email:getCurrentUser()?.email};const razorpay=new window.Razorpay({key,amount:order.amount,currency:order.currency||'INR',order_id:order.id,name:'Mithora Kitchen',description:'Mithora Kitchen Order',prefill:{name:customer.name||'',email:customer.email||'',contact:customer.phone||''},theme:{color:'#FF6B35'},handler:(payment:{razorpay_payment_id?:string})=>{clear();const params=new URLSearchParams();params.set('order_id',order.id);if(result.order_no)params.set('order_no',String(result.order_no));if(payment.razorpay_payment_id)params.set('payment_id',payment.razorpay_payment_id);router.replace(`/order-success?${params.toString()}`);},modal:{ondismiss:()=>setPaymentLoading(false)}});razorpay.open();}catch(e){setError(e instanceof Error?e.message:'Payment could not be started.');setPaymentLoading(false);}}
  const canPlaceOrder =
   !!isAuthenticated &&
   !!selected?.id &&

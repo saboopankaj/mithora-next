@@ -14,7 +14,8 @@ export default function CartSummary({onLogin,onAddAddress,onPlaceOrder,canPlaceO
  const [couponOpen,setCouponOpen]=useState(false); const [couponMessage,setCouponMessage]=useState("");
  useEffect(()=>{if(!cart.coupon_code||!validatedCart)return;const info=validatedCart.coupon_info;const discount=Number(validatedCart.discount||0);if(info?.status==='error'){setCouponMessage(info.message||'Coupon is not applicable.');return;}setCouponMessage(discount>0?`🎉 Yay! You saved ${money(discount)} with ${cart.coupon_code}.`:'Coupon applied successfully.');},[cart.coupon_code,validatedCart]);
  async function applyCoupon(code:string){setCouponMessage("");setCoupon(code);const response=await validate();if(!response.validatedCart){setCouponMessage(response.error||response.message||'Coupon could not be applied.');return;}const info=response.validatedCart.coupon_info;const discount=Number(response.validatedCart.discount||0);if(info?.status==='error')setCouponMessage(info.message||'Coupon is not applicable.');else setCouponMessage(discount>0?`🎉 Yay! You saved ${money(discount)} with ${code}.`:'Coupon applied successfully.');}
-if(!validatedCart){
+
+ if (!validatedCart) {
   return (
     <section className="mk-cart-summary">
       <div className="mk-summary-header">
@@ -27,6 +28,7 @@ if(!validatedCart){
           <p className="mk-summary-empty">
             Login to review your cart and add a delivery address.
           </p>
+
           <button
             type="button"
             className="mk-primary-button mk-full-button"
@@ -36,18 +38,9 @@ if(!validatedCart){
           </button>
         </>
       ) : !addressReady && cart.items.length ? (
-        <>
-          <p className="mk-summary-empty">
-            Add a delivery address to calculate your total.
-          </p>
-          <button
-            type="button"
-            className="mk-primary-button mk-full-button"
-            onClick={onAddAddress}
-          >
-            ADD DELIVERY ADDRESS
-          </button>
-        </>
+        <div className="mk-summary-updating">
+          <span>Calculating your order total…</span>
+        </div>
       ) : cart.items.length ? (
         <div className="mk-summary-updating">
           <span>Updating your order total…</span>
@@ -55,6 +48,7 @@ if(!validatedCart){
       ) : (
         <>
           <p className="mk-summary-empty">Your cart is empty.</p>
+
           <Link href="/menu" className="mk-primary-button">
             BROWSE MENU
           </Link>

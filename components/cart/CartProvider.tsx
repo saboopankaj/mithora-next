@@ -90,9 +90,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     })();
   }, [isAuthenticated, user?.id]);
 
-  const mutate = useCallback((next: LocalCart) => {
-    setCart(next);
-saveCart(next);
+const mutate = useCallback((next: LocalCart) => {
+  setCart(next);
+  saveCart(next);
+  setValidatedCart(null);
     if (isAuthenticated && user?.id != null) {
       setCartOwner(user.id); ownerRef.current = String(user.id);
       saveQueueRef.current = saveQueueRef.current
@@ -121,7 +122,23 @@ saveCart(next);
   const validate = useCallback(async (address?: Address | null) => {
     const current = loadCart(); const currentPin = getPincode();
     if (!current.items.length) { setValidatedCart(null); return { success: true, validatedCart: undefined }; }
-    if (!/^\d{6}$/.test(currentPin)) { setValidatedCart(null); return { success: false, error: "Please enter or detect your delivery pincode first." }; }
+    if (!/^\d{6}$/.test(currentPin)) {
+  setLoading(true);
+
+  try {
+    const response = await syncCart(current, undefined, undefined);
+
+    if (response.validatedCart) {
+      setValidatedCart(response.validatedCart);
+    } else {
+      setValidatedCart(null);
+    }
+
+    return response;
+  } finally {
+    setLoading(false);
+  }
+}
     setLoading(true);
     try { const response = await syncCart(current, currentPin, address || undefined); if (response.validatedCart) setValidatedCart(response.validatedCart); else setValidatedCart(null); return response; }
     finally { setLoading(false); }
