@@ -18,6 +18,7 @@ export async function createCheckoutOrder(payload: {
   coupon_code?: string;
   address_id: number | string;
   customer?: Customer;
+  validatedCart?: unknown;
 }) {
   return apiFetch<{
     success?: boolean; ok?: boolean;
