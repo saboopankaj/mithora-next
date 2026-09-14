@@ -1,0 +1,605 @@
+/* =========================================================
+   TASTE BOX
+   ========================================================= */
+.tastebox-exact {
+    width: 100%;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #f8eee2;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+
+    padding: 82px 0;
+}
+
+.tastebox-exact .tb-inner {
+    width: min(1120px, calc(100% - 40px));
+
+    min-height: 470px;
+
+    margin: 0 auto;
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        1.45fr
+        .85fr;
+
+    grid-template-rows: auto 1fr;
+
+    column-gap: 60px;
+
+    align-items: center;
+}
+
+.tastebox-exact .tb-left {
+    grid-column: 1;
+
+    grid-row: 1 / 3;
+
+    min-width: 0;
+}
+
+.tastebox-exact .tb-eyebrow {
+    display: block;
+
+    margin-bottom: 11px;
+
+    color: #b7653c;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .11em;
+
+    text-transform: uppercase;
+}
+
+.tastebox-exact .tb-heading h2 {
+    margin: 0;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+
+    font-size: clamp(38px, 4vw, 51px);
+
+    font-weight: 800;
+
+    line-height: 1.04;
+
+    letter-spacing: -.04em;
+}
+
+.tastebox-exact .tb-heading .sub {
+    max-width: 610px;
+
+    margin: 13px 0 0;
+
+    color: #735b50;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.tastebox-exact .tb-images {
+    width: 100%;
+
+    height: 265px;
+
+    margin-top: 30px;
+
+    display: grid;
+
+    grid-template-columns:
+        1.35fr
+        1fr
+        1fr;
+
+    gap: 10px;
+
+    align-items: stretch;
+}
+
+.tastebox-exact .tb-img {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: #eadccd;
+
+    box-shadow:
+        0 10px 28px rgba(45,27,20,.09);
+}
+
+.tastebox-exact .tb-img img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .55s ease;
+}
+
+.tastebox-exact .tb-img:hover img {
+    transform: scale(1.05);
+}
+
+.tastebox-exact .tb-img-main {
+    border-radius: 22px;
+}
+
+.tastebox-exact .tb-right {
+    grid-column: 2;
+
+    grid-row: 1 / 3;
+
+    align-self: center;
+
+    position: relative;
+
+    padding: 45px 42px;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    border: 1px solid rgba(45,27,20,.07);
+
+    box-shadow:
+        0 16px 45px rgba(45,27,20,.08);
+}
+
+.tastebox-exact .tb-right-tag {
+    display: inline-block;
+
+    margin-bottom: 14px;
+
+    color: #bf6b3e;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+}
+
+.tastebox-exact .tb-right h3 {
+    margin: 0;
+
+    color: #241813;
+
+    font-family: inherit;
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    line-height: 1.08;
+
+    letter-spacing: -.035em;
+}
+
+.tastebox-exact .tb-right > p {
+    margin: 15px 0 0;
+
+    color: #725d53;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+.tastebox-exact .tb-points {
+    margin-top: 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.tastebox-exact .tb-points span {
+    color: #55423a;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.tastebox-exact .tb-btn {
+    height: 47px;
+
+    margin-top: 26px;
+
+    padding: 0 19px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border-radius: 7px;
+
+    background: #bf4b27;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 8px 20px rgba(191,75,39,.17);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.tastebox-exact .tb-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(191,75,39,.24);
+}
+
+.tastebox-exact .tb-btn i {
+    font-size: 13px;
+
+    transition:
+        transform .2s ease;
+}
+
+.tastebox-exact .tb-btn:hover i {
+    transform: translateX(3px);
+}
+
+.tastebox-exact .tb-offer {
+    position: absolute;
+
+    z-index: 10;
+
+    left: calc(66% - 20px);
+
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+}
+
+.tastebox-exact .offer-circle {
+    width: 105px;
+    height: 105px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f4c430;
+
+    border: 7px solid #f8eee2;
+
+    color: #2d1b14;
+
+    text-align: center;
+
+    box-shadow:
+        0 9px 25px rgba(45,27,20,.16);
+
+    transform: rotate(-8deg);
+}
+
+.tastebox-exact .offer-circle .off {
+    display: block;
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+.tastebox-exact .offer-circle .min {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+@media (max-width: 950px) and (min-width: 768px) {
+
+    .tastebox-exact {
+        padding: 65px 0;
+    }
+
+    .tastebox-exact .tb-inner {
+        column-gap: 35px;
+    }
+
+    .tastebox-exact .tb-right {
+        padding: 35px 28px;
+    }
+
+    .tastebox-exact .tb-images {
+        height: 225px;
+    }
+
+    .tastebox-exact .tb-right h3 {
+        font-size: 28px;
+    }
+
+    .tastebox-exact .tb-offer {
+        left: 64%;
+    }
+
+}
+
+@media (max-width: 767px) {
+
+    .tastebox-exact {
+        padding: 55px 0 62px;
+
+        overflow: hidden;
+    }
+
+    .tastebox-exact .tb-inner {
+        width: 100%;
+
+        min-height: 0;
+
+        margin: 0;
+
+        padding: 0 15px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 0;
+
+        box-sizing: border-box;
+    }
+
+    .tastebox-exact .tb-left {
+        width: 100%;
+    }
+
+    .tastebox-exact .tb-eyebrow {
+        margin-bottom: 9px;
+
+        font-size: 8px;
+
+        letter-spacing: .09em;
+    }
+
+    .tastebox-exact .tb-heading h2 {
+        font-size: 29px;
+
+        line-height: 1.08;
+
+        letter-spacing: -.03em;
+    }
+
+    .tastebox-exact .tb-heading .sub {
+        margin-top: 9px;
+
+        font-size: 11.5px;
+
+        line-height: 1.55;
+    }
+
+    .tastebox-exact .tb-images {
+        width: 100%;
+
+        height: 215px;
+
+        margin-top: 21px;
+
+        display: grid;
+
+        grid-template-columns:
+            1.35fr
+            1fr
+            1fr;
+
+        gap: 6px;
+    }
+
+    .tastebox-exact .tb-img {
+        border-radius: 12px;
+    }
+
+    .tastebox-exact .tb-img-main {
+        border-radius: 15px;
+    }
+
+    .tastebox-exact .tb-offer {
+        position: relative;
+
+        left: auto;
+        top: auto;
+
+        transform: none;
+
+        height: 0;
+
+        width: 100%;
+
+        display: flex;
+
+        justify-content: center;
+
+        z-index: 10;
+    }
+
+    .tastebox-exact .offer-circle {
+        width: 86px;
+        height: 86px;
+
+        position: relative;
+
+        top: -43px;
+
+        border-width: 5px;
+
+        transform: rotate(-7deg);
+    }
+
+    .tastebox-exact .offer-circle .off {
+        font-size: 14px;
+    }
+
+    .tastebox-exact .offer-circle .min {
+        margin-top: 4px;
+
+        font-size: 7px;
+    }
+
+    .tastebox-exact .tb-right {
+        width: 100%;
+
+        box-sizing: border-box;
+
+        padding: 31px 22px 25px;
+
+        margin-top: 0;
+
+        border-radius: 0 0 20px 20px;
+
+        box-shadow:
+            0 12px 30px rgba(45,27,20,.07);
+    }
+
+    .tastebox-exact .tb-right-tag {
+        margin-bottom: 9px;
+
+        font-size: 7.5px;
+    }
+
+    .tastebox-exact .tb-right h3 {
+        font-size: 23px;
+
+        line-height: 1.1;
+    }
+
+    .tastebox-exact .tb-right > p {
+        margin-top: 10px;
+
+        font-size: 11px;
+
+        line-height: 1.6;
+    }
+
+    .tastebox-exact .tb-points {
+        margin-top: 15px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 7px;
+    }
+
+    .tastebox-exact .tb-points span {
+        font-size: 8.5px;
+
+        line-height: 1.3;
+    }
+
+    .tastebox-exact .tb-points span:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .tastebox-exact .tb-btn {
+        width: 100%;
+
+        height: 43px;
+
+        margin-top: 19px;
+
+        font-size: 10px;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .tastebox-exact {
+        padding-top: 47px;
+    }
+
+    .tastebox-exact .tb-inner {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .tastebox-exact .tb-heading h2 {
+        font-size: 27px;
+    }
+
+    .tastebox-exact .tb-heading .sub {
+        font-size: 10.5px;
+    }
+
+    .tastebox-exact .tb-images {
+        height: 195px;
+
+        gap: 5px;
+    }
+
+    .tastebox-exact .tb-right {
+        padding-left: 19px;
+        padding-right: 19px;
+    }
+
+    .tastebox-exact .tb-right h3 {
+        font-size: 21px;
+    }
+
+    .tastebox-exact .tb-points span {
+        font-size: 8px;
+    }
+
+}

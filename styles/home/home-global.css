@@ -1,0 +1,82 @@
+/* =========================================================
+   MITHORA HOME — GLOBAL DESIGN TOKENS & SHARED UTILITIES
+   ========================================================= */
+
+:root {
+    /* Typography */
+    --mk-font-heading: "Outfit", "Plus Jakarta Sans", Arial, sans-serif;
+    --mk-font-body: "Plus Jakarta Sans", Arial, sans-serif;
+
+    /* Backward-compatible hero aliases */
+    --hero-heading: var(--mk-font-heading);
+    --hero-body: var(--mk-font-body);
+    --hero-gold: #f4c430;
+    --hero-white: #ffffff;
+    --hero-green: #18b957;
+
+    /* Brand palette */
+    --mk-gold: #f4c430;
+    --mk-green: #18b957;
+    --mk-orange: #ff6633;
+    --mk-brown: #2d1b14;
+    --mk-cream: #fffaf3;
+    --mk-white: #ffffff;
+
+    /* Shared CTA tokens — modules may override where their original design differs */
+    --mk-cta-primary: var(--mk-orange);
+    --mk-cta-primary-text: #ffffff;
+    --mk-cta-secondary: #075f3d;
+    --mk-cta-secondary-text: #ffffff;
+}
+
+/* Shared typography hooks for new/converted sections */
+.mk-home-heading {
+    font-family: var(--mk-font-heading);
+}
+
+.mk-home-body {
+    font-family: var(--mk-font-body);
+}
+
+/* Shared CTA primitives. Existing legacy CTA classes remain in their modules
+   so the current page styling/order is preserved. */
+.mk-home-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-family: var(--mk-font-body);
+    font-weight: 800;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.mk-home-cta:hover {
+    transform: translateY(-2px);
+}
+
+.mk-home-cta-primary {
+    background: var(--mk-cta-primary);
+    color: var(--mk-cta-primary-text);
+}
+
+.mk-home-cta-secondary {
+    background: var(--mk-cta-secondary);
+    color: var(--mk-cta-secondary-text);
+}
+
+.mk-home-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mk-home-link:hover {
+    text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mk-home-cta {
+        transition: none;
+    }
+}

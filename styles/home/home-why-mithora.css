@@ -1,0 +1,1052 @@
+/* =========================================================
+   WHY MITHORA
+   ========================================================= */
+.usp-block {
+    position: relative;
+    width: 100%;
+    padding: 105px 24px 100px;
+
+    background: #fdf7ed;
+    color: #2d1b14;
+
+    overflow: hidden;
+}
+
+.usp-block::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    top: -280px;
+    left: -200px;
+
+    border-radius: 50%;
+
+    background: rgba(244, 196, 48, 0.07);
+
+    pointer-events: none;
+}
+
+.usp-block::after {
+    content: "";
+
+    position: absolute;
+
+    width: 330px;
+    height: 330px;
+
+    right: -150px;
+    bottom: -190px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 107, 53, 0.045);
+
+    pointer-events: none;
+}
+
+.usp-container {
+    position: relative;
+    z-index: 2;
+
+    width: min(1180px, 100%);
+    margin: 0 auto;
+}
+
+.usp-title {
+    max-width: 800px;
+
+    margin: 0 auto 13px;
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: clamp(40px, 4.5vw, 58px);
+    font-weight: 800;
+    line-height: 1.07;
+    letter-spacing: -1.5px;
+
+    color: #2d1b14;
+}
+
+.usp-subtitle {
+    max-width: 680px;
+
+    margin: 0 auto 52px;
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.7;
+
+    color: #75645b;
+}
+
+.usp-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+.usp-card {
+    position: relative;
+
+    min-height: 300px;
+
+    padding: 29px 25px 27px;
+
+    border: 1px solid rgba(45, 27, 20, 0.08);
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    box-shadow:
+        0 10px 28px rgba(45, 27, 20, 0.055);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+.usp-card:hover {
+    transform: translateY(-6px);
+
+    border-color: rgba(244, 196, 48, 0.42);
+
+    box-shadow:
+        0 20px 42px rgba(45, 27, 20, 0.1);
+}
+
+.usp-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 25px;
+
+    width: 42px;
+    height: 3px;
+
+    border-radius: 0 0 999px 999px;
+
+    background: #f4c430;
+
+    transition: width 0.3s ease;
+}
+
+.usp-card:hover::before {
+    width: 65px;
+}
+
+.usp-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 23px;
+
+    border-radius: 15px;
+
+    background: #fff3d0;
+
+    color: #a5611d;
+
+    font-size: 23px;
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease;
+}
+
+.usp-card:hover .usp-icon-box {
+    transform: scale(1.06) rotate(-3deg);
+
+    background: #fbe5a6;
+}
+
+.usp-card-title {
+    margin: 0 0 11px;
+
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.25px;
+
+    color: #2d1b14;
+}
+
+.usp-card-text {
+    margin: 0;
+
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.7;
+
+    color: #75645b;
+}
+
+.usp-card:nth-child(2) .usp-icon-box {
+    background: #f9e9dc;
+    color: #b35c2b;
+}
+
+.usp-card:nth-child(3) .usp-icon-box {
+    background: #f1ecd8;
+    color: #788142;
+}
+
+.usp-card:nth-child(4) .usp-icon-box {
+    background: #f5e8d5;
+    color: #9a6b36;
+}
+
+@media (max-width: 1000px) {
+
+    .usp-block {
+        padding: 85px 20px;
+    }
+
+    .usp-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .usp-card {
+        min-height: 260px;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .usp-block {
+        padding: 72px 16px 68px;
+    }
+
+    .usp-title {
+        margin-bottom: 10px;
+
+        font-size: clamp(32px, 9vw, 40px);
+        line-height: 1.08;
+        letter-spacing: -0.9px;
+    }
+
+    .usp-subtitle {
+        margin-bottom: 34px;
+
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .usp-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .usp-card {
+        min-height: 255px;
+
+        padding: 20px 16px 18px;
+
+        border-radius: 16px;
+    }
+
+    .usp-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .usp-card::before {
+        left: 16px;
+
+        width: 32px;
+    }
+
+    .usp-icon-box {
+        width: 43px;
+        height: 43px;
+
+        margin-bottom: 17px;
+
+        border-radius: 12px;
+
+        font-size: 19px;
+    }
+
+    .usp-card-title {
+        margin-bottom: 8px;
+
+        font-size: 15px;
+        line-height: 1.25;
+    }
+
+    .usp-card-text {
+        font-size: 11.5px;
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .usp-block {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .usp-grid {
+        gap: 10px;
+    }
+
+    .usp-card {
+        min-height: 245px;
+
+        padding: 18px 13px 16px;
+    }
+
+    .usp-icon-box {
+        width: 40px;
+        height: 40px;
+
+        margin-bottom: 14px;
+
+        font-size: 17px;
+    }
+
+    .usp-card-title {
+        font-size: 14px;
+    }
+
+    .usp-card-text {
+        font-size: 10.5px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .usp-card,
+    .usp-icon-box,
+    .usp-card::before {
+        transition: none;
+    }
+}
+
+
+/* =========================================================
+   MITHORA KITCHEN
+   ORDER JOURNEY
+   ========================================================= */
+
+.oj-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 105px 24px 100px;
+
+    background: #f5ede2;
+    color: #2d1b14;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.oj-wrapper::before {
+    content: "";
+
+    position: absolute;
+
+    width: 520px;
+    height: 520px;
+
+    top: -280px;
+    right: -190px;
+
+    border-radius: 50%;
+
+    background: rgba(244, 196, 48, 0.065);
+
+    pointer-events: none;
+}
+
+.oj-wrapper::after {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    bottom: -220px;
+    left: -150px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 107, 53, 0.045);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.oj-container {
+    position: relative;
+    z-index: 2;
+
+    width: min(1200px, 100%);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.oj-sub {
+    margin-bottom: 13px;
+
+    text-align: center;
+
+    color: #a15d20;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+.oj-title {
+    max-width: 800px;
+
+    margin: 0 auto 13px;
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: clamp(40px, 4.5vw, 60px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -1.6px;
+
+    color: #2d1b14;
+}
+
+.oj-desc {
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.75;
+
+    color: #75645b;
+}
+
+.oj-desc strong {
+    color: #8f4f19;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FLOW
+   ========================================================= */
+
+.oj-flow {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-top: 65px;
+}
+
+
+/* =========================================================
+   CONNECTING LINE
+   ========================================================= */
+
+.oj-flow::before {
+    content: "";
+
+    position: absolute;
+
+    top: 29px;
+    left: 9%;
+    right: 9%;
+
+    height: 2px;
+
+    background:
+        repeating-linear-gradient(
+            to right,
+            rgba(161, 93, 32, 0.25) 0,
+            rgba(161, 93, 32, 0.25) 7px,
+            transparent 7px,
+            transparent 13px
+        );
+
+    z-index: 0;
+}
+
+
+/* =========================================================
+   STEP
+   ========================================================= */
+
+.oj-step {
+    position: relative;
+    z-index: 2;
+
+    min-height: 215px;
+
+    padding: 0 14px 20px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   NUMBER
+   ========================================================= */
+
+.oj-icon {
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 58px;
+    height: 58px;
+
+    margin: 0 auto 20px;
+
+    border: 4px solid #f5ede2;
+    border-radius: 50%;
+
+    background: #fffdf8;
+
+    color: #8f4f19;
+
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 850;
+
+    box-shadow:
+        0 5px 18px rgba(45, 27, 20, 0.09);
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* =========================================================
+   STEP CONTENT
+   ========================================================= */
+
+.oj-step h4 {
+    margin: 0 0 7px;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.25;
+
+    color: #2d1b14;
+}
+
+.oj-step p {
+    margin: 0 auto 13px;
+
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: #806f65;
+}
+
+
+/* =========================================================
+   TIME
+   ========================================================= */
+
+.oj-time {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 27px;
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    background: #fff7df;
+    color: #9a5b18;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   ACTIVE STEP
+   ========================================================= */
+
+.active-step .oj-icon {
+    background: #9a581e;
+    color: #fff;
+
+    box-shadow:
+        0 8px 22px rgba(154, 88, 30, 0.25);
+
+    transform: scale(1.08);
+}
+
+.active-step .oj-time {
+    background: #f4c430;
+    color: #3d2a17;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.oj-step:hover .oj-icon {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 24px rgba(45, 27, 20, 0.13);
+}
+
+
+/* =========================================================
+   DELIVERY BOX
+   ========================================================= */
+
+.oj-delivery-box {
+    width: min(850px, 100%);
+
+    margin: 43px auto 0;
+
+    padding: 20px 24px;
+
+    border: 1px solid rgba(161, 93, 32, 0.18);
+    border-radius: 17px;
+
+    background: rgba(255, 255, 255, 0.68);
+
+    box-shadow:
+        0 8px 25px rgba(45, 27, 20, 0.045);
+}
+
+
+/* =========================================================
+   DELIVERY ROW
+   ========================================================= */
+
+.oj-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.oj-label {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
+    color: #68574e;
+}
+
+.oj-time-large {
+    color: #8f4f19;
+
+    font-family: inherit;
+    font-size: 23px;
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   SMALL NOTE
+   ========================================================= */
+
+.oj-small {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 8px;
+
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+
+    color: #8a7970;
+}
+
+.oj-small i {
+    flex: 0 0 auto;
+
+    color: #a15d20;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .oj-wrapper {
+        padding: 85px 20px;
+    }
+
+    .oj-flow {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 25px 12px;
+
+        margin-top: 50px;
+    }
+
+    .oj-flow::before {
+        display: none;
+    }
+
+    .oj-step {
+        min-height: 190px;
+    }
+
+    .oj-step:last-child {
+        grid-column: 2;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .oj-wrapper {
+        padding: 58px 14px 55px;
+    }
+
+
+    /* INTRO */
+
+    .oj-sub {
+        margin-bottom: 8px;
+
+        font-size: 9px;
+        letter-spacing: 0.8px;
+    }
+
+    .oj-title {
+        max-width: 340px;
+
+        margin-bottom: 10px;
+
+        font-size: clamp(28px, 8.5vw, 36px);
+        line-height: 1.1;
+        letter-spacing: -0.7px;
+    }
+
+    .oj-desc {
+        max-width: 350px;
+
+        font-size: 12.5px;
+        line-height: 1.65;
+    }
+
+
+    /* =====================================================
+       MOBILE TIMELINE
+       ===================================================== */
+
+    .oj-flow {
+        display: flex;
+        flex-direction: column;
+
+        gap: 0;
+
+        margin-top: 32px;
+
+        position: relative;
+    }
+
+
+    /* Vertical connector */
+
+    .oj-flow::before {
+        display: block;
+
+        top: 27px;
+        bottom: 27px;
+
+        left: 27px;
+        right: auto;
+
+        width: 2px;
+        height: auto;
+
+        background:
+            repeating-linear-gradient(
+                to bottom,
+                rgba(161, 93, 32, 0.28) 0,
+                rgba(161, 93, 32, 0.28) 6px,
+                transparent 6px,
+                transparent 12px
+            );
+    }
+
+
+    /* =====================================================
+       STEP
+       ===================================================== */
+
+    .oj-step,
+    .oj-step:last-child {
+
+        display: grid;
+
+        grid-template-columns:
+            54px
+            minmax(0, 1fr)
+            auto;
+
+        grid-template-rows:
+            auto
+            auto;
+
+        column-gap: 13px;
+
+        min-height: 0;
+
+        padding: 0 0 18px;
+
+        text-align: left;
+    }
+
+
+    /* NUMBER */
+
+    .oj-icon {
+        grid-column: 1;
+        grid-row: 1 / 3;
+
+        width: 54px;
+        height: 54px;
+
+        margin: 0;
+
+        align-self: start;
+
+        border-width: 3px;
+
+        font-size: 15px;
+
+        box-shadow:
+            0 4px 14px rgba(45, 27, 20, 0.08);
+    }
+
+
+    /* STEP TITLE */
+
+    .oj-step h4 {
+        grid-column: 2;
+        grid-row: 1;
+
+        margin: 3px 0 3px;
+
+        font-size: 14px;
+        line-height: 1.25;
+    }
+
+
+    /* STEP DESCRIPTION */
+
+    .oj-step p {
+        grid-column: 2;
+        grid-row: 2;
+
+        margin: 0;
+
+        font-size: 10.5px;
+        line-height: 1.45;
+    }
+
+
+    /* TIME */
+
+    .oj-time {
+        grid-column: 3;
+        grid-row: 1 / 3;
+
+        align-self: center;
+
+        min-height: 25px;
+
+        padding: 5px 8px;
+
+        font-size: 8.5px;
+
+        white-space: nowrap;
+    }
+
+
+    /* ACTIVE STEP */
+
+    .active-step .oj-icon {
+        transform: scale(1.04);
+    }
+
+
+    /* =====================================================
+       DELIVERY BOX
+       ===================================================== */
+
+    .oj-delivery-box {
+        width: 100%;
+
+        margin-top: 8px;
+
+        padding: 16px 14px;
+
+        border-radius: 14px;
+    }
+
+    .oj-row {
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    .oj-label {
+        font-size: 10.5px;
+        line-height: 1.3;
+    }
+
+    .oj-time-large {
+        font-size: 18px;
+
+        white-space: nowrap;
+    }
+
+    .oj-small {
+        align-items: flex-start;
+
+        margin-top: 9px;
+
+        font-size: 9.5px;
+        line-height: 1.45;
+    }
+
+    .oj-small i {
+        margin-top: 1px;
+
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .oj-wrapper {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .oj-title {
+        font-size: 28px;
+    }
+
+    .oj-step,
+    .oj-step:last-child {
+        grid-template-columns:
+            48px
+            minmax(0, 1fr)
+            auto;
+
+        column-gap: 11px;
+    }
+
+    .oj-icon {
+        width: 48px;
+        height: 48px;
+
+        font-size: 14px;
+    }
+
+    .oj-flow::before {
+        left: 24px;
+    }
+
+    .oj-step h4 {
+        font-size: 13.5px;
+    }
+
+    .oj-step p {
+        font-size: 10px;
+    }
+
+    .oj-time {
+        padding: 4px 7px;
+
+        font-size: 8px;
+    }
+
+    .oj-time-large {
+        font-size: 17px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .oj-icon {
+        transition: none;
+    }
+}

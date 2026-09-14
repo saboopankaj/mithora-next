@@ -1,0 +1,468 @@
+/* =========================================================
+   SERVICES
+   ========================================================= */
+.mithora-services {
+    width: 100%;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #fffaf3;
+
+    padding: 82px 0 90px;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+}
+
+.mithora-services .container {
+    width: min(1120px, calc(100% - 40px));
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+}
+
+.mithora-services .service-header {
+    width: 100%;
+    max-width: 760px;
+
+    margin: 0 auto 42px;
+
+    text-align: center;
+}
+
+.mithora-services .gold-tag {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 13px;
+
+    color: #bd6a32;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+}
+
+.mithora-services .main-title {
+    margin: 0;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+
+    font-size: clamp(38px, 4.5vw, 54px);
+
+    font-weight: 800;
+
+    line-height: 1.04;
+
+    letter-spacing: -.04em;
+}
+
+.mithora-services .text-gold {
+    color: #c96b3b;
+}
+
+.mithora-services .services-grid {
+    width: 100%;
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1.35fr
+        1fr;
+
+    grid-template-rows:
+        245px
+        245px;
+
+    gap: 13px;
+}
+
+.mithora-services .service-card {
+    position: relative;
+
+    display: block;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border-radius: 21px;
+
+    background: #eee2d4;
+
+    border: 1px solid rgba(45, 27, 20, .08);
+
+    text-decoration: none;
+
+    box-shadow:
+        0 8px 25px rgba(45, 27, 20, .055);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+.mithora-services .service-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 16px 35px rgba(45, 27, 20, .11);
+}
+
+.mithora-services .service-card.tall {
+    grid-row: 1 / 3;
+}
+
+.mithora-services .service-card > img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .6s ease;
+}
+
+.mithora-services .service-card:hover > img {
+    transform: scale(1.045);
+}
+
+.mithora-services .card-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0) 32%,
+            rgba(0,0,0,.10) 48%,
+            rgba(0,0,0,.82) 100%
+        );
+}
+
+.mithora-services .card-info {
+    width: 100%;
+
+    padding: 24px;
+}
+
+.mithora-services .service-card.tall
+.card-info {
+    padding: 28px;
+}
+
+.mithora-services .card-info h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: -.025em;
+}
+
+.mithora-services .service-card.tall
+.card-info h3 {
+    font-size: 29px;
+}
+
+.mithora-services .card-info p {
+    margin: 7px 0 0;
+
+    color: rgba(255,255,255,.82);
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+.mithora-services .order-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 13px;
+
+    padding-bottom: 4px;
+
+    border-bottom: 1px solid #f4c430;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    transition:
+        gap .2s ease;
+}
+
+.mithora-services .order-link i {
+    font-size: 13px;
+}
+
+.mithora-services .service-card:hover
+.order-link {
+    gap: 10px;
+}
+
+.mithora-services .service-card:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.mithora-services .service-card:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1 / 3;
+}
+
+.mithora-services .service-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.mithora-services .service-card:nth-child(4) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.mithora-services .service-card:nth-child(5) {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+@media (max-width: 900px) and (min-width: 768px) {
+
+    .mithora-services {
+        padding: 65px 0 72px;
+    }
+
+    .mithora-services .services-grid {
+        grid-template-columns:
+            1fr 1.25fr 1fr;
+
+        grid-template-rows:
+            210px
+            210px;
+    }
+
+    .mithora-services .card-info {
+        padding: 18px;
+    }
+
+    .mithora-services .service-card.tall
+    .card-info {
+        padding: 21px;
+    }
+
+}
+
+@media (max-width: 767px) {
+
+    .mithora-services {
+        padding: 53px 0 62px;
+
+        overflow: hidden;
+    }
+
+    .mithora-services .container {
+        width: 100%;
+
+        max-width: 100%;
+
+        padding: 0 15px;
+
+        box-sizing: border-box;
+    }
+
+    .mithora-services .service-header {
+        margin-bottom: 27px;
+    }
+
+    .mithora-services .gold-tag {
+        margin-bottom: 9px;
+
+        font-size: 8.5px;
+
+        letter-spacing: .1em;
+    }
+
+    .mithora-services .main-title {
+        font-size: 30px;
+
+        line-height: 1.08;
+
+        letter-spacing: -.03em;
+    }
+
+    .mithora-services .services-grid {
+        width: 100%;
+
+        max-width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        grid-template-rows:
+            auto;
+
+        gap: 9px;
+    }
+
+    .mithora-services .service-card:nth-child(1),
+    .mithora-services .service-card:nth-child(2),
+    .mithora-services .service-card:nth-child(3),
+    .mithora-services .service-card:nth-child(4),
+    .mithora-services .service-card:nth-child(5) {
+        grid-column: auto;
+
+        grid-row: auto;
+    }
+
+    .mithora-services .service-card.tall {
+        grid-column: 1 / -1;
+
+        height: 285px;
+    }
+
+    .mithora-services .service-card:not(.tall) {
+        height: 190px;
+    }
+
+    .mithora-services .service-card {
+        border-radius: 17px;
+    }
+
+    .mithora-services .service-card:hover {
+        transform: none;
+
+        box-shadow:
+            0 8px 25px rgba(45,27,20,.055);
+    }
+
+    .mithora-services .service-card:hover > img {
+        transform: none;
+    }
+
+    .mithora-services .card-info,
+    .mithora-services .service-card.tall .card-info {
+        padding: 17px;
+    }
+
+    .mithora-services .card-info h3 {
+        font-size: 17px;
+    }
+
+    .mithora-services .service-card.tall
+    .card-info h3 {
+        font-size: 24px;
+    }
+
+    .mithora-services .card-info p {
+        margin-top: 5px;
+
+        font-size: 9.5px;
+    }
+
+    .mithora-services .order-link {
+        margin-top: 10px;
+
+        font-size: 9px;
+    }
+
+    .mithora-services .card-overlay {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(0,0,0,0) 25%,
+                rgba(0,0,0,.08) 42%,
+                rgba(0,0,0,.78) 100%
+            );
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .mithora-services {
+        padding-top: 47px;
+    }
+
+    .mithora-services .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .mithora-services .main-title {
+        font-size: 27px;
+    }
+
+    .mithora-services .services-grid {
+        gap: 7px;
+    }
+
+    .mithora-services .service-card.tall {
+        height: 260px;
+    }
+
+    .mithora-services .service-card:not(.tall) {
+        height: 175px;
+    }
+
+    .mithora-services .card-info,
+    .mithora-services .service-card.tall .card-info {
+        padding: 14px;
+    }
+
+    .mithora-services .card-info h3 {
+        font-size: 15px;
+    }
+
+    .mithora-services .service-card.tall
+    .card-info h3 {
+        font-size: 21px;
+    }
+
+}

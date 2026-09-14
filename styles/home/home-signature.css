@@ -1,0 +1,391 @@
+/* =========================================================
+   SIGNATURE DISHES
+   ========================================================= */
+.signature-dishes-section {
+    position: relative;
+    width: 100%;
+    padding: 105px 24px 100px;
+
+    background: #f7efe3;
+    color: #2d1b14;
+
+    overflow: hidden;
+}
+
+.signature-dishes-section::before {
+    content: "";
+
+    position: absolute;
+    width: 420px;
+    height: 420px;
+
+    top: -210px;
+    left: -170px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 107, 53, 0.045);
+
+    pointer-events: none;
+}
+
+.signature-dishes-section::after {
+    content: "✦";
+
+    position: absolute;
+
+    right: 7%;
+    bottom: 5%;
+
+    font-size: 150px;
+    line-height: 1;
+
+    color: rgba(181, 116, 35, 0.045);
+
+    pointer-events: none;
+}
+
+.signature-dishes-section .container {
+    position: relative;
+    z-index: 2;
+
+    width: min(1180px, 100%);
+    margin: 0 auto;
+}
+
+.signature-header {
+    max-width: 760px;
+    margin: 0 auto 52px;
+
+    text-align: center;
+}
+
+.signature-tag {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 15px;
+
+    border: 1px solid rgba(181, 116, 35, 0.25);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.58);
+
+    color: #9a5b18;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+}
+
+.signature-heading {
+    margin: 18px 0 13px;
+
+    font-family: inherit;
+    font-size: clamp(40px, 4.6vw, 60px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -1.6px;
+
+    color: #2d1b14;
+}
+
+.signature-subtext {
+    max-width: 620px;
+    margin: 0 auto;
+
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.7;
+
+    color: #75645b;
+}
+
+.signature-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+.signature-dish-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    overflow: hidden;
+
+    border: 1px solid rgba(45, 27, 20, 0.08);
+    border-radius: 22px;
+
+    background: #fffdf9;
+
+    color: inherit;
+    text-decoration: none;
+
+    box-shadow:
+        0 12px 32px rgba(45, 27, 20, 0.07);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+.signature-dish-card:hover {
+    transform: translateY(-7px);
+
+    border-color: rgba(181, 116, 35, 0.35);
+
+    box-shadow:
+        0 24px 48px rgba(45, 27, 20, 0.12);
+}
+
+.signature-dish-image {
+    position: relative;
+
+    width: 100%;
+    height: 285px;
+
+    overflow: hidden;
+
+    background: #e8dccd;
+}
+
+.signature-dish-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.signature-dish-card:hover .signature-dish-image img {
+    transform: scale(1.06);
+}
+
+.signature-dish-image::after {
+    content: "";
+
+    position: absolute;
+    inset: auto 0 0;
+
+    height: 38%;
+
+    background: linear-gradient(
+        to top,
+        rgba(30, 17, 10, 0.38),
+        transparent
+    );
+
+    pointer-events: none;
+}
+
+.signature-dish-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    padding: 25px 25px 23px;
+}
+
+.signature-dish-content h3 {
+    margin: 0 0 9px;
+
+    font-family: inherit;
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+
+    color: #2d1b14;
+}
+
+.signature-dish-content p {
+    margin: 0 0 20px;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.65;
+
+    color: #75645b;
+}
+
+.signature-dish-content > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    width: fit-content;
+
+    margin-top: auto;
+
+    color: #a65c24;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 750;
+
+    transition:
+        color 0.25s ease,
+        gap 0.25s ease;
+}
+
+.signature-dish-content > span i {
+    font-size: 15px;
+
+    transition: transform 0.25s ease;
+}
+
+.signature-dish-card:hover .signature-dish-content > span {
+    color: #7f4218;
+    gap: 10px;
+}
+
+.signature-dish-card:hover .signature-dish-content > span i {
+    transform: translateX(3px);
+}
+
+@media (max-width: 900px) {
+
+    .signature-dishes-section {
+        padding: 85px 20px;
+    }
+
+    .signature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .signature-dish-card:last-child {
+        grid-column: 1 / -1;
+
+        width: min(520px, 100%);
+        margin: 0 auto;
+    }
+
+    .signature-dish-image {
+        height: 260px;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .signature-dishes-section {
+        padding: 72px 16px 68px;
+    }
+
+    .signature-header {
+        margin-bottom: 34px;
+    }
+
+    .signature-tag {
+        padding: 7px 12px;
+
+        font-size: 9px;
+    }
+
+    .signature-heading {
+        margin-top: 15px;
+
+        font-size: clamp(32px, 9vw, 40px);
+        line-height: 1.08;
+        letter-spacing: -0.9px;
+    }
+
+    .signature-subtext {
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .signature-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .signature-dish-card:last-child {
+        grid-column: auto;
+
+        width: 100%;
+    }
+
+    .signature-dish-card {
+        border-radius: 18px;
+    }
+
+    .signature-dish-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .signature-dish-image {
+        height: 215px;
+    }
+
+    .signature-dish-content {
+        padding: 19px 17px 18px;
+    }
+
+    .signature-dish-content h3 {
+        margin-bottom: 7px;
+
+        font-size: 19px;
+    }
+
+    .signature-dish-content p {
+        margin-bottom: 15px;
+
+        font-size: 12.5px;
+        line-height: 1.6;
+    }
+
+    .signature-dish-content > span {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .signature-dishes-section {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .signature-grid {
+        gap: 13px;
+    }
+
+    .signature-dish-image {
+        height: 195px;
+    }
+
+    .signature-dish-content {
+        padding: 17px 14px 16px;
+    }
+
+    .signature-dish-content h3 {
+        font-size: 18px;
+    }
+
+    .signature-dish-content p {
+        font-size: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .signature-dish-card,
+    .signature-dish-image img,
+    .signature-dish-content > span,
+    .signature-dish-content > span i {
+        transition: none;
+    }
+}

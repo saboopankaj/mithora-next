@@ -1,0 +1,958 @@
+/* =========================================================
+   CATERING
+   ========================================================= */
+.catering-parent-section {
+    width: 100%;
+    padding: 105px 0 115px;
+    background: #fbf5ed;
+    color: #2d1b14;
+    font-family: inherit;
+    overflow: hidden;
+}
+
+.catering-parent-section > .container {
+    width: min(1450px, calc(100% - 64px));
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.catering-parent-section .section-intro {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto 55px;
+    text-align: center;
+}
+
+.catering-parent-section .badge-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+    padding: 9px 17px;
+
+    border-radius: 999px;
+    background: #fff0cf;
+    color: #a35b18;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .07em;
+}
+
+.catering-parent-section .main-title {
+    margin: 17px 0 0;
+
+    color: #241813;
+    font-family: inherit;
+
+    font-size: clamp(50px, 5vw, 68px);
+    font-weight: 850;
+    line-height: 1.03;
+    letter-spacing: -.045em;
+}
+
+.catering-parent-section .sub-title {
+    max-width: 850px;
+    margin: 20px auto 0;
+
+    color: #705b50;
+    font-family: inherit;
+
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.catering-parent-section .package-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+    align-items: stretch;
+}
+
+.catering-parent-section .menu-card {
+    position: relative;
+    min-width: 0;
+    min-height: 540px;
+
+    padding: 38px 34px 32px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid #e6ddd4;
+    border-radius: 26px;
+
+    box-shadow:
+        0 14px 42px rgba(45, 27, 20, .07);
+
+    box-sizing: border-box;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+}
+
+.catering-parent-section .menu-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #dcc7b4;
+
+    box-shadow:
+        0 22px 52px rgba(45, 27, 20, .11);
+}
+
+.catering-parent-section .menu-card.featured {
+    background: #fffdf9;
+
+    border: 1.5px solid #e8ae1d;
+
+    box-shadow:
+        0 18px 48px rgba(178, 126, 20, .12);
+}
+
+.catering-parent-section .card-tag {
+    align-self: flex-start;
+
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 30px;
+
+    padding: 6px 12px;
+    margin-bottom: 20px;
+
+    border-radius: 999px;
+
+    background: #f3e9dc;
+    color: #765447;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.catering-parent-section .card-tag.gold {
+    background: #fff0c8;
+    color: #a76a08;
+}
+
+.catering-parent-section .card-tag.purple {
+    background: #eee7f5;
+    color: #735487;
+}
+
+.catering-parent-section .best-value {
+    position: absolute;
+
+    top: 18px;
+    right: 22px;
+
+    min-height: 31px;
+
+    padding: 7px 13px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background: #f4c430;
+    color: #241813;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 850;
+
+    box-shadow:
+        0 7px 18px rgba(180, 130, 20, .16);
+}
+
+.catering-parent-section .menu-card h3 {
+    margin: 0;
+
+    color: #201713;
+
+    font-family: inherit;
+    font-size: 29px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.025em;
+}
+
+.catering-parent-section .price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+
+    margin-top: 18px;
+}
+
+.catering-parent-section .currency {
+    color: #2d1b14;
+
+    font-family: inherit;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.catering-parent-section .amount {
+    color: #2d1b14;
+
+    font-family: inherit;
+    font-size: 47px;
+    font-weight: 850;
+    line-height: 1;
+    letter-spacing: -.045em;
+}
+
+.catering-parent-section .per {
+    color: #7b685e;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.catering-parent-section .item-list {
+    list-style: none;
+
+    margin: 30px 0 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.catering-parent-section .item-list li {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    color: #66554d;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+.catering-parent-section .item-list li i {
+    flex: 0 0 auto;
+
+    margin-top: 2px;
+
+    color: #b86c37;
+    font-size: 17px;
+}
+
+.catering-parent-section .featured .item-list li i {
+    color: #d49b11;
+}
+
+.catering-parent-section .card-btn {
+    width: 100%;
+    min-height: 54px;
+
+    margin-top: auto;
+    padding: 0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #2d1b14;
+    border-radius: 11px;
+
+    background: #2d1b14;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+
+.catering-parent-section .card-btn:hover {
+    transform: translateY(-2px);
+
+    background: #44271d;
+
+    box-shadow:
+        0 10px 24px rgba(45, 27, 20, .15);
+}
+
+.catering-parent-section .gold-btn {
+    background: #d49a12;
+    border-color: #d49a12;
+    color: #201713;
+}
+
+.catering-parent-section .gold-btn:hover {
+    background: #bc8509;
+    border-color: #bc8509;
+}
+
+.catering-parent-section .signature-card {
+    width: 100%;
+    min-height: 540px;
+
+    margin-top: 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(420px, .9fr);
+
+    overflow: hidden;
+
+    background: #2d1b14;
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 18px 55px rgba(45, 27, 20, .12);
+}
+
+.catering-parent-section .signature-content {
+    padding: 54px 58px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    box-sizing: border-box;
+}
+
+.catering-parent-section .signature-badge {
+    align-self: flex-start;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 9px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(244, 196, 48, .12);
+    color: #f4c430;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.catering-parent-section .pulse-icon {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #f4c430;
+
+    box-shadow:
+        0 0 0 5px rgba(244, 196, 48, .10);
+}
+
+.catering-parent-section .signature-title {
+    max-width: 650px;
+
+    margin: 22px 0 0;
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: clamp(36px, 3.4vw, 52px);
+    font-weight: 850;
+    line-height: 1.04;
+    letter-spacing: -.04em;
+}
+
+.catering-parent-section .signature-description {
+    max-width: 660px;
+
+    margin: 20px 0 0;
+
+    color: rgba(255,255,255,.78);
+
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.catering-parent-section .signature-description strong {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.catering-parent-section .signature-features {
+    margin-top: 27px;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 24px;
+}
+
+.catering-parent-section .feature-item {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: rgba(255,255,255,.88);
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.catering-parent-section .feature-item i {
+    color: #f4c430;
+    font-size: 19px;
+}
+
+.catering-parent-section .signature-action {
+    margin-top: 32px;
+}
+
+.catering-parent-section .primary-signature-btn {
+    min-height: 54px;
+
+    padding: 0 24px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    border-radius: 11px;
+
+    background: #f4c430;
+    color: #241813;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 850;
+
+    text-decoration: none;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.catering-parent-section .primary-signature-btn:hover {
+    transform: translateY(-2px);
+
+    background: #ffd84e;
+
+    box-shadow:
+        0 12px 28px rgba(244,196,48,.20);
+}
+
+.catering-parent-section .signature-image-wrapper {
+    position: relative;
+
+    min-height: 540px;
+
+    overflow: hidden;
+}
+
+.catering-parent-section .signature-img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .6s ease;
+}
+
+.catering-parent-section .signature-card:hover .signature-img {
+    transform: scale(1.035);
+}
+
+.catering-parent-section .signature-image-wrapper::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.02) 30%,
+            rgba(0,0,0,.20) 100%
+        );
+}
+
+.catering-parent-section .image-overlay-card {
+    position: absolute;
+
+    left: 24px;
+    bottom: 24px;
+
+    z-index: 2;
+
+    min-height: 48px;
+
+    padding: 0 17px;
+
+    display: inline-flex;
+    align-items: center;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.94);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.16);
+
+    backdrop-filter: blur(8px);
+}
+
+.catering-parent-section .overlay-price {
+    color: #2d1b14;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.catering-parent-section .estimator-banner {
+    width: 100%;
+
+    margin-top: 24px;
+    padding: 28px 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    border: 1px solid #e4d7c9;
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 28px rgba(45,27,20,.055);
+
+    box-sizing: border-box;
+}
+
+.catering-parent-section .est-text h4 {
+    margin: 0;
+
+    color: #2d1b14;
+
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.catering-parent-section .est-text p {
+    max-width: 720px;
+
+    margin: 6px 0 0;
+
+    color: #756158;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.catering-parent-section .est-btn {
+    flex: 0 0 auto;
+
+    min-height: 52px;
+
+    padding: 0 21px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    border-radius: 10px;
+
+    background: #bf4b27;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.catering-parent-section .est-btn:hover {
+    transform: translateY(-2px);
+
+    background: #a93f20;
+
+    box-shadow:
+        0 10px 25px rgba(191,75,39,.18);
+}
+
+@media (max-width: 1050px) and (min-width: 768px) {
+
+    .catering-parent-section {
+        padding: 82px 0 92px;
+    }
+
+    .catering-parent-section > .container {
+        width: min(900px, calc(100% - 48px));
+    }
+
+    .catering-parent-section .main-title {
+        font-size: 52px;
+    }
+
+    .catering-parent-section .package-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .catering-parent-section .menu-card {
+        min-height: 510px;
+    }
+
+    .catering-parent-section .menu-card.featured {
+        grid-column: 1 / -1;
+    }
+
+    .catering-parent-section .signature-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .catering-parent-section .signature-content {
+        padding: 42px;
+    }
+
+    .catering-parent-section .signature-image-wrapper {
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .catering-parent-section {
+        padding: 68px 0 78px;
+    }
+
+    .catering-parent-section > .container {
+        width: 100%;
+        padding: 0 16px;
+    }
+
+    .catering-parent-section .section-intro {
+        margin-bottom: 34px;
+    }
+
+    .catering-parent-section .badge-gold {
+        min-height: 34px;
+        padding: 8px 13px;
+        font-size: 9px;
+    }
+
+    .catering-parent-section .main-title {
+        margin-top: 14px;
+
+        font-size: 37px;
+        line-height: 1.06;
+    }
+
+    .catering-parent-section .sub-title {
+        margin-top: 14px;
+
+        font-size: 13.5px;
+        line-height: 1.65;
+    }
+
+    .catering-parent-section .package-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .catering-parent-section .menu-card,
+    .catering-parent-section .menu-card.featured {
+        grid-column: auto;
+
+        min-height: 0;
+
+        padding: 28px 22px 23px;
+
+        border-radius: 22px;
+    }
+
+    .catering-parent-section .menu-card h3 {
+        font-size: 25px;
+    }
+
+    .catering-parent-section .card-tag {
+        min-height: 28px;
+
+        padding: 6px 10px;
+
+        margin-bottom: 16px;
+
+        font-size: 9px;
+    }
+
+    .catering-parent-section .best-value {
+        top: 17px;
+        right: 17px;
+
+        min-height: 29px;
+
+        padding: 6px 10px;
+
+        font-size: 9px;
+    }
+
+    .catering-parent-section .price-box {
+        margin-top: 15px;
+    }
+
+    .catering-parent-section .currency {
+        font-size: 19px;
+    }
+
+    .catering-parent-section .amount {
+        font-size: 40px;
+    }
+
+    .catering-parent-section .per {
+        font-size: 12px;
+    }
+
+    .catering-parent-section .item-list {
+        margin-top: 23px;
+        gap: 12px;
+    }
+
+    .catering-parent-section .item-list li {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .catering-parent-section .item-list li i {
+        font-size: 16px;
+    }
+
+    .catering-parent-section .card-btn {
+        min-height: 49px;
+
+        margin-top: 27px;
+
+        border-radius: 10px;
+
+        font-size: 12px;
+    }
+
+    .catering-parent-section .signature-card {
+        grid-template-columns: 1fr;
+
+        min-height: 0;
+
+        margin-top: 15px;
+
+        border-radius: 23px;
+    }
+
+    .catering-parent-section .signature-image-wrapper {
+        order: -1;
+
+        min-height: 330px;
+        height: 330px;
+    }
+
+    .catering-parent-section .signature-content {
+        padding: 30px 23px 32px;
+    }
+
+    .catering-parent-section .signature-badge {
+        padding: 8px 11px;
+
+        font-size: 9px;
+    }
+
+    .catering-parent-section .signature-title {
+        margin-top: 17px;
+
+        font-size: 32px;
+        line-height: 1.06;
+    }
+
+    .catering-parent-section .signature-description {
+        margin-top: 14px;
+
+        font-size: 13.5px;
+        line-height: 1.65;
+    }
+
+    .catering-parent-section .signature-features {
+        margin-top: 20px;
+
+        gap: 13px 20px;
+    }
+
+    .catering-parent-section .feature-item {
+        font-size: 11px;
+    }
+
+    .catering-parent-section .feature-item i {
+        font-size: 17px;
+    }
+
+    .catering-parent-section .signature-action {
+        margin-top: 24px;
+    }
+
+    .catering-parent-section .primary-signature-btn {
+        width: 100%;
+
+        min-height: 50px;
+
+        font-size: 12px;
+    }
+
+    .catering-parent-section .image-overlay-card {
+        left: 17px;
+        bottom: 17px;
+
+        min-height: 43px;
+
+        padding: 0 14px;
+
+        border-radius: 10px;
+    }
+
+    .catering-parent-section .overlay-price {
+        font-size: 12px;
+    }
+
+    .catering-parent-section .estimator-banner {
+        margin-top: 15px;
+
+        padding: 22px 19px;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 17px;
+
+        border-radius: 17px;
+    }
+
+    .catering-parent-section .est-text h4 {
+        font-size: 18px;
+    }
+
+    .catering-parent-section .est-text p {
+        margin-top: 5px;
+
+        font-size: 12.5px;
+        line-height: 1.55;
+    }
+
+    .catering-parent-section .est-btn {
+        width: 100%;
+
+        min-height: 49px;
+
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .catering-parent-section {
+        padding-top: 58px;
+    }
+
+    .catering-parent-section > .container {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .catering-parent-section .main-title {
+        font-size: 33px;
+    }
+
+    .catering-parent-section .sub-title {
+        font-size: 12.5px;
+    }
+
+    .catering-parent-section .menu-card {
+        padding: 25px 19px 21px;
+    }
+
+    .catering-parent-section .menu-card h3 {
+        font-size: 23px;
+    }
+
+    .catering-parent-section .signature-image-wrapper {
+        height: 290px;
+        min-height: 290px;
+    }
+
+    .catering-parent-section .signature-content {
+        padding: 27px 19px 29px;
+    }
+
+    .catering-parent-section .signature-title {
+        font-size: 29px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .catering-parent-section *,
+    .catering-parent-section *::before,
+    .catering-parent-section *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}

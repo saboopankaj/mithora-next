@@ -1,0 +1,782 @@
+/* =========================================================
+   VRAT & SATTVIC FOOD
+   ========================================================= */
+.vrat-split-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 105px 24px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 12% 20%,
+            rgba(244, 196, 48, 0.09),
+            transparent 30%
+        ),
+        #fffaf0;
+
+    color: #3a281e;
+}
+
+.vrat-split-wrapper::before {
+    content: "ॐ";
+
+    position: absolute;
+    top: -100px;
+    right: -40px;
+
+    font-family: serif;
+    font-size: 360px;
+    line-height: 1;
+
+    color: rgba(181, 116, 35, 0.035);
+
+    pointer-events: none;
+}
+
+.vrat-split-wrapper::after {
+    content: "";
+
+    position: absolute;
+    bottom: -160px;
+    left: -120px;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 50%;
+
+    background: rgba(244, 196, 48, 0.06);
+
+    pointer-events: none;
+}
+
+.vrat-custom-container {
+    position: relative;
+    z-index: 2;
+
+    width: min(1240px, 100%);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(430px, 0.85fr);
+
+    gap: 80px;
+
+    align-items: center;
+}
+
+.vrat-content-column {
+    min-width: 0;
+}
+
+.vrat-top-tag {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 36px;
+    padding: 8px 15px;
+
+    border: 1px solid rgba(181, 116, 35, 0.22);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    color: #9a5b18;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.3px;
+
+    box-shadow: 0 5px 18px rgba(76, 48, 22, 0.045);
+}
+
+.vrat-section-title {
+    max-width: 720px;
+
+    margin: 20px 0 17px;
+
+    font-family: inherit;
+    font-size: clamp(42px, 5vw, 66px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1.8px;
+
+    color: #3a281e;
+}
+
+.vrat-section-desc {
+    max-width: 680px;
+
+    margin: 0;
+
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.8;
+
+    color: #756359;
+}
+
+.vrat-section-desc strong {
+    color: #8d551b;
+    font-weight: 750;
+}
+
+.vrat-sacred-divider {
+    display: flex;
+    align-items: center;
+
+    width: min(420px, 100%);
+
+    margin: 27px 0 25px;
+
+    color: #b57623;
+}
+
+.vrat-sacred-divider::before,
+.vrat-sacred-divider::after {
+    content: "";
+
+    flex: 1;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(181, 118, 35, 0.3)
+    );
+}
+
+.vrat-sacred-divider::after {
+    background: linear-gradient(
+        90deg,
+        rgba(181, 118, 35, 0.3),
+        transparent
+    );
+}
+
+.vrat-sacred-divider span {
+    margin: 0 14px;
+
+    font-family: serif;
+    font-size: 20px;
+}
+
+.vrat-plan-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+
+    max-width: 650px;
+}
+
+.vrat-plan-card {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    min-height: 88px;
+    padding: 17px 20px;
+
+    border: 1px solid rgba(58, 40, 30, 0.09);
+    border-radius: 17px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    box-shadow:
+        0 7px 22px rgba(58, 40, 30, 0.055);
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.vrat-plan-card:hover {
+    transform: translateX(5px);
+
+    border-color: rgba(181, 116, 35, 0.3);
+
+    box-shadow:
+        0 12px 28px rgba(58, 40, 30, 0.08);
+}
+
+.vrat-plan-info {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    min-width: 0;
+}
+
+.vrat-plan-symbol {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #fff5d8;
+
+    font-size: 18px;
+}
+
+.vrat-plan-info h4 {
+    margin: 0 0 4px;
+
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+
+    color: #3a281e;
+}
+
+.vrat-plan-info p {
+    margin: 0;
+
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.45;
+
+    color: #78695f;
+}
+
+.vrat-plan-price {
+    flex: 0 0 auto;
+
+    font-family: inherit;
+    font-size: 23px;
+    font-weight: 800;
+
+    color: #9a5b18;
+}
+
+.vrat-featured-plan {
+    border-color: rgba(181, 116, 35, 0.4);
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffdf7,
+            #fff7df
+        );
+
+    box-shadow:
+        0 12px 32px rgba(181, 116, 35, 0.11);
+}
+
+.vrat-featured-plan::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+
+    height: 2px;
+
+    background: #d29a34;
+    border-radius: 0 0 999px 999px;
+}
+
+.vrat-value-badge {
+    position: absolute;
+
+    top: -11px;
+    right: 18px;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    background: #b57623;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+
+    box-shadow: 0 4px 12px rgba(181, 116, 35, 0.22);
+}
+
+.vrat-action-area {
+    margin-top: 28px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 18px;
+}
+
+.vrat-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    min-height: 49px;
+    padding: 13px 22px;
+
+    border-radius: 12px;
+
+    background: #8f4f19;
+    color: #fff;
+
+    text-decoration: none;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 750;
+
+    box-shadow:
+        0 8px 20px rgba(143, 79, 25, 0.2);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.vrat-primary-btn:hover {
+    transform: translateY(-2px);
+
+    background: #753e12;
+
+    box-shadow:
+        0 12px 26px rgba(143, 79, 25, 0.27);
+}
+
+.vrat-primary-btn i {
+    font-size: 18px;
+}
+
+.vrat-trust-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 13px;
+
+    color: #756359;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.vrat-trust-labels span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.vrat-trust-labels i {
+    color: #9a6b26;
+    font-size: 15px;
+}
+
+.vrat-visual-column {
+    position: relative;
+}
+
+.vrat-image-card {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 0.9 / 1;
+
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background: #eadfce;
+
+    box-shadow:
+        0 25px 60px rgba(58, 40, 30, 0.16);
+}
+
+.vrat-main-img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform 0.7s ease;
+}
+
+.vrat-image-card:hover .vrat-main-img {
+    transform: scale(1.035);
+}
+
+.vrat-image-overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(35, 22, 14, 0.55),
+            rgba(35, 22, 14, 0.03) 48%,
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+.vrat-om-mark {
+    position: absolute;
+
+    top: 22px;
+    right: 23px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 54px;
+    height: 54px;
+
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 50%;
+
+    background: rgba(60, 36, 18, 0.35);
+
+    color: #fff8df;
+
+    font-family: serif;
+    font-size: 29px;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.vrat-rating-floating {
+    position: absolute;
+
+    left: 22px;
+    bottom: 23px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 12px;
+
+    background: rgba(48, 29, 18, 0.62);
+
+    color: #fff;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.vrat-rating-floating i {
+    color: #f4c430;
+    font-size: 18px;
+}
+
+.vrat-rating-floating span {
+    display: flex;
+    flex-direction: column;
+
+    font-family: inherit;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+.vrat-rating-floating strong {
+    font-size: 14px;
+    color: #fff;
+}
+
+.vrat-special-tag {
+    position: absolute;
+
+    right: 22px;
+    bottom: 23px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 10px 13px;
+
+    border-radius: 12px;
+
+    background: #fff8e5;
+    color: #754719;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 750;
+
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+}
+
+.vrat-special-tag i {
+    font-size: 16px;
+}
+
+@media (max-width: 1000px) {
+
+    .vrat-custom-container {
+        grid-template-columns: 1fr;
+
+        gap: 55px;
+
+        max-width: 760px;
+    }
+
+    .vrat-content-column {
+        text-align: center;
+    }
+
+    .vrat-section-title,
+    .vrat-section-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .vrat-sacred-divider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .vrat-plan-stack {
+        margin-left: auto;
+        margin-right: auto;
+
+        text-align: left;
+    }
+
+    .vrat-action-area {
+        justify-content: center;
+    }
+
+    .vrat-image-card {
+        max-width: 650px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .vrat-split-wrapper {
+        padding: 72px 16px 70px;
+    }
+
+    .vrat-split-wrapper::before {
+        font-size: 230px;
+        top: -55px;
+        right: -55px;
+    }
+
+    .vrat-custom-container {
+        gap: 36px;
+    }
+
+    .vrat-top-tag {
+        min-height: 32px;
+        padding: 7px 12px;
+
+        font-size: 10px;
+    }
+
+    .vrat-section-title {
+        margin-top: 16px;
+        margin-bottom: 13px;
+
+        font-size: clamp(34px, 9vw, 43px);
+        letter-spacing: -1px;
+    }
+
+    .vrat-section-desc {
+        font-size: 13.5px;
+        line-height: 1.7;
+    }
+
+    .vrat-sacred-divider {
+        margin-top: 22px;
+        margin-bottom: 21px;
+    }
+
+    .vrat-plan-stack {
+        gap: 11px;
+    }
+
+    .vrat-plan-card {
+        min-height: 78px;
+        padding: 14px;
+
+        gap: 10px;
+
+        border-radius: 14px;
+    }
+
+    .vrat-plan-info {
+        gap: 9px;
+    }
+
+    .vrat-plan-symbol {
+        width: 35px;
+        height: 35px;
+
+        font-size: 15px;
+    }
+
+    .vrat-plan-info h4 {
+        font-size: 14px;
+    }
+
+    .vrat-plan-info p {
+        font-size: 10.5px;
+    }
+
+    .vrat-plan-price {
+        font-size: 18px;
+    }
+
+    .vrat-value-badge {
+        top: -9px;
+        right: 12px;
+
+        padding: 4px 8px;
+
+        font-size: 8px;
+    }
+
+    .vrat-action-area {
+        margin-top: 23px;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 15px;
+    }
+
+    .vrat-primary-btn {
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .vrat-trust-labels {
+        justify-content: center;
+
+        font-size: 9.5px;
+    }
+
+    .vrat-image-card {
+        aspect-ratio: 0.95 / 1;
+
+        border-radius: 22px;
+    }
+
+    .vrat-om-mark {
+        top: 14px;
+        right: 14px;
+
+        width: 43px;
+        height: 43px;
+
+        font-size: 23px;
+    }
+
+    .vrat-rating-floating {
+        left: 13px;
+        bottom: 13px;
+
+        padding: 8px 10px;
+        gap: 6px;
+
+        border-radius: 10px;
+    }
+
+    .vrat-rating-floating i {
+        font-size: 15px;
+    }
+
+    .vrat-rating-floating span {
+        font-size: 8px;
+    }
+
+    .vrat-rating-floating strong {
+        font-size: 11px;
+    }
+
+    .vrat-special-tag {
+        right: 13px;
+        bottom: 13px;
+
+        padding: 8px 9px;
+
+        border-radius: 10px;
+
+        font-size: 9px;
+    }
+
+    .vrat-special-tag i {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .vrat-split-wrapper {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .vrat-section-title {
+        font-size: 32px;
+    }
+
+    .vrat-section-desc {
+        font-size: 12.5px;
+    }
+
+    .vrat-plan-info h4 {
+        font-size: 13px;
+    }
+
+    .vrat-plan-info p {
+        font-size: 9.5px;
+    }
+
+    .vrat-plan-price {
+        font-size: 17px;
+    }
+
+    .vrat-trust-labels {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .vrat-plan-card,
+    .vrat-primary-btn,
+    .vrat-main-img {
+        transition: none;
+    }
+}
