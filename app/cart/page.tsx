@@ -128,5 +128,24 @@ useEffect(() => {
       Change Address
     </button>
   </div>
-)}{isAuthenticated&&formOpen&&<section className="mk-cart-address-card"><div className="mk-cart-section-heading"><div><span className="mk-cart-eyebrow">NEW ADDRESS</span><h2>Add delivery address</h2></div></div><AddressForm initial={null} onSaved={saveNewAddress} onCancel={()=>setFormOpen(false)}/></section>}<section className="mk-cart-items-section"><div className="mk-cart-section-heading"><div><span className="mk-cart-eyebrow">YOUR ORDER</span><h2>{cart.items.reduce((s,i)=>s+i.qty,0)} items</h2></div></div>{validatedCart?.items?.length?<div className="mk-cart-items">{validatedCart.items.map(item=><CartItem key={String(item.variant_id)} item={item}/>)}</div>:<div className="mk-cart-validation-loading">{isAuthenticated?(selected?'Calculating your delivery…':'Add a delivery address to see your total.'):'Login to review your cart.'}</div>}<Link href="/menu" className="mk-add-more">+ Add more items</Link></section>{error&&<div className="mk-checkout-error">{error}</div>}</div><aside className="mk-cart-side-column"><CartSummary onLogin={()=>openAuth('mobile')} onAddAddress={addAddress} onPlaceOrder={placeOrder} canPlaceOrder={canPlaceOrder} paymentLoading={paymentLoading} addressReady={!!selected}/></aside></div><PaymentFooter total={validatedCart?.total||0} disabled={!canPlaceOrder} loading={paymentLoading} onPay={placeOrder}/><AddressPicker open={pickerOpen} addresses={addresses} selectedId={selected?.id} onClose={()=>setPickerOpen(false)} onSelect={chooseAddress} onAdd={addAddress} onSetDefault={makeDefault}/><DistanceChargeModal open={distanceOpen} onClose={()=>setDistanceOpen(false)} validatedCart={validatedCart}/></main>;
+)}{isAuthenticated&&formOpen&&<section className="mk-cart-address-card"><div className="mk-cart-section-heading"><div><span className="mk-cart-eyebrow">NEW ADDRESS</span><h2>Add delivery address</h2></div></div><AddressForm initial={null} onSaved={saveNewAddress} onCancel={()=>setFormOpen(false)}/></section>}<section className="mk-cart-items-section"><div className="mk-cart-section-heading"><div><span className="mk-cart-eyebrow">YOUR ORDER</span><h2>{cart.items.reduce((s,i)=>s+i.qty,0)} items</h2></div></div>{validatedCart?.items?.length ? (
+  <div className="mk-cart-items">
+    {validatedCart.items.map(item => (
+      <CartItem
+        key={String(item.variant_id)}
+        item={item}
+      />
+    ))}
+  </div>
+) : isAuthenticated && selected ? (
+  <div className="mk-cart-validation-loading">
+    Calculating your delivery…
+  </div>
+) : (
+  <div className="mk-cart-validation-loading">
+    {isAuthenticated
+      ? "Add a delivery address to see your total."
+      : "Login to review your cart."}
+  </div>
+)}<Link href="/menu" className="mk-add-more">+ Add more items</Link></section>{error&&<div className="mk-checkout-error">{error}</div>}</div><aside className="mk-cart-side-column"><CartSummary onLogin={()=>openAuth('mobile')} onAddAddress={addAddress} onPlaceOrder={placeOrder} canPlaceOrder={canPlaceOrder} paymentLoading={paymentLoading} addressReady={!!selected}/></aside></div><PaymentFooter total={validatedCart?.total||0} disabled={!canPlaceOrder} loading={paymentLoading} onPay={placeOrder}/><AddressPicker open={pickerOpen} addresses={addresses} selectedId={selected?.id} onClose={()=>setPickerOpen(false)} onSelect={chooseAddress} onAdd={addAddress} onSetDefault={makeDefault}/><DistanceChargeModal open={distanceOpen} onClose={()=>setDistanceOpen(false)} validatedCart={validatedCart}/></main>;
 }
