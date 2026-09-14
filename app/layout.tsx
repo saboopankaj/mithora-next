@@ -21,7 +21,7 @@ import "../styles/home/home-why-mithora.css";
 import "../styles/home/home-youtube.css";
 import "@/styles/auth.css";
 import "@/styles/account.css";
-//import "@/styles/menu.css";
+import "@/styles/menu.css";
 //import "@/styles/cart.css";
 import "../styles/cart/cart-page.css";
 import "../styles/cart/cart-items.css";
