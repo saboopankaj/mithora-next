@@ -91,7 +91,8 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, user?.id]);
 
   const mutate = useCallback((next: LocalCart) => {
-    setCart(next); saveCart(next); setValidatedCart(null);
+    setCart(next);
+saveCart(next);
     if (isAuthenticated && user?.id != null) {
       setCartOwner(user.id); ownerRef.current = String(user.id);
       saveQueueRef.current = saveQueueRef.current
