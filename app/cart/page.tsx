@@ -188,32 +188,60 @@ export default function CartPage() {
   useEffect(() => {
     if (!isAuthenticated || !cart.items.length) return;
 
-    // Run one server validation for each cart/location change.
-    // This keeps the summary/footer in sync without making two
-    // identical validation requests when the address changes.
-    void (async () => {
-      const response = await validate(selected || undefined);
-
-      if (!selected) return;
-
-      const addressId = String(
-        selected.id ?? `${selected.pincode}-${selected.area}`
-      );
-
-      if (
-        distanceAddressRef.current !== addressId &&
-        response.validatedCart?.is_external_zone
-      ) {
-        distanceAddressRef.current = addressId;
-        setDistanceOpen(true);
-      }
-    })();
+    // Recalculate the server-side cart whenever quantity or coupon changes.
+    // This keeps the order summary, payment footer and any other cart totals
+    // in sync without requiring a page refresh.
+    void validate(selected || undefined);
   }, [
     isAuthenticated,
     selected,
     cart.items.length,
     cartValidationKey,
     validate,
+  ]);
+
+  useEffect(() => {
+    if (!selected) return;
+
+    const addressId = String(
+      selected.id ?? `${selected.pincode}-${selected.area}`
+    );
+
+    if (distanceAddressRef.current === addressId) return;
+
+    void (async () => {
+      const response = await validate(selected);
+
+      if (response.validatedCart?.delivery_charge_type === "CUSTOMER_PAY" || response.validatedCart?.is_external_zone) {
+        distanceAddressRef.current = addressId;
+        setDistanceOpen(true);
+      }
+    })();
+  }, [selected, validate]);
+
+  // Show the same delivery popup whenever the validated cart changes into
+  // CUSTOMER_PAY or an external/long-distance delivery zone.
+  // CUSTOMER_PAY takes priority and is handled by the modal copy.
+  useEffect(() => {
+    if (!selected || !validatedCart) return;
+
+    const addressId = String(
+      selected.id ?? `${selected.pincode}-${selected.area}`
+    );
+
+    const needsDeliveryNotice =
+      validatedCart.delivery_charge_type === "CUSTOMER_PAY" ||
+      validatedCart.is_external_zone === true;
+
+    if (!needsDeliveryNotice) return;
+    if (distanceAddressRef.current === addressId) return;
+
+    distanceAddressRef.current = addressId;
+    setDistanceOpen(true);
+  }, [
+    selected,
+    validatedCart?.delivery_charge_type,
+    validatedCart?.is_external_zone,
   ]);
 
   if (!cart.items.length) {
@@ -275,7 +303,7 @@ export default function CartPage() {
       return;
     }
 
-    if (response.validatedCart.is_external_zone) {
+    if (response.validatedCart.delivery_charge_type === "CUSTOMER_PAY" || response.validatedCart.is_external_zone) {
       const addressId = String(
         address.id ?? `${address.pincode}-${address.area}`
       );
@@ -364,27 +392,26 @@ export default function CartPage() {
         );
       }
 
-      const availableItems = freshCart.items.filter(
-        (item) => item.available !== false
+      const unavailableItems = freshCart.items.filter(
+        (item) => item.available === false
       );
 
-      if (
-        !availableItems.length ||
-        Number(freshCart.subtotal || 0) <= 0
-      ) {
+      if (unavailableItems.length > 0) {
+        setPaymentLoading(false);
+        return;
+      }
+
+      if (!freshCart.items.length || Number(freshCart.subtotal || 0) <= 0) {
         setPaymentLoading(false);
         setError("Please add an available item before placing your order.");
         return;
       }
 
       const result = await createCheckoutOrder({
-        items: availableItems.map((item) => ({
-          variant_id: item.variant_id,
-          qty: item.qty,
-        })),
+        items: cart.items,
         coupon_code: cart.coupon_code || "",
         address_id: selected.id,
-        validatedCart: freshCart,
+        validatedCart,
       });
 
       const order = result.order || result.razorpay_order;
@@ -456,18 +483,14 @@ export default function CartPage() {
     }
   }
 
-  const hasAvailableItems =
-    validatedCart?.items?.some(
-      (item) => item.available !== false
-    ) ?? false;
-
   const canPlaceOrder =
     !!isAuthenticated &&
     !!selected?.id &&
     addressServiceable === true &&
     /^\d{6}$/.test(pincode) &&
     !!validatedCart &&
-    hasAvailableItems &&
+    validatedCart.items.some((item) => item.available !== false) &&
+    !validatedCart.items.some((item) => item.available === false) &&
     !formOpen &&
     !paymentLoading;
 

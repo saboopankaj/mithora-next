@@ -17,6 +17,7 @@ export default function DistanceChargeModal({
   if (!open) return null;
 
   const shipping = Number(validatedCart?.shipping || 0);
+  const customerPay = validatedCart?.delivery_charge_type === "CUSTOMER_PAY";
   const location = validatedCart?.location_info;
   const place =
     location?.area_name ||
@@ -32,19 +33,36 @@ export default function DistanceChargeModal({
           <div className="mk-distance-accent" />
           <div className="mk-distance-icon" aria-hidden="true">🛵</div>
 
-          <h2>Long-distance Delivery</h2>
-          <p>
-            Our kitchen is in <strong>Murlipura</strong>. Since your location is
-            a little farther away, a small distance fee applies to ensure your
-            food reaches you fresh and hot! 🥘
-          </p>
+          {customerPay ? (
+            <>
+              <h2>Delivery Charges</h2>
+              <p>
+                Delivery charges for this order are <strong>not included in your online payment</strong>.
+                The delivery charge will be paid separately at the time of delivery.
+              </p>
 
-          {shipping > 0 ? (
-            <div className="mk-distance-charge">
-              <span>Delivery charge</span>
-              <strong>₹{shipping.toFixed(0)}</strong>
-            </div>
-          ) : null}
+              <div className="mk-distance-charge">
+                <span>Delivery payment</span>
+                <strong>Pay at delivery</strong>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>Long-distance Delivery</h2>
+              <p>
+                Our kitchen is in <strong>Murlipura</strong>. Since your location is
+                a little farther away, a small distance fee applies to ensure your
+                food reaches you fresh and hot! 🥘
+              </p>
+
+              {shipping > 0 ? (
+                <div className="mk-distance-charge">
+                  <span>Delivery charge</span>
+                  <strong>₹{shipping.toFixed(0)}</strong>
+                </div>
+              ) : null}
+            </>
+          )}
 
           <small className="mk-distance-location">Delivery to {place}</small>
 
