@@ -20,6 +20,7 @@ import AddressPicker from "@/components/cart/AddressPicker";
 import DistanceChargeModal from "@/components/cart/DistanceChargeModal";
 import PaymentFooter from "@/components/cart/PaymentFooter";
 import ModalPortal from "@/components/cart/ModalPortal";
+import CartValidationModal from "@/components/cart/CartValidationModal";
 
 declare global {
   interface Window {
@@ -66,6 +67,8 @@ export default function CartPage() {
     cart,
     validatedCart,
     validate,
+    validationNotice,
+    dismissValidationNotice,
     pincode,
     setPincode,
     clear,
@@ -338,10 +341,47 @@ export default function CartPage() {
       return;
     }
 
+    /*
+     * Fresh server validation immediately before creating the payment order.
+     * Never open Razorpay from a stale cart calculation.
+     */
     setPaymentLoading(true);
     setError("");
 
     try {
+      const freshValidation = await validate(selected);
+
+      if (freshValidation.changes?.length) {
+        setPaymentLoading(false);
+        setError("");
+        return;
+      }
+
+      const freshCart = freshValidation.validatedCart;
+
+      if (!freshCart) {
+        throw new Error(
+          freshValidation.error ||
+            freshValidation.message ||
+            "Unable to validate your cart."
+        );
+      }
+
+      const unavailableItems = freshCart.items.filter(
+        (item) => item.available === false
+      );
+
+      if (unavailableItems.length > 0) {
+        setPaymentLoading(false);
+        return;
+      }
+
+      if (!freshCart.items.length || Number(freshCart.subtotal || 0) <= 0) {
+        setPaymentLoading(false);
+        setError("Please add an available item before placing your order.");
+        return;
+      }
+
       const result = await createCheckoutOrder({
         items: cart.items,
         coupon_code: cart.coupon_code || "",
@@ -424,6 +464,8 @@ export default function CartPage() {
     addressServiceable === true &&
     /^\d{6}$/.test(pincode) &&
     !!validatedCart &&
+    validatedCart.items.some((item) => item.available !== false) &&
+    !validatedCart.items.some((item) => item.available === false) &&
     !formOpen &&
     !paymentLoading;
 
@@ -623,6 +665,11 @@ export default function CartPage() {
           </div>
         </ModalPortal>
       )}
+
+      <CartValidationModal
+        notice={validationNotice}
+        onClose={dismissValidationNotice}
+      />
 
       <DistanceChargeModal
         open={distanceOpen}

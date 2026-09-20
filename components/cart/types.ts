@@ -34,6 +34,10 @@ export type ValidatedCartItem = {
   qty: number;
   price: number;
   line_total: number;
+  available?: boolean;
+  price_changed?: boolean;
+  old_price?: number | null;
+  availability_reason?: string | null;
 };
 
 export type CartLocationInfo = {
@@ -75,6 +79,20 @@ export type CartSyncResponse = {
   validatedCart?: ValidatedCart;
   error?: string;
   message?: string;
+  changes?: CartValidationChange[];
+};
+
+export type CartValidationChange = {
+  variant_id: number | string;
+  name: string;
+  type: "price" | "unavailable";
+  oldPrice?: number;
+  newPrice?: number;
+  reason?: string;
+};
+
+export type CartValidationNotice = {
+  changes: CartValidationChange[];
 };
 
 export type CartStorage = {

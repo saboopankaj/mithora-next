@@ -57,11 +57,17 @@ export default function CartSummary({
       }, 0)
     : 0;
 
-  const displayTotal = Math.max(
-    0,
-    displaySubtotal -
-      Number(validatedCart?.discount || 0)
-  );
+const hasAvailableItems = validatedCart?.items?.some(
+  (item) => item.available !== false
+) ?? false;
+
+  const displayTotal = hasAvailableItems
+    ? Math.max(
+        0,
+        displaySubtotal -
+          Number(validatedCart?.discount || 0)
+      )
+    : 0;
 
   const couponInfo = validatedCart?.coupon_info;
   const couponInvalid =
@@ -203,9 +209,9 @@ export default function CartSummary({
     );
   }
 
-  const deliveryFee = Number(
-    validatedCart.shipping || 0
-  );
+  const deliveryFee = hasAvailableItems
+    ? Number(validatedCart.shipping || 0)
+    : 0;
   const discount = Number(
     validatedCart.discount || 0
   );
@@ -364,6 +370,16 @@ export default function CartSummary({
         <p className="mk-coupon-message">
           {couponMessage}
         </p>
+      ) : null}
+
+      {!hasAvailableItems ? (
+        <div className="mk-all-items-unavailable">
+          <strong>No available items</strong>
+          <small>
+            Remove unavailable items or add another item from the menu to
+            continue.
+          </small>
+        </div>
       ) : null}
 
       <div className="mk-summary-total">

@@ -29,6 +29,8 @@ import {
   setCartOwner,
   syncCart,
   setPincode as persistPincode,
+  loadCartPriceSnapshot,
+  saveCartPriceSnapshot,
   type LocalCart,
 } from "@/lib/cart";
 
@@ -37,11 +39,14 @@ import type {
   CartItem,
   CartSyncResponse,
   ValidatedCart,
+  CartValidationNotice,
 } from "./types";
 
 type CartContextValue = {
   cart: LocalCart;
   validatedCart: ValidatedCart | null;
+  validationNotice: CartValidationNotice | null;
+  dismissValidationNotice: () => void;
 
   loading: boolean;
   validating: boolean;
@@ -84,6 +89,12 @@ export default function CartProvider({
 
   const [validatedCart, setValidatedCart] =
     useState<ValidatedCart | null>(null);
+  const validatedCartRef = useRef<ValidatedCart | null>(null);
+
+  const [validationNotice, setValidationNotice] =
+    useState<CartValidationNotice | null>(null);
+
+  const acknowledgedChangesRef = useRef<Set<string>>(new Set());
 
   /*
    * loading = account/cart loading
@@ -132,7 +143,8 @@ export default function CartProvider({
        * Location changed, so the previous delivery
        * calculation is no longer valid.
        */
-      setValidatedCart(null);
+      validatedCartRef.current = null;
+    setValidatedCart(null);
     };
 
     window.addEventListener(
@@ -192,7 +204,8 @@ export default function CartProvider({
           coupon_code: "",
         });
 
-        setValidatedCart(null);
+        validatedCartRef.current = null;
+    setValidatedCart(null);
 
         setPin("");
         setArea("");
@@ -259,7 +272,8 @@ export default function CartProvider({
 
         setCart(next);
 
-        setValidatedCart(null);
+        validatedCartRef.current = null;
+    setValidatedCart(null);
 
         /*
          * Save merged guest cart or initialize
@@ -464,7 +478,157 @@ export default function CartProvider({
        * Delivery calculation must be
        * recalculated for the new location.
        */
-      setValidatedCart(null);
+      validatedCartRef.current = null;
+    setValidatedCart(null);
+    },
+    []
+  );
+
+  const normalizeValidationResponse = useCallback(
+    (response: CartSyncResponse, current: LocalCart): CartSyncResponse => {
+      if (!response.validatedCart) return response;
+
+      const previousItems = validatedCartRef.current?.items || [];
+      const items = current.items.map((localItem) => {
+        const serverItem = response.validatedCart!.items.find(
+          (item) => String(item.variant_id) === String(localItem.variant_id)
+        );
+        if (serverItem) {
+          return {
+            ...serverItem,
+            qty: localItem.qty,
+            line_total:
+              serverItem.available === false
+                ? 0
+                : Number(serverItem.price || 0) * localItem.qty,
+          };
+        }
+
+        const previousItem = previousItems.find(
+          (item) => String(item.variant_id) === String(localItem.variant_id)
+        );
+
+        return {
+          variant_id: localItem.variant_id,
+          product_id: previousItem?.product_id || localItem.variant_id,
+          name: previousItem?.name || `Item ${localItem.variant_id}`,
+          variant_name: previousItem?.variant_name || null,
+          image_path: previousItem?.image_path || null,
+          qty: localItem.qty,
+          price: 0,
+          line_total: 0,
+          available: false,
+          price_changed: false,
+          availability_reason:
+            "This item is no longer available for your selected delivery window.",
+        };
+      });
+
+      return {
+        ...response,
+        validatedCart: {
+          ...response.validatedCart,
+          items,
+          subtotal: items.reduce(
+            (sum, item) =>
+              sum +
+              (item.available === false ? 0 : Number(item.price || 0) * item.qty),
+            0
+          ),
+        },
+      };
+    },
+    []
+  );
+
+  const detectValidationChanges = useCallback(
+    (response: CartSyncResponse, current: LocalCart) => {
+      const serverItems = response.validatedCart?.items || [];
+      const previousValidatedItems = validatedCartRef.current?.items || [];
+      const snapshot = loadCartPriceSnapshot();
+      const changes: CartValidationNotice["changes"] = [];
+
+      for (const localItem of current.items) {
+        const serverItem = serverItems.find(
+          (item) => String(item.variant_id) === String(localItem.variant_id)
+        );
+
+        const previousItem = previousValidatedItems.find(
+          (item) => String(item.variant_id) === String(localItem.variant_id)
+        );
+
+        // Older API responses dropped unavailable variants. Preserve them
+        // in the UI so the customer can see and remove the affected item.
+        if (!serverItem) {
+          const key = `${localItem.variant_id}:unavailable`;
+          if (!acknowledgedChangesRef.current.has(key)) {
+            changes.push({
+              variant_id: localItem.variant_id,
+              name: previousItem?.name || `Item ${localItem.variant_id}`,
+              type: "unavailable",
+              reason:
+                "This item is no longer available for your selected delivery window.",
+            });
+          }
+          continue;
+        }
+
+        if (serverItem.available === false) {
+          const key = `${localItem.variant_id}:unavailable`;
+          if (!acknowledgedChangesRef.current.has(key)) {
+            changes.push({
+              variant_id: localItem.variant_id,
+              name: serverItem.name,
+              type: "unavailable",
+              reason:
+                serverItem.availability_reason ||
+                "This item is no longer available for your selected delivery window.",
+            });
+          }
+          continue;
+        }
+
+        const currentPrice = Number(serverItem.price || 0);
+        const oldPrice = Number(
+          snapshot[String(localItem.variant_id)] ??
+          (serverItem.old_price != null ? serverItem.old_price : NaN)
+        );
+
+        if (
+          Number.isFinite(oldPrice) &&
+          oldPrice !== currentPrice
+        ) {
+          const key = `${localItem.variant_id}:price:${oldPrice}:${currentPrice}`;
+          if (!acknowledgedChangesRef.current.has(key)) {
+            changes.push({
+              variant_id: localItem.variant_id,
+              name: serverItem.name,
+              type: "price",
+              oldPrice,
+              newPrice: currentPrice,
+            });
+          }
+        }
+      }
+
+      // Establish a snapshot for new cart items, and keep it current for
+      // unchanged/available items. This snapshot is only informational;
+      // the server remains authoritative.
+      const nextSnapshot = { ...snapshot };
+      for (const item of serverItems) {
+        if (item.available === false) continue;
+        const price = Number(item.price || 0);
+        if (Number.isFinite(price)) {
+          nextSnapshot[String(item.variant_id)] = price;
+        }
+      }
+      saveCartPriceSnapshot(nextSnapshot);
+
+      if (changes.length) {
+        setValidationNotice({ changes });
+      }
+
+      return changes;
     },
     []
   );
@@ -485,7 +649,8 @@ export default function CartProvider({
         getPincode();
 
       if (!current.items.length) {
-        setValidatedCart(null);
+        validatedCartRef.current = null;
+    setValidatedCart(null);
 
         return {
           success: true,
@@ -515,10 +680,14 @@ export default function CartProvider({
               "",
               undefined
             );
+          const normalizedResponse =
+            normalizeValidationResponse(response, current);
 
-          if (response.validatedCart) {
-            setValidatedCart({
-              ...response.validatedCart,
+          if (normalizedResponse.validatedCart) {
+            const changes = detectValidationChanges(normalizedResponse, current);
+            normalizedResponse.changes = changes;
+            const nextValidated = {
+              ...normalizedResponse.validatedCart,
 
               shipping: 0,
 
@@ -533,12 +702,15 @@ export default function CartProvider({
                 false,
 
               distance_charge: 0,
-            });
+            };
+            validatedCartRef.current = nextValidated;
+            setValidatedCart(nextValidated);
           } else {
+            validatedCartRef.current = null;
             setValidatedCart(null);
           }
 
-          return response;
+          return normalizedResponse;
         } finally {
           setValidating(false);
         }
@@ -557,22 +729,47 @@ export default function CartProvider({
             currentPin,
             address || undefined
           );
+        const normalizedResponse =
+          normalizeValidationResponse(response, current);
 
-        if (response.validatedCart) {
+        if (normalizedResponse.validatedCart) {
+          const changes = detectValidationChanges(normalizedResponse, current);
+          normalizedResponse.changes = changes;
+          validatedCartRef.current = normalizedResponse.validatedCart;
           setValidatedCart(
-            response.validatedCart
+            normalizedResponse.validatedCart
           );
         } else {
+          validatedCartRef.current = null;
           setValidatedCart(null);
         }
 
-        return response;
+        return normalizedResponse;
       } finally {
         setValidating(false);
       }
     },
-    []
+    [detectValidationChanges, normalizeValidationResponse]
   );
+
+  const dismissValidationNotice = useCallback(() => {
+    if (!validationNotice) return;
+
+    const snapshot = loadCartPriceSnapshot();
+    for (const change of validationNotice.changes) {
+      if (change.type === "price" && change.newPrice != null) {
+        snapshot[String(change.variant_id)] = Number(change.newPrice);
+        const oldKey = `${change.variant_id}:price:${change.oldPrice}:${change.newPrice}`;
+        acknowledgedChangesRef.current.add(oldKey);
+      } else {
+        acknowledgedChangesRef.current.add(
+          `${change.variant_id}:unavailable`
+        );
+      }
+    }
+    saveCartPriceSnapshot(snapshot);
+    setValidationNotice(null);
+  }, [validationNotice]);
 
   /*
    * Persist cart
@@ -599,6 +796,7 @@ export default function CartProvider({
       coupon_code: "",
     });
 
+    validatedCartRef.current = null;
     setValidatedCart(null);
   }, []);
 
@@ -609,6 +807,8 @@ export default function CartProvider({
     () => ({
       cart,
       validatedCart,
+      validationNotice,
+      dismissValidationNotice,
 
       loading,
       validating,
@@ -637,6 +837,8 @@ export default function CartProvider({
     [
       cart,
       validatedCart,
+      validationNotice,
+      dismissValidationNotice,
 
       loading,
       validating,

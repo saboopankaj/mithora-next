@@ -10,10 +10,11 @@ export default function CartItem({
 }: {
   item: ValidatedCartItem;
 }) {
-  const { updateQty } = useCart();
+  const { updateQty, removeItem } = useCart();
+  const unavailable = item.available === false;
 
   return (
-    <article className="mk-cart-item">
+    <article className={`mk-cart-item${unavailable ? " is-unavailable" : ""}`}>
       <div className="mk-cart-item-image">
         {item.image_path ? (
           <Image
@@ -36,14 +37,32 @@ export default function CartItem({
           </div>
         </div>
 
-        <div className="mk-cart-item-bottom">
-          <strong>₹{Number(item.price).toFixed(0)}</strong>
+        {unavailable ? (
+          <div className="mk-cart-item-unavailable">
+            <div>
+              <strong>Currently unavailable</strong>
+              <small>
+                {item.availability_reason ||
+                  "No longer available for your selected delivery window."}
+              </small>
+            </div>
+            <button
+              type="button"
+              onClick={() => removeItem(item.variant_id)}
+            >
+              REMOVE
+            </button>
+          </div>
+        ) : (
+          <div className="mk-cart-item-bottom">
+            <strong>₹{Number(item.price).toFixed(0)}</strong>
 
-          <QuantityControl
-            qty={item.qty}
-            onChange={(qty) => updateQty(item.variant_id, qty)}
-          />
-        </div>
+            <QuantityControl
+              qty={item.qty}
+              onChange={(qty) => updateQty(item.variant_id, qty)}
+            />
+          </div>
+        )}
       </div>
     </article>
   );

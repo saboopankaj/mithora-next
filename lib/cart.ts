@@ -4,9 +4,33 @@ export const CART_STORAGE_KEY = "mithora_cart";
 export const CART_OWNER_KEY = "mithora_cart_owner";
 export const USER_PINCODE_KEY = "user_pincode";
 export const USER_AREA_KEY = "user_area";
+export const CART_PRICE_SNAPSHOT_KEY = "mithora_cart_price_snapshot";
 
 export type LocalCartItem = { variant_id: number | string; qty: number };
 export type LocalCart = { items: LocalCartItem[]; coupon_code: string };
+
+export type CartPriceSnapshot = Record<string, number>;
+
+export function loadCartPriceSnapshot(): CartPriceSnapshot {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(CART_PRICE_SNAPSHOT_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return {};
+    return Object.fromEntries(
+      Object.entries(parsed).filter(([, value]) => Number.isFinite(Number(value)))
+        .map(([key, value]) => [key, Number(value)])
+    );
+  } catch {
+    return {};
+  }
+}
+
+export function saveCartPriceSnapshot(snapshot: CartPriceSnapshot) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(CART_PRICE_SNAPSHOT_KEY, JSON.stringify(snapshot));
+}
 
 const emptyCart = (): LocalCart => ({ items: [], coupon_code: "" });
 

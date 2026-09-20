@@ -1,0 +1,20 @@
+.mk-cart-update-overlay { z-index: 10050; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(31,20,15,.52); backdrop-filter:blur(5px); }
+.mk-cart-update-modal { width:min(520px,100%); max-height:min(86dvh,720px); overflow:auto; background:#fffdfa; border:1px solid #eadfd6; border-radius:24px; padding:28px; box-shadow:0 24px 80px rgba(45,27,20,.25); }
+.mk-cart-update-icon { width:48px; height:48px; display:grid; place-items:center; border-radius:50%; background:#fff1dc; color:#a45d09; font-weight:900; font-size:24px; margin-bottom:14px; }
+.mk-cart-update-modal h2 { margin:0; font-size:25px; color:#2d211c; }
+.mk-cart-update-intro { margin:8px 0 20px; color:#75645a; line-height:1.55; font-size:14px; }
+.mk-cart-update-group { border-top:1px solid #eee4dc; padding-top:16px; margin-top:16px; }
+.mk-cart-update-group h3 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#5e4a3f; }
+.mk-cart-update-row { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; padding:12px 0; border-bottom:1px solid #f1e9e3; }
+.mk-cart-update-row strong { display:block; color:#30231d; font-size:14px; }
+.mk-cart-update-row span:not(.mk-cart-update-badge) { display:block; margin-top:4px; color:#806f64; font-size:12px; line-height:1.45; }
+.mk-cart-update-badge { flex:none; border-radius:999px; padding:6px 9px; background:#fff0d4; color:#8b5a0a; font-size:10px; font-weight:800; letter-spacing:.05em; }
+.mk-cart-update-badge-muted { background:#f2e8e3; color:#8a5545; }
+.mk-cart-update-total { display:flex; justify-content:space-between; align-items:center; margin:20px 0; padding:15px 16px; border-radius:14px; background:#f7f2ee; color:#66554b; }
+.mk-cart-update-total strong { font-size:20px; color:#2d211c; }
+.mk-cart-update-modal .mk-primary-button { width:100%; min-height:52px; }
+@media (max-width:600px){
+ .mk-cart-update-overlay{align-items:flex-end;padding:0;}
+ .mk-cart-update-modal{width:100%;max-height:88dvh;border-radius:24px 24px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));}
+ .mk-cart-update-modal h2{font-size:22px}
+}

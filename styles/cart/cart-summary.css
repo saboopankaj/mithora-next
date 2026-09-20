@@ -288,3 +288,24 @@
     display: none;
   }
 }
+
+.mk-all-items-unavailable {
+  margin-top: 14px;
+  padding: 11px 12px;
+  display: grid;
+  gap: 3px;
+  border: 1px solid #ffd5c6;
+  border-radius: 12px;
+  background: #fff3ee;
+  color: #a64024;
+}
+
+.mk-all-items-unavailable strong {
+  font-size: 11px;
+}
+
+.mk-all-items-unavailable small {
+  color: #8b6b60;
+  font-size: 10px;
+  line-height: 1.4;
+}
