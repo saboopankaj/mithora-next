@@ -39,19 +39,34 @@ export default function CartSummary({
   const [couponMessage, setCouponMessage] =
     useState("");
 
-  // The server already calculates the authoritative subtotal and total.
-  // Do not recalculate them by walking cart.items on every render.
-  const displaySubtotal = Number(
-    validatedCart?.subtotal || 0
-  );
+  const displaySubtotal = validatedCart
+    ? validatedCart.items.reduce((total, item) => {
+        const localItem = cart.items.find(
+          (local) =>
+            String(local.variant_id) ===
+            String(item.variant_id)
+        );
 
-  const hasAvailableItems =
-    validatedCart?.items?.some(
-      (item) => item.available !== false
-    ) ?? false;
+        if (!localItem) return total;
+
+        return (
+          total +
+          Number(item.price || 0) *
+            localItem.qty
+        );
+      }, 0)
+    : 0;
+
+const hasAvailableItems = validatedCart?.items?.some(
+  (item) => item.available !== false
+) ?? false;
 
   const displayTotal = hasAvailableItems
-    ? Number(validatedCart?.total || 0)
+    ? Math.max(
+        0,
+        displaySubtotal -
+          Number(validatedCart?.discount || 0)
+      )
     : 0;
 
   const couponInfo = validatedCart?.coupon_info;
@@ -200,9 +215,10 @@ export default function CartSummary({
   const discount = Number(
     validatedCart.discount || 0
   );
-  const total = addressReady
-    ? Number(validatedCart.total || 0)
-    : displayTotal;
+  const total =
+    addressReady
+      ? displayTotal + deliveryFee
+      : displayTotal;
 
   return (
     <section className="mk-cart-summary">
