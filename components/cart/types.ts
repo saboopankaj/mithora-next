@@ -71,6 +71,20 @@ export type ValidatedCart = {
   location_info?: CartLocationInfo | null;
   coupon_info?: CouponInfo | null;
   distance_charge?: number;
+  delivery_charge_type?:
+    | "PINCODE"
+    | "CUSTOMER_PAY"
+    | "INCLUDED"
+    | "CATEGORY_FREE"
+    | "PINCODE_FREE"
+    | string;
+  delivery_message?: string | null;
+  delivery_free_category?: {
+    category_id?: number | string | null;
+    category_name?: string | null;
+    threshold?: number;
+    category_subtotal?: number;
+  } | null;
   [key: string]: unknown;
 };
 
