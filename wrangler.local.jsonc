@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mithora-api-local",
+  "main": "Mithora_worker.js",
+  "compatibility_date": "2026-09-12",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mithora_local_db",
+      "database_id": "local-mithora-db",
+      "remote": false
+    }
+  ]
+}

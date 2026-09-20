@@ -1,12 +1,171 @@
 "use client";
-import type { Address } from "./types";
 
-type Props = { open: boolean; addresses: Address[]; selectedId?: number|string; onClose:()=>void; onSelect:(a:Address)=>void; onAdd:()=>void; onSetDefault:(id:number|string)=>void };
-export default function AddressPicker({open,addresses,selectedId,onClose,onSelect,onAdd,onSetDefault}:Props){
- if(!open)return null;
- return <div className="mk-overlay" onClick={onClose}><aside className="mk-address-drawer" onClick={e=>e.stopPropagation()}>
-  <div className="mk-drawer-header"><div><span className="mk-cart-eyebrow">SAVED ADDRESSES</span><h2>Choose delivery address</h2></div><button type="button" onClick={onClose}>×</button></div>
-  <div className="mk-address-list">{addresses.map((a,i)=>{const id=a.id??i;const selected=selectedId!=null&&String(selectedId)===String(id);return <button type="button" key={String(id)} className={`mk-address-option ${selected?'is-selected':''}`} onClick={()=>onSelect(a)}><div><strong>{a.full_name||a.name||'Address'}</strong>{a.is_default&&<span className="mk-default-badge">DEFAULT</span>}</div><p>{[a.house_flat||a.house,a.street,a.area||a.area_name,a.city,a.pincode||a.pin].filter(Boolean).join(', ')}</p>{a.id!=null&&!a.is_default&&<span className="mk-set-default" onClick={e=>{e.stopPropagation();onSetDefault(a.id!)}}>Mark Default</span>}</button>})}</div>
-  <button type="button" className="mk-primary-button mk-full-button" onClick={onAdd}>+ ADD NEW ADDRESS</button>
- </aside></div>
+import type { Address } from "./types";
+import ModalPortal from "./ModalPortal";
+
+type Props = {
+  open: boolean;
+  addresses: Address[];
+  selectedId?: number | string;
+  onClose: () => void;
+  onSelect: (address: Address) => void;
+  onAdd: () => void;
+  onSetDefault: (id: number | string) => void;
+};
+
+export default function AddressPicker({
+  open,
+  addresses,
+  selectedId,
+  onClose,
+  onSelect,
+  onAdd,
+  onSetDefault,
+}: Props) {
+  if (!open) return null;
+
+  return (
+    <ModalPortal>
+      <div
+      className="mk-overlay mk-address-overlay"
+      onClick={onClose}
+    >
+      <aside
+        className="mk-address-drawer"
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Saved addresses"
+      >
+        <div className="mk-address-drawer-topbar">
+          <button
+            type="button"
+            className="mk-drawer-back"
+            onClick={onClose}
+            aria-label="Back"
+          >
+            ←
+          </button>
+
+          <div>
+            <span className="mk-cart-eyebrow">
+              DELIVERY ADDRESS
+            </span>
+            <h2>Saved addresses</h2>
+          </div>
+
+          <button
+            type="button"
+            className="mk-drawer-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="mk-address-drawer-body">
+          {addresses.length ? (
+            <div className="mk-address-list">
+              {addresses.map((address, index) => {
+                const id = address.id ?? index;
+                const selected =
+                  selectedId != null &&
+                  String(selectedId) === String(id);
+
+                return (
+                  <div
+                    key={String(id)}
+                    className={`mk-address-option ${
+                      selected ? "is-selected" : ""
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      className="mk-address-option-main"
+                      onClick={() => onSelect(address)}
+                    >
+                      <div className="mk-address-option-title">
+                        <strong>
+                          {address.full_name ||
+                            address.name ||
+                            "Address"}
+                        </strong>
+
+                        {address.is_default ? (
+                          <span className="mk-default-badge">
+                            DEFAULT
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <p>
+                        {[
+                          address.house_flat ||
+                            address.house,
+                          address.street,
+                          address.area ||
+                            address.area_name,
+                          address.city,
+                          address.state,
+                          address.pincode ||
+                            address.pin,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    </button>
+
+                    <div className="mk-address-option-footer">
+                      <span
+                        className={
+                          selected
+                            ? "mk-address-selected-label"
+                            : "mk-address-select-label"
+                        }
+                      >
+                        {selected ? "✓ Selected" : "Select"}
+                      </span>
+
+                      {address.id != null &&
+                      !address.is_default ? (
+                        <button
+                          type="button"
+                          className="mk-set-default"
+                          onClick={() =>
+                            onSetDefault(address.id!)
+                          }
+                        >
+                          Make default
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mk-address-empty-list">
+              <div>⌖</div>
+              <strong>No saved addresses yet</strong>
+              <span>
+                Add your first delivery address to continue.
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="mk-address-drawer-footer">
+          <button
+            type="button"
+            className="mk-primary-button mk-full-button"
+            onClick={onAdd}
+          >
+            ＋ ADD NEW ADDRESS
+          </button>
+        </div>
+      </aside>
+      </div>
+    </ModalPortal>
+  );
 }

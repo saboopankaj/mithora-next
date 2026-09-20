@@ -1,6 +1,7 @@
 "use client";
 
 import type { ValidatedCart } from "./types";
+import ModalPortal from "./ModalPortal";
 
 type Props = {
   open: boolean;
@@ -25,32 +26,33 @@ export default function DistanceChargeModal({
     "your location";
 
   return (
-    <div className="mk-overlay mk-distance-overlay" role="dialog" aria-modal="true">
-      <div className="mk-distance-modal">
-        <div className="mk-distance-icon">⌖</div>
-        <span className="mk-cart-eyebrow">DELIVERY UPDATE</span>
-        <h2>This location is a little farther away</h2>
-        <p>
-          Delivery to <strong>{place}</strong> may include an additional
-          distance-based delivery charge.
-        </p>
+    <ModalPortal>
+      <div className="mk-overlay mk-distance-overlay" role="dialog" aria-modal="true">
+        <div className="mk-distance-modal">
+          <div className="mk-distance-accent" />
+          <div className="mk-distance-icon" aria-hidden="true">🛵</div>
 
-        {shipping > 0 && (
-          <div className="mk-distance-charge">
-            <span>Delivery charge</span>
-            <strong>₹{shipping.toFixed(0)}</strong>
-          </div>
-        )}
+          <h2>Long-distance Delivery</h2>
+          <p>
+            Our kitchen is in <strong>Murlipura</strong>. Since your location is
+            a little farther away, a small distance fee applies to ensure your
+            food reaches you fresh and hot! 🥘
+          </p>
 
-        <p className="mk-distance-note">
-          The final delivery charge and total are calculated by our server and
-          will be shown before payment.
-        </p>
+          {shipping > 0 ? (
+            <div className="mk-distance-charge">
+              <span>Delivery charge</span>
+              <strong>₹{shipping.toFixed(0)}</strong>
+            </div>
+          ) : null}
 
-        <button type="button" className="mk-primary-button" onClick={onClose}>
-          CONTINUE
-        </button>
+          <small className="mk-distance-location">Delivery to {place}</small>
+
+          <button type="button" className="mk-primary-button" onClick={onClose}>
+            I UNDERSTAND!
+          </button>
+        </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 }

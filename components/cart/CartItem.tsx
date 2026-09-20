@@ -5,8 +5,12 @@ import { useCart } from "./CartProvider";
 import QuantityControl from "./QuantityControl";
 import type { ValidatedCartItem } from "./types";
 
-export default function CartItem({ item }: { item: ValidatedCartItem }) {
-  const { updateQty, removeItem } = useCart();
+export default function CartItem({
+  item,
+}: {
+  item: ValidatedCartItem;
+}) {
+  const { updateQty } = useCart();
 
   return (
     <article className="mk-cart-item">
@@ -26,24 +30,15 @@ export default function CartItem({ item }: { item: ValidatedCartItem }) {
 
       <div className="mk-cart-item-main">
         <div className="mk-cart-item-title-row">
-          <div>
+          <div className="mk-cart-item-copy">
             <h3>{item.name}</h3>
-            {item.variant_name && (
-              <small>{item.variant_name}</small>
-            )}
+            {item.variant_name ? <small>{item.variant_name}</small> : null}
           </div>
-
-          <button
-            type="button"
-            className="mk-cart-remove"
-            onClick={() => removeItem(item.variant_id)}
-          >
-            Remove
-          </button>
         </div>
 
         <div className="mk-cart-item-bottom">
-          <strong>₹{Number(item.line_total).toFixed(0)}</strong>
+          <strong>₹{Number(item.price).toFixed(0)}</strong>
+
           <QuantityControl
             qty={item.qty}
             onChange={(qty) => updateQty(item.variant_id, qty)}

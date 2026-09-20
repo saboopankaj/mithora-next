@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
 
 export default function CartStickyBar() {
+  const pathname = usePathname();
   const { itemCount, validatedCart } = useCart();
   const [hydrated, setHydrated] = useState(false);
 
@@ -12,11 +14,8 @@ export default function CartStickyBar() {
     setHydrated(true);
   }, []);
 
-  // Prevent server/client hydration mismatch.
-  // Cart data is restored from localStorage on the client.
-  if (!hydrated || !itemCount) {
-    return null;
-  }
+  if (pathname === "/cart") return null;
+  if (!hydrated || !itemCount) return null;
 
   const total =
     validatedCart?.total != null
@@ -26,19 +25,23 @@ export default function CartStickyBar() {
   return (
     <div className="mk-cart-sticky">
       <div className="mk-cart-sticky-inner">
-        <div>
-          <strong>
-            {itemCount} item{itemCount === 1 ? "" : "s"}
-          </strong>
-
-          {total && <span>{total}</span>}
+        <div className="mk-cart-sticky-info">
+          <span className="mk-cart-sticky-count">
+            {itemCount} {itemCount === 1 ? "item" : "items"}
+          </span>
+          {total ? (
+            <>
+              <span className="mk-cart-sticky-dot">•</span>
+              <strong>{total}</strong>
+            </>
+          ) : null}
         </div>
 
         <Link
           href="/cart"
           className="mk-cart-sticky-button"
         >
-          VIEW CART
+          VIEW CART <span>›</span>
         </Link>
       </div>
     </div>

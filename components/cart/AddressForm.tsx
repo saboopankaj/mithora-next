@@ -203,7 +203,6 @@ export default function AddressForm({ initial, onSaved, onCancel }: Props) {
               maxLength={6}
               autoComplete="postal-code"
               placeholder="Enter 6-digit pincode"
-              autoFocus
             />
           </label>
           <span className="mk-address-or">OR</span>

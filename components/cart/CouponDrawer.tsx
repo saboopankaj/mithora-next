@@ -1,8 +1,10 @@
 "use client";
+
 import { useAuth } from "@/components/auth/AuthContext";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import type { Coupon } from "./types";
+import ModalPortal from "./ModalPortal";
 
 type Props = {
   open: boolean;
@@ -28,6 +30,7 @@ export default function CouponDrawer({
     if (!open) return;
 
     setLoading(true);
+
     apiFetch<unknown>("/api/coupons")
       .then((response) => {
         const list =
@@ -36,8 +39,12 @@ export default function CouponDrawer({
             : response &&
                 typeof response === "object" &&
                 "coupons" in response &&
-                Array.isArray((response as { coupons: unknown[] }).coupons)
-              ? (response as { coupons: Coupon[] }).coupons
+                Array.isArray(
+                  (response as { coupons: unknown[] })
+                    .coupons
+                )
+              ? (response as { coupons: Coupon[] })
+                  .coupons
               : [];
 
         setCoupons(list);
@@ -49,134 +56,220 @@ export default function CouponDrawer({
   if (!open) return null;
 
   return (
-    <div className="mk-overlay" onClick={onClose}>
+    <ModalPortal>
+      <div
+      className="mk-overlay mk-coupon-overlay"
+      onClick={onClose}
+    >
       <aside
         className="mk-coupon-drawer"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(event) =>
+          event.stopPropagation()
+        }
+        role="dialog"
+        aria-modal="true"
+        aria-label="Offers and coupons"
       >
-        <div className="mk-drawer-header">
+        <div className="mk-coupon-drawer-topbar">
+          <button
+            type="button"
+            className="mk-drawer-back"
+            onClick={onClose}
+            aria-label="Back"
+          >
+            ←
+          </button>
+
           <div>
-            <span className="mk-cart-eyebrow">OFFERS</span>
+            <span className="mk-cart-eyebrow">
+              OFFERS
+            </span>
             <h2>Coupons & discounts</h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close">
+
+          <button
+            type="button"
+            className="mk-drawer-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
             ×
           </button>
         </div>
 
-        <div className="mk-coupon-manual">
-          <input
-            value={manual}
-            onChange={(event) => setManual(event.target.value.toUpperCase())}
-            placeholder="Enter coupon code"
-          />
-          <button
-            type="button"
-            disabled={!manual.trim()}
-            onClick={async () => {
-              await onApply(manual.trim());
-              onClose();
-            }}
-          >
-            APPLY
-          </button>
-        </div>
+        <div className="mk-coupon-drawer-body">
+          <div className="mk-coupon-manual">
+            <div className="mk-coupon-input-wrap">
+              <span>🏷</span>
+              <input
+                value={manual}
+                onChange={(event) =>
+                  setManual(
+                    event.target.value.toUpperCase()
+                  )
+                }
+                placeholder="Have a coupon code?"
+                aria-label="Coupon code"
+              />
+            </div>
 
-        {loading ? (
-          <div className="mk-coupon-loading">Loading available coupons…</div>
-        ) : coupons.length ? (
-          <div className="mk-coupon-list">
-            {coupons.map((coupon) => {
-  const minimumOrder = Number(
-    coupon.min_order_amount ??
-      coupon.min_order_value ??
-      coupon.min_order ??
-      0,
-  );
-
-  const discountValue = Number(
-    coupon.discount_value ?? coupon.discount ?? 0,
-  );
-
-const isPercentage =
-  coupon.discount_type === "percent" ||
-  coupon.discount_type === "percentage";
-
-const discountText = isPercentage
-  ? `${discountValue}% OFF`
-  : discountValue > 0
-    ? `₹${discountValue} OFF`
-    : "Special offer";
-
-  return (
-    <div
-      key={coupon.id ?? coupon.code}
-      className="mk-coupon-card"
-    >
-      <div className="mk-coupon-card-main">
-        <div>
-          <strong>{coupon.code}</strong>
-
-          <div className="mk-coupon-discount">
-            {discountText}
+            <button
+              type="button"
+              disabled={!manual.trim()}
+              onClick={async () => {
+                await onApply(manual.trim());
+                onClose();
+              }}
+            >
+              APPLY
+            </button>
           </div>
 
-          {coupon.description && (
-            <p>{coupon.description}</p>
+          <div className="mk-offers-heading">
+            <div>
+              <span className="mk-cart-eyebrow">
+                AVAILABLE OFFERS
+              </span>
+              <strong>Save on your order</strong>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="mk-coupon-loading">
+              Loading available offers…
+            </div>
+          ) : coupons.length ? (
+            <div className="mk-coupon-list">
+              {coupons.map((coupon) => {
+                const minimumOrder = Number(
+                  coupon.min_order_amount ??
+                    coupon.min_order_value ??
+                    coupon.min_order ??
+                    0
+                );
+
+                const discountValue = Number(
+                  coupon.discount_value ??
+                    coupon.discount ??
+                    0
+                );
+
+                const isPercentage =
+                  coupon.discount_type ===
+                    "percent" ||
+                  coupon.discount_type ===
+                    "percentage";
+
+                const discountText =
+                  isPercentage
+                    ? `${discountValue}% OFF`
+                    : discountValue > 0
+                      ? `₹${discountValue} OFF`
+                      : "SPECIAL OFFER";
+
+                const locked =
+                  minimumOrder > subtotal;
+
+                const isCurrent =
+                  currentCode?.toUpperCase() ===
+                  String(coupon.code).toUpperCase();
+
+                const currentButLocked =
+                  isCurrent && locked;
+
+                return (
+                  <div
+                    key={
+                      coupon.id ??
+                      coupon.code
+                    }
+                    className="mk-coupon-card"
+                  >
+                    <div className="mk-coupon-card-main">
+                      <div className="mk-coupon-tag">
+                        {discountText}
+                      </div>
+
+                      <div className="mk-coupon-code-row">
+                        <strong>
+                          {coupon.code}
+                        </strong>
+                        <span>
+                          {currentButLocked
+                            ? "SAVED"
+                            : isCurrent
+                              ? "APPLIED"
+                              : "OFFER"}
+                        </span>
+                      </div>
+
+                      {coupon.description ? (
+                        <p>
+                          {coupon.description}
+                        </p>
+                      ) : null}
+
+                      {minimumOrder > 0 ? (
+                        <small>
+                          Min. order ₹
+                          {minimumOrder.toFixed(
+                            0
+                          )}
+                        </small>
+                      ) : null}
+
+                      {locked ? (
+                        <div className="mk-coupon-locked-message">
+                          Add ₹
+                          {(
+                            minimumOrder -
+                            subtotal
+                          ).toFixed(0)}{" "}
+                          more to unlock
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={
+                        isCurrent ||
+                        locked
+                      }
+                      onClick={() =>
+                        onApply(coupon.code)
+                      }
+                    >
+                      {currentButLocked
+                        ? "LOCKED"
+                        : isCurrent
+                          ? "APPLIED"
+                          : locked
+                            ? "LOCKED"
+                            : "APPLY"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mk-coupon-empty">
+              <div>🏷</div>
+              <strong>
+                {isAuthenticated
+                  ? "No available offers"
+                  : "Login to see available offers"}
+              </strong>
+              <span>
+                {isAuthenticated
+                  ? "There are no coupons currently available for your account."
+                  : "Sign in to view coupons linked to your account."}
+              </span>
+            </div>
           )}
-
-{minimumOrder > 0 && (
-  <small>
-    Minimum order: ₹{minimumOrder.toFixed(0)}
-  </small>
-)}
-
-{minimumOrder > subtotal && (
-  <div className="mk-coupon-locked-message">
-    Add ₹{(minimumOrder - subtotal).toFixed(0)} more to unlock
-  </div>
-)}
         </div>
-
-<button
-  type="button"
-  disabled={
-    currentCode === coupon.code ||
-    minimumOrder > subtotal
-  }
-  onClick={() => onApply(coupon.code)}
->
-  {currentCode === coupon.code
-    ? "APPLIED"
-    : minimumOrder > subtotal
-      ? `ADD ₹${(minimumOrder - subtotal).toFixed(0)} MORE`
-      : "APPLY"}
-</button>
-      </div>
-    </div>
-  );
-})}
-          </div>
-        ) : (
-          <div className="mk-coupon-empty">
-  {isAuthenticated ? (
-    <>
-      <strong>No available offers</strong>
-      <span>
-        There are no coupons currently linked to your account.
-      </span>
-    </>
-  ) : (
-    <>
-      <strong>Log in to see available coupons & offers</strong>
-      <span>
-        Sign in to view coupons linked to your account and apply them to your order.
-      </span>
-    </>
-  )}
-</div>
-        )}
       </aside>
-    </div>
+      </div>
+    </ModalPortal>
   );
 }
