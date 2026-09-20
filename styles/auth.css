@@ -1,185 +1,82 @@
 /* =========================================================
-   MITHORA AUTH MODAL
+   MITHORA KITCHEN — AUTH
+   Clean desktop modal + premium mobile bottom sheet
    ========================================================= */
 
 .auth-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: rgba(45, 27, 20, 0.58);
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
-
   animation: authOverlayIn 0.2s ease-out;
 }
 
-
-/* =========================================================
-   MODAL
-   ========================================================= */
-
 .auth-modal {
   position: relative;
-
   width: min(100%, 440px);
   max-height: min(92vh, 760px);
-
   overflow-y: auto;
   overflow-x: hidden;
-
   padding: 34px 34px 24px;
-
   background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(244, 196, 48, 0.13),
-      transparent 30%
-    ),
+    radial-gradient(circle at 100% 0%, rgba(244,196,48,.13), transparent 30%),
     #fffdf8;
-
-  border: 1px solid rgba(45, 27, 20, 0.08);
+  border: 1px solid rgba(45,27,20,.08);
   border-radius: 24px;
-
   box-shadow:
-    0 28px 70px rgba(45, 27, 20, 0.22),
-    0 8px 24px rgba(45, 27, 20, 0.10);
-
-  animation: authModalIn 0.25s ease-out;
-
+    0 28px 70px rgba(45,27,20,.22),
+    0 8px 24px rgba(45,27,20,.10);
+  animation: authModalIn .25s ease-out;
   scrollbar-width: thin;
-  scrollbar-color: rgba(45, 27, 20, 0.2) transparent;
+  scrollbar-color: rgba(45,27,20,.2) transparent;
 }
 
-.auth-modal::-webkit-scrollbar {
-  width: 5px;
-}
-
-.auth-modal::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.auth-modal::-webkit-scrollbar { width: 5px; }
+.auth-modal::-webkit-scrollbar-track { background: transparent; }
 .auth-modal::-webkit-scrollbar-thumb {
-  background: rgba(45, 27, 20, 0.2);
+  background: rgba(45,27,20,.2);
   border-radius: 10px;
 }
-
-
-/* =========================================================
-   CLOSE BUTTON
-   ========================================================= */
 
 .auth-modal-close {
   position: absolute;
   top: 16px;
   right: 17px;
-
   width: 34px;
   height: 34px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border: 0;
   border-radius: 50%;
-
-  background: rgba(45, 27, 20, 0.06);
+  background: rgba(45,27,20,.06);
   color: #2d1b14;
-
   font-family: Arial, sans-serif;
   font-size: 25px;
   font-weight: 300;
   line-height: 1;
-
   cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: background .2s ease, transform .2s ease;
 }
 
 .auth-modal-close:hover {
-  background: rgba(255, 107, 53, 0.12);
+  background: rgba(255,107,53,.12);
   transform: rotate(5deg);
 }
 
 .auth-modal-close:disabled {
-  opacity: 0.45;
+  opacity: .45;
   cursor: not-allowed;
 }
 
-
 /* =========================================================
-   BRAND
-   ========================================================= */
-
-.auth-modal-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  margin-bottom: 25px;
-}
-
-.auth-modal-brand-mark {
-  width: 45px;
-  height: 45px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 45px;
-
-  border-radius: 14px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #f4c430,
-      #ffb52e
-    );
-
-  color: #2d1b14;
-
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 24px;
-  font-weight: 700;
-
-  box-shadow:
-    0 5px 14px rgba(244, 196, 48, 0.25);
-}
-
-.auth-modal-brand-name {
-  color: #2d1b14;
-
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.auth-modal-brand-tagline {
-  margin-top: 2px;
-
-  color: #9b6a45;
-
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.3px;
-  text-transform: uppercase;
-}
-
-
-/* =========================================================
-   HEADING
+   HEADING / PROGRESS
    ========================================================= */
 
 .auth-modal-heading {
@@ -187,27 +84,41 @@
   padding-right: 25px;
 }
 
+.auth-step-indicator {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.auth-step-indicator span {
+  width: 22px;
+  height: 3px;
+  border-radius: 99px;
+  background: #eadfd8;
+  transition: width .2s ease, background .2s ease;
+}
+
+.auth-step-indicator span.active {
+  width: 38px;
+  background: #ff6b35;
+}
+
 .auth-modal-heading h2 {
   margin: 0;
-
   color: #2d1b14;
-
   font-family: Georgia, "Times New Roman", serif;
   font-size: 29px;
   font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -0.5px;
+  letter-spacing: -.5px;
 }
 
 .auth-modal-heading p {
   margin: 8px 0 0;
-
   color: #806c62;
-
   font-size: 12.5px;
   line-height: 1.55;
 }
-
 
 /* =========================================================
    FORM
@@ -219,63 +130,41 @@
   gap: 15px;
 }
 
-
-/* =========================================================
-   FIELD
-   ========================================================= */
-
 .auth-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.auth-field label {
+.auth-field label,
+.auth-pin-field > label {
   color: #4a332a;
-
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.1px;
 }
 
 .auth-field input {
   width: 100%;
   height: 48px;
-
   padding: 0 14px;
-
   border: 1px solid #e5d9d0;
   border-radius: 12px;
-
   outline: none;
-
-  background: #ffffff;
+  background: #fff;
   color: #2d1b14;
-
   font-family: inherit;
   font-size: 13px;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 
-.auth-field input::placeholder {
-  color: #b7aaa3;
-}
+.auth-field input::placeholder { color: #b7aaa3; }
 
-.auth-field input:hover {
-  border-color: #d8c7bc;
-}
+.auth-field input:hover { border-color: #d8c7bc; }
 
 .auth-field input:focus {
   border-color: #d99150;
-
   background: #fffefa;
-
-  box-shadow:
-    0 0 0 3px rgba(217, 145, 80, 0.12);
+  box-shadow: 0 0 0 3px rgba(217,145,80,.12);
 }
 
 .auth-field input:disabled {
@@ -284,50 +173,105 @@
   cursor: not-allowed;
 }
 
+.auth-field-hint {
+  color: #9b8b83;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.auth-optional {
+  color: #a8978e;
+  font-size: 9.5px;
+  font-weight: 500;
+}
 
 /* =========================================================
-   PRIMARY BUTTON
+   DIGIT BOXES — PIN + OTP
+   ========================================================= */
+
+.auth-pin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.auth-digit-field {
+  width: 100%;
+}
+
+.auth-digit-inputs {
+  display: grid;
+  width: 100%;
+  gap: 9px;
+}
+
+.auth-digit-inputs-4 {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 270px;
+  margin: 0 auto;
+}
+
+.auth-digit-inputs-6 {
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 330px;
+  margin: 0 auto;
+}
+
+.auth-digit-box {
+  width: 100%;
+  height: 56px;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid #e2d5cc;
+  border-radius: 13px;
+  outline: none;
+  background: #fff;
+  color: #2d1b14;
+  text-align: center;
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(45,27,20,.03);
+  caret-color: #ff6b35;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.auth-digit-box:focus {
+  border-color: #ff8a5c;
+  box-shadow: 0 0 0 3px rgba(255,107,53,.12);
+  transform: translateY(-1px);
+}
+
+.auth-digit-box:disabled {
+  opacity: .6;
+  background: #f6f2ee;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   BUTTONS / LINKS
    ========================================================= */
 
 .auth-primary-button {
   width: 100%;
   min-height: 48px;
-
   margin-top: 3px;
   padding: 12px 18px;
-
   border: 0;
   border-radius: 12px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ff6b35,
-      #e85b2a
-    );
-
-  color: #ffffff;
-
+  background: linear-gradient(135deg, #ff6b35, #e85b2a);
+  color: #fff;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
-
   cursor: pointer;
-
-  box-shadow:
-    0 7px 16px rgba(255, 107, 53, 0.20);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    opacity 0.2s ease;
+  box-shadow: 0 7px 16px rgba(255,107,53,.20);
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
 }
 
 .auth-primary-button:hover:not(:disabled) {
   transform: translateY(-1px);
-
-  box-shadow:
-    0 10px 22px rgba(255, 107, 53, 0.26);
+  box-shadow: 0 10px 22px rgba(255,107,53,.26);
 }
 
 .auth-primary-button:active:not(:disabled) {
@@ -335,40 +279,27 @@
 }
 
 .auth-primary-button:disabled {
-  opacity: 0.6;
+  opacity: .6;
   cursor: not-allowed;
   box-shadow: none;
 }
-
-
-/* =========================================================
-   LINK BUTTONS
-   ========================================================= */
 
 .auth-links-row {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
-
-  margin-top: 2px;
 }
 
 .auth-link-button {
   padding: 0;
-
   border: 0;
   background: transparent;
-
   color: #b45b2b;
-
   font-family: inherit;
   font-size: 11.5px;
   font-weight: 700;
-
   cursor: pointer;
-
-  transition: color 0.2s ease;
 }
 
 .auth-link-button:hover {
@@ -377,46 +308,33 @@
 }
 
 .auth-link-button:disabled {
-  opacity: 0.5;
+  opacity: .5;
   cursor: not-allowed;
   text-decoration: none;
 }
 
-.auth-link-divider {
-  color: #d8c9c0;
-  font-size: 11px;
+.auth-center-link {
+  align-self: center;
 }
 
 .auth-bottom-text {
   margin-top: 1px;
-
   color: #8a7770;
-
   text-align: center;
   font-size: 11.5px;
   line-height: 1.5;
 }
 
-
-/* =========================================================
-   SECONDARY LINK
-   ========================================================= */
-
 .auth-secondary-link {
   align-self: center;
-
   margin-top: 0;
   padding: 3px 4px;
-
   border: 0;
   background: transparent;
-
   color: #795548;
-
   font-family: inherit;
   font-size: 11.5px;
   font-weight: 700;
-
   cursor: pointer;
 }
 
@@ -426,73 +344,65 @@
 }
 
 .auth-secondary-link:disabled {
-  opacity: 0.5;
+  opacity: .5;
   cursor: not-allowed;
 }
 
-
 /* =========================================================
-   INFO BOX
+   INFO / MESSAGES
    ========================================================= */
 
 .auth-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   padding: 13px 14px;
-
-  border: 1px solid rgba(244, 196, 48, 0.28);
+  border: 1px solid rgba(244,196,48,.28);
   border-radius: 12px;
-
   background: #fff8df;
-
   color: #73563f;
-
   font-size: 11.5px;
   line-height: 1.55;
 }
 
 .auth-info-box strong {
-  display: block;
-
-  margin-top: 5px;
-
   color: #2d1b14;
-
   font-size: 12px;
   font-weight: 700;
-
   word-break: break-word;
 }
 
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
+.auth-info-box-success {
+  border-color: rgba(16,185,129,.18);
+  background: #eefaf5;
+}
 
 .auth-message {
   margin-bottom: 15px;
   padding: 11px 13px;
-
   border-radius: 11px;
-
   font-size: 11.5px;
   line-height: 1.45;
 }
 
 .auth-message-error {
-  border: 1px solid rgba(190, 60, 45, 0.18);
-
+  border: 1px solid rgba(190,60,45,.18);
   background: #fff0ed;
-
   color: #a33b2d;
 }
 
 .auth-message-success {
-  border: 1px solid rgba(16, 185, 129, 0.18);
-
+  border: 1px solid rgba(16,185,129,.18);
   background: #eefaf5;
-
   color: #187a5a;
 }
 
+.auth-secure-note {
+  margin: -3px 0 0;
+  color: #9b8b83;
+  text-align: center;
+  font-size: 10px;
+}
 
 /* =========================================================
    LOGGED-IN STATE
@@ -502,66 +412,44 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   padding: 8px 0 5px;
-
   text-align: center;
 }
 
 .auth-user-avatar {
   width: 64px;
   height: 64px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-bottom: 14px;
-
   border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f4c430,
-      #ffb347
-    );
-
+  background: linear-gradient(135deg, #f4c430, #ffb347);
   color: #2d1b14;
-
   font-family: Georgia, "Times New Roman", serif;
   font-size: 25px;
   font-weight: 700;
-
-  box-shadow:
-    0 8px 20px rgba(244, 196, 48, 0.22);
+  box-shadow: 0 8px 20px rgba(244,196,48,.22);
 }
 
 .auth-logged-in h2 {
   margin: 0;
-
   color: #2d1b14;
-
   font-family: Georgia, "Times New Roman", serif;
   font-size: 21px;
 }
 
 .auth-logged-in p {
   margin: 7px 0 2px;
-
   color: #4a332a;
-
   font-size: 13px;
   font-weight: 700;
 }
 
 .auth-logged-in span {
   margin-bottom: 21px;
-
   color: #8a7770;
-
   font-size: 11px;
-
   word-break: break-word;
 }
 
@@ -569,233 +457,202 @@
   margin-top: 0;
 }
 
-
 /* =========================================================
-   FOOTER
-   ========================================================= */
-
-.auth-modal-footer {
-  margin-top: 24px;
-  padding-top: 15px;
-
-  border-top: 1px solid rgba(45, 27, 20, 0.07);
-
-  color: #a3938b;
-
-  text-align: center;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 10px;
-  font-style: italic;
-}
-
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-
-@keyframes authOverlayIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes authModalIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-
-/* =========================================================
-   TABLET
+   MOBILE — BOTTOM SHEET
    ========================================================= */
 
 @media (max-width: 600px) {
   .auth-modal-overlay {
-    align-items: center;
-    padding: 15px;
+    align-items: flex-end;
+    padding: 0;
+    background: rgba(31,20,15,.48);
   }
 
   .auth-modal {
     width: 100%;
-    max-height: 94vh;
-
-    padding: 28px 24px 21px;
-
-    border-radius: 21px;
+    max-width: none;
+    max-height: 92dvh;
+    min-height: 0;
+    padding: 30px 24px 24px;
+    border: 0;
+    border-radius: 26px 26px 0 0;
+    box-shadow:
+      0 -14px 45px rgba(45,27,20,.18),
+      0 -2px 12px rgba(45,27,20,.08);
+    animation: authMobileSheetIn .25s ease-out;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .auth-modal-brand {
-    margin-bottom: 21px;
+  .auth-modal::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    width: 42px;
+    height: 4px;
+    border-radius: 99px;
+    background: #dfd2ca;
+    transform: translateX(-50%);
+  }
+
+  .auth-modal-close {
+    top: 17px;
+    right: 18px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .auth-modal-heading {
+    margin-bottom: 20px;
+    padding-right: 38px;
+  }
+
+  .auth-modal-heading h2 {
+    font-size: 28px;
+    line-height: 1.12;
+  }
+
+  .auth-modal-heading p {
+    font-size: 12.5px;
+  }
+
+  .auth-step-indicator {
+    margin-bottom: 13px;
+  }
+
+  .auth-form {
+    gap: 14px;
+  }
+
+  .auth-field input {
+    height: 52px;
+    border-radius: 13px;
+    font-size: 15px;
+  }
+
+  .auth-field label,
+  .auth-pin-field > label {
+    font-size: 11px;
+  }
+
+  .auth-primary-button {
+    min-height: 52px;
+    border-radius: 13px;
+    font-size: 14px;
+  }
+
+  .auth-digit-inputs {
+    gap: 8px;
+  }
+
+  .auth-digit-inputs-4 {
+    max-width: 300px;
+  }
+
+  .auth-digit-inputs-6 {
+    max-width: 360px;
+  }
+
+  .auth-digit-box {
+    height: 54px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .auth-info-box {
+    padding: 12px 13px;
+    font-size: 11.5px;
+  }
+
+  .auth-message {
+    margin-bottom: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth-modal {
+    max-height: 94dvh;
+    padding: 28px 20px 22px;
+    border-radius: 24px 24px 0 0;
   }
 
   .auth-modal-heading h2 {
     font-size: 26px;
   }
+
+  .auth-digit-inputs-4 {
+    max-width: 280px;
+    gap: 7px;
+  }
+
+  .auth-digit-inputs-6 {
+    gap: 6px;
+  }
+
+  .auth-digit-box {
+    height: 52px;
+    border-radius: 11px;
+  }
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 480px) {
-  .auth-modal-overlay {
-    padding: 10px;
-  }
-
+@media (max-width: 360px) {
   .auth-modal {
-    max-height: 95vh;
-
-    padding: 25px 20px 18px;
-
-    border-radius: 19px;
-  }
-
-  .auth-modal-close {
-    top: 12px;
-    right: 12px;
-
-    width: 32px;
-    height: 32px;
-
-    font-size: 23px;
-  }
-
-  .auth-modal-brand {
-    gap: 10px;
-    margin-bottom: 19px;
-  }
-
-  .auth-modal-brand-mark {
-    width: 41px;
-    height: 41px;
-    flex-basis: 41px;
-
-    border-radius: 12px;
-
-    font-size: 21px;
-  }
-
-  .auth-modal-brand-name {
-    font-size: 15.5px;
-  }
-
-  .auth-modal-brand-tagline {
-    font-size: 8px;
-    letter-spacing: 1.1px;
-  }
-
-  .auth-modal-heading {
-    margin-bottom: 18px;
-    padding-right: 20px;
+    padding: 26px 16px 20px;
   }
 
   .auth-modal-heading h2 {
     font-size: 24px;
   }
 
-  .auth-modal-heading p {
-    margin-top: 6px;
-    font-size: 11.5px;
-  }
-
-  .auth-form {
-    gap: 13px;
-  }
-
-  .auth-field {
-    gap: 5px;
-  }
-
-  .auth-field label {
-    font-size: 10.5px;
-  }
-
   .auth-field input {
-    height: 46px;
-
-    padding: 0 12px;
-
-    border-radius: 11px;
-
-    font-size: 12.5px;
+    height: 50px;
   }
 
   .auth-primary-button {
-    min-height: 46px;
-
-    border-radius: 11px;
-
-    font-size: 12.5px;
+    min-height: 50px;
   }
 
-  .auth-info-box {
-    padding: 11px 12px;
-    font-size: 11px;
+  .auth-digit-inputs-6 {
+    gap: 4px;
   }
 
-  .auth-message {
-    margin-bottom: 12px;
-    padding: 10px 11px;
-
-    font-size: 11px;
-  }
-
-  .auth-modal-footer {
-    margin-top: 19px;
-    padding-top: 12px;
-
-    font-size: 9px;
+  .auth-digit-box {
+    height: 49px;
+    font-size: 18px;
   }
 }
 
-
 /* =========================================================
-   VERY SMALL PHONES
+   ANIMATION
    ========================================================= */
 
-@media (max-width: 360px) {
-  .auth-modal-overlay {
-    padding: 6px;
-  }
+@keyframes authOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-  .auth-modal {
-    padding: 22px 16px 16px;
-    border-radius: 17px;
+@keyframes authModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.98);
   }
-
-  .auth-modal-heading h2 {
-    font-size: 22px;
-  }
-
-  .auth-modal-heading p {
-    font-size: 11px;
-  }
-
-  .auth-field input {
-    height: 44px;
-  }
-
-  .auth-primary-button {
-    min-height: 44px;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+@keyframes authMobileSheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .auth-modal-overlay,
@@ -805,7 +662,9 @@
 
   .auth-primary-button,
   .auth-modal-close,
-  .auth-field input {
+  .auth-field input,
+  .auth-digit-box,
+  .auth-step-indicator span {
     transition: none;
   }
 }

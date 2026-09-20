@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   checkMobile,
@@ -34,6 +34,128 @@ type AuthModalProps = {
   onLoggedOut?: () => void;
 };
 
+function DigitBoxes({
+  value,
+  onChange,
+  disabled,
+  namePrefix,
+  length,
+  label,
+  autoComplete = "off",
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  namePrefix: string;
+  length: 4 | 6;
+  label: string;
+  autoComplete?: string;
+}) {
+  const refs = useRef<Array<HTMLInputElement | null>>([]);
+  const digits = value.padEnd(length, "").slice(0, length).split("");
+
+  const focusBox = (index: number) => {
+    const input = refs.current[index];
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  };
+
+  const handleChange = (index: number, raw: string) => {
+    const pastedDigits = raw.replace(/\D/g, "");
+
+    if (pastedDigits.length > 1) {
+      const next = pastedDigits.slice(0, length);
+      onChange(next);
+      focusBox(Math.min(next.length, length) - 1);
+      return;
+    }
+
+    const digit = pastedDigits.slice(-1);
+    const next = value.padEnd(length, "").split("");
+    next[index] = digit;
+
+    const cleaned = next.join("").slice(0, length);
+    onChange(cleaned);
+
+    if (digit && index < length - 1) {
+      focusBox(index + 1);
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Backspace" && !digits[index] && index > 0) {
+      event.preventDefault();
+
+      const next = value.padEnd(length, "").split("");
+      next[index - 1] = "";
+      onChange(next.join("").slice(0, length));
+      focusBox(index - 1);
+      return;
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      event.preventDefault();
+      focusBox(index - 1);
+      return;
+    }
+
+    if (event.key === "ArrowRight" && index < length - 1) {
+      event.preventDefault();
+      focusBox(index + 1);
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, length);
+
+    if (!pasted) return;
+
+    event.preventDefault();
+    onChange(pasted);
+    focusBox(Math.min(pasted.length, length) - 1);
+  };
+
+  return (
+    <div className="auth-digit-field">
+      <div
+        className={`auth-digit-inputs auth-digit-inputs-${length}`}
+        role="group"
+        aria-label={label}
+      >
+        {Array.from({ length }, (_, index) => (
+          <input
+            key={index}
+            ref={(element) => {
+              refs.current[index] = element;
+            }}
+            id={`${namePrefix}-${index}`}
+            className="auth-digit-box"
+            type="password"
+            inputMode="numeric"
+            maxLength={1}
+            value={digits[index] || ""}
+            onChange={(event) => handleChange(index, event.target.value)}
+            onKeyDown={(event) => handleKeyDown(index, event)}
+            onPaste={handlePaste}
+            autoComplete={index === 0 ? autoComplete : "off"}
+            disabled={disabled}
+            aria-label={`${label} digit ${index + 1}`}
+            required
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function AuthModal({
   open,
   onClose,
@@ -43,10 +165,6 @@ export default function AuthModal({
 }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
 
-  // ========================================
-  // FORM STATE
-  // ========================================
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -54,22 +172,14 @@ export default function AuthModal({
 
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
-
   const [otp, setOtp] = useState("");
-
-  // ========================================
-  // UI STATE
-  // ========================================
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  // ========================================
-  // LOAD CURRENT USER
-  // ========================================
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -83,15 +193,10 @@ export default function AuthModal({
     setLoading(false);
   }, [open, initialMode]);
 
-  // ========================================
-  // BODY SCROLL LOCK
-  // ========================================
-
   useEffect(() => {
     if (!open) return;
 
     const originalOverflow = document.body.style.overflow;
-
     document.body.style.overflow = "hidden";
 
     return () => {
@@ -99,19 +204,24 @@ export default function AuthModal({
     };
   }, [open]);
 
-  // ========================================
-  // MODE CHANGE
-  // ========================================
+  const scrollFieldIntoView = (
+    event: React.FocusEvent<HTMLInputElement>
+  ) => {
+    const field = event.currentTarget;
+
+    window.setTimeout(() => {
+      field.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+      });
+    }, 250);
+  };
 
   const changeMode = (newMode: AuthMode) => {
     setMode(newMode);
     setError("");
     setMessage("");
   };
-
-  // ========================================
-  // RESET FORMS
-  // ========================================
 
   const resetForms = () => {
     setName("");
@@ -121,25 +231,15 @@ export default function AuthModal({
     setPin("");
     setConfirmPin("");
     setOtp("");
-
     setError("");
     setMessage("");
   };
 
-  // ========================================
-  // CLOSE
-  // ========================================
-
   const handleClose = () => {
     if (loading) return;
-
     resetForms();
     onClose();
   };
-
-  // ========================================
-  // OVERLAY CLICK
-  // ========================================
 
   const handleOverlayClick = (
     event: React.MouseEvent<HTMLDivElement>
@@ -148,10 +248,6 @@ export default function AuthModal({
       handleClose();
     }
   };
-
-  // ========================================
-  // MOBILE CHECK
-  // ========================================
 
   const handleMobileSubmit = async (
     event: React.FormEvent<HTMLFormElement>
@@ -173,14 +269,14 @@ export default function AuthModal({
 
       const result = await checkMobile(cleanPhone);
 
+      setPhone(cleanPhone);
+
       if (result.exists) {
-        setPhone(cleanPhone);
         setMode("login-pin");
-        setMessage("Welcome back! Please enter your PIN.");
+        setMessage("Welcome back. Enter your 4-digit PIN.");
       } else {
-        setPhone(cleanPhone);
         setMode("signup");
-        setMessage("Let's create your Mithora Kitchen account.");
+        setMessage("Let's create your account.");
       }
     } catch (err) {
       setError(
@@ -192,10 +288,6 @@ export default function AuthModal({
       setLoading(false);
     }
   };
-
-  // ========================================
-  // LOGIN
-  // ========================================
 
   const handleLogin = async (
     event: React.FormEvent<HTMLFormElement>
@@ -231,13 +323,10 @@ export default function AuthModal({
         onAuthenticated?.(result.user);
       }
 
-      const user = getCurrentUser();
-
-      setCurrentUser(user);
-
+      setCurrentUser(getCurrentUser());
       setMessage(result.message || "Login successful.");
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         onClose();
       }, 500);
     } catch (err) {
@@ -251,10 +340,6 @@ export default function AuthModal({
     }
   };
 
-  // ========================================
-  // REQUEST SIGNUP OTP
-  // ========================================
-
   const handleSignupRequestOtp = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -264,16 +349,22 @@ export default function AuthModal({
     setMessage("");
 
     if (!name.trim()) {
-      setError("Please enter your name.");
+      setError("Please enter your full name.");
       return;
     }
 
     if (!email.trim()) {
-      setError("Please enter your email.");
+      setError("Please enter your email address.");
       return;
     }
 
+    const cleanEmail = email.trim().toLowerCase();
     const cleanPhone = phone.replace(/\D/g, "");
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
     if (!/^\d{10}$/.test(cleanPhone)) {
       setError("Please enter a valid 10-digit mobile number.");
@@ -284,16 +375,17 @@ export default function AuthModal({
       setLoading(true);
 
       const result = await requestSignupOTP({
-        name,
-        email,
+        name: name.trim(),
+        email: cleanEmail,
         phone: cleanPhone,
-        referralCode,
+        referralCode: referralCode.trim(),
       });
 
       if (result.error) {
         throw new Error(result.error);
       }
 
+      setEmail(cleanEmail);
       setPhone(cleanPhone);
 
       setMessage(
@@ -312,10 +404,6 @@ export default function AuthModal({
       setLoading(false);
     }
   };
-
-  // ========================================
-  // VERIFY SIGNUP OTP
-  // ========================================
 
   const handleSignupVerifyOtp = async (
     event: React.FormEvent<HTMLFormElement>
@@ -344,7 +432,7 @@ export default function AuthModal({
 
       setMessage(
         result.message ||
-          "Email verified successfully. Now create your PIN."
+          "Email verified successfully. Create your PIN."
       );
 
       setMode("signup-pin");
@@ -358,10 +446,6 @@ export default function AuthModal({
       setLoading(false);
     }
   };
-
-  // ========================================
-  // COMPLETE SIGNUP
-  // ========================================
 
   const handleSignupComplete = async (
     event: React.FormEvent<HTMLFormElement>
@@ -405,16 +489,13 @@ export default function AuthModal({
         onAuthenticated?.(result.user);
       }
 
-      const user = getCurrentUser();
-
-      setCurrentUser(user);
-
+      setCurrentUser(getCurrentUser());
       setMessage(
         result.message ||
           "Account created successfully. Welcome to Mithora Kitchen!"
       );
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         onClose();
       }, 700);
     } catch (err) {
@@ -427,10 +508,6 @@ export default function AuthModal({
       setLoading(false);
     }
   };
-
-  // ========================================
-  // REQUEST PIN RESET OTP
-  // ========================================
 
   const handleRequestOtp = async (
     event: React.FormEvent<HTMLFormElement>
@@ -448,17 +525,18 @@ export default function AuthModal({
     try {
       setLoading(true);
 
-      const result = await requestPinResetOTP(email);
+      const cleanEmail = email.trim().toLowerCase();
+      const result = await requestPinResetOTP(cleanEmail);
 
       if (result.error) {
         throw new Error(result.error);
       }
 
+      setEmail(cleanEmail);
       setMessage(
         result.message ||
           "If this email is registered, an OTP has been sent."
       );
-
       setMode("verify-otp");
     } catch (err) {
       setError(
@@ -470,10 +548,6 @@ export default function AuthModal({
       setLoading(false);
     }
   };
-
-  // ========================================
-  // VERIFY RESET OTP
-  // ========================================
 
   const handleVerifyOtp = (
     event: React.FormEvent<HTMLFormElement>
@@ -490,10 +564,6 @@ export default function AuthModal({
 
     setMode("reset-pin");
   };
-
-  // ========================================
-  // RESET PIN
-  // ========================================
 
   const handleResetPin = async (
     event: React.FormEvent<HTMLFormElement>
@@ -535,7 +605,7 @@ export default function AuthModal({
       setPin("");
       setConfirmPin("");
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         setMode("mobile");
         setMessage(
           "PIN reset successful. Please login with your mobile number."
@@ -552,114 +622,71 @@ export default function AuthModal({
     }
   };
 
-  // ========================================
-  // LOGOUT
-  // ========================================
-
   const handleLogout = () => {
     logout();
     onLoggedOut?.();
 
     setCurrentUser(null);
-
     resetForms();
-
     setMode("mobile");
   };
-
-  // ========================================
-  // BACK TO MOBILE
-  // ========================================
 
   const goToMobile = () => {
     setPin("");
     setConfirmPin("");
     setOtp("");
-
     changeMode("mobile");
   };
-
-  // ========================================
-  // TITLES
-  // ========================================
 
   const getTitle = () => {
     switch (mode) {
       case "mobile":
-        return "Welcome to Mithora";
-
+        return "Welcome to Mithora Kitchen";
       case "login-pin":
         return "Welcome Back";
-
       case "signup":
         return "Create Your Account";
-
       case "signup-verify":
         return "Verify Your Email";
-
       case "signup-pin":
         return "Create Your PIN";
-
       case "forgot-pin":
         return "Reset Your PIN";
-
       case "verify-otp":
         return "Verify OTP";
-
       case "reset-pin":
         return "Create New PIN";
-
       default:
         return "Welcome";
     }
   };
 
-  // ========================================
-  // SUBTITLES
-  // ========================================
-
   const getSubtitle = () => {
     switch (mode) {
       case "mobile":
-        return "Enter your mobile number to continue";
-
+        return "Enter your mobile number";
       case "login-pin":
         return `Enter your 4-digit PIN for ${phone}`;
-
       case "signup":
-        return "Tell us a little about yourself";
-
+        return "Just a few details to get started";
       case "signup-verify":
-        return `Enter the OTP sent to ${email}`;
-
+        return `Enter the 6-digit code sent to ${email}`;
       case "signup-pin":
-        return "Set a secure 4-digit PIN for your account";
-
+        return "Create a 4-digit PIN for secure login";
       case "forgot-pin":
         return "We'll send a verification code to your email";
-
       case "verify-otp":
-        return `Enter the OTP sent to ${email}`;
-
+        return `Enter the 6-digit code sent to ${email}`;
       case "reset-pin":
         return "Set a new 4-digit PIN for your account";
-
       default:
         return "";
     }
   };
 
-  // ========================================
-  // MODAL CLOSED
-  // ========================================
-
   if (!open) {
     return null;
   }
-
-  // ========================================
-  // RENDER
-  // ========================================
 
   return (
     <div
@@ -669,12 +696,7 @@ export default function AuthModal({
       aria-modal="true"
       aria-labelledby="auth-modal-title"
     >
-      <div className="auth-modal">
-
-        {/* ==================================
-            CLOSE
-        ================================== */}
-
+      <div className="auth-modal" ref={modalRef}>
         <button
           type="button"
           className="auth-modal-close"
@@ -685,52 +707,15 @@ export default function AuthModal({
           ×
         </button>
 
-        {/* ==================================
-            BRAND
-        ================================== */}
-
-        <div className="auth-modal-brand">
-
-          <div className="auth-modal-brand-mark">
-            M
-          </div>
-
-          <div>
-            <div className="auth-modal-brand-name">
-              Mithora Kitchen
-            </div>
-
-            <div className="auth-modal-brand-tagline">
-              Ghar Ka Swad
-            </div>
-          </div>
-
-        </div>
-
-        {/* ==================================
-            LOGGED-IN USER
-        ================================== */}
-
         {currentUser ? (
           <div className="auth-logged-in">
-
             <div className="auth-user-avatar">
-              {currentUser.name
-                ?.charAt(0)
-                ?.toUpperCase() || "M"}
+              {currentUser.name?.charAt(0)?.toUpperCase() || "M"}
             </div>
 
-            <h2>
-              You're already logged in
-            </h2>
-
-            <p>
-              {currentUser.name}
-            </p>
-
-            <span>
-              {currentUser.email}
-            </span>
+            <h2>You're already logged in</h2>
+            <p>{currentUser.name}</p>
+            <span>{currentUser.email}</span>
 
             <button
               type="button"
@@ -747,30 +732,24 @@ export default function AuthModal({
             >
               Logout
             </button>
-
           </div>
         ) : (
           <>
-
-            {/* ==============================
-                HEADING
-            ============================== */}
-
             <div className="auth-modal-heading">
+              <div className="auth-step-indicator">
+                <span className={mode === "mobile" ? "active" : ""} />
+                <span
+                  className={
+                    ["signup", "signup-verify", "signup-pin"].includes(mode)
+                      ? "active"
+                      : ""
+                  }
+                />
+              </div>
 
-              <h2 id="auth-modal-title">
-                {getTitle()}
-              </h2>
-
-              <p>
-                {getSubtitle()}
-              </p>
-
+              <h2 id="auth-modal-title">{getTitle()}</h2>
+              <p>{getSubtitle()}</p>
             </div>
-
-            {/* ==============================
-                ERROR
-            ============================== */}
 
             {error && (
               <div
@@ -781,10 +760,6 @@ export default function AuthModal({
               </div>
             )}
 
-            {/* ==============================
-                MESSAGE
-            ============================== */}
-
             {message && (
               <div
                 className="auth-message auth-message-success"
@@ -794,22 +769,10 @@ export default function AuthModal({
               </div>
             )}
 
-            {/* =================================
-                MOBILE
-            ================================= */}
-
             {mode === "mobile" && (
-              <form
-                onSubmit={handleMobileSubmit}
-                className="auth-form"
-              >
-
+              <form onSubmit={handleMobileSubmit} className="auth-form">
                 <div className="auth-field">
-
-                  <label htmlFor="auth-mobile">
-                    Mobile Number
-                  </label>
-
+                  <label htmlFor="auth-mobile">Mobile Number</label>
                   <input
                     id="auth-mobile"
                     type="tel"
@@ -819,16 +782,17 @@ export default function AuthModal({
                     value={phone}
                     onChange={(e) =>
                       setPhone(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10)
+                        e.target.value.replace(/\D/g, "").slice(0, 10)
                       )
                     }
                     autoComplete="tel"
+                    onFocus={scrollFieldIntoView}
                     disabled={loading}
                     required
                   />
-
+                  <span className="auth-field-hint">
+                    We'll use this to identify your account.
+                  </span>
                 </div>
 
                 <button
@@ -836,81 +800,36 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Checking..."
-                    : "Continue"}
+                  {loading ? "Checking..." : "Continue"}
                 </button>
 
                 <div className="auth-bottom-text">
-
                   Already have an account?{" "}
-
                   <button
                     type="button"
                     className="auth-link-button"
-                    onClick={() =>
-                      changeMode("forgot-pin")
-                    }
+                    onClick={() => changeMode("forgot-pin")}
                     disabled={loading}
                   >
                     Forgot PIN?
                   </button>
-
                 </div>
-
               </form>
             )}
 
-            {/* =================================
-                LOGIN PIN
-            ================================= */}
-
             {mode === "login-pin" && (
-              <form
-                onSubmit={handleLogin}
-                className="auth-form"
-              >
-
-                <div className="auth-field">
-
-                  <label htmlFor="login-mobile">
-                    Mobile Number
-                  </label>
-
-                  <input
-                    id="login-mobile"
-                    type="tel"
-                    value={phone}
-                    disabled
-                  />
-
-                </div>
-
-                <div className="auth-field">
-
-                  <label htmlFor="login-pin">
-                    4-Digit PIN
-                  </label>
-
-                  <input
-                    id="login-pin"
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="••••"
+              <form onSubmit={handleLogin} className="auth-form">
+                <div className="auth-pin-field">
+                  <label>4-Digit PIN</label>
+                  <DigitBoxes
                     value={pin}
-                    onChange={(e) =>
-                      setPin(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 4)
-                      )
-                    }
-                    autoComplete="current-password"
+                    onChange={setPin}
                     disabled={loading}
-                    required
+                    namePrefix="login-pin"
+                    length={4}
+                    label="Login PIN"
+                    autoComplete="one-time-code"
                   />
-
                 </div>
 
                 <button
@@ -918,25 +837,17 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Logging in..."
-                    : "Login"}
+                  {loading ? "Logging in..." : "Login"}
                 </button>
 
-                <div className="auth-links-row">
-
-                  <button
-                    type="button"
-                    className="auth-link-button"
-                    onClick={() =>
-                      changeMode("forgot-pin")
-                    }
-                    disabled={loading}
-                  >
-                    Forgot PIN?
-                  </button>
-
-                </div>
+                <button
+                  type="button"
+                  className="auth-link-button auth-center-link"
+                  onClick={() => changeMode("forgot-pin")}
+                  disabled={loading}
+                >
+                  Forgot PIN?
+                </button>
 
                 <button
                   type="button"
@@ -946,86 +857,63 @@ export default function AuthModal({
                 >
                   ← Change Mobile Number
                 </button>
-
               </form>
             )}
-
-            {/* =================================
-                SIGNUP DETAILS
-            ================================= */}
 
             {mode === "signup" && (
               <form
                 onSubmit={handleSignupRequestOtp}
                 className="auth-form"
               >
-
                 <div className="auth-field">
-
-                  <label htmlFor="signup-name">
-                    Full Name
-                  </label>
-
+                  <label htmlFor="signup-name">Full Name</label>
                   <input
                     id="signup-name"
                     type="text"
-                    placeholder="Enter your name"
+                    placeholder="Enter your full name"
                     value={name}
-                    onChange={(e) =>
-                      setName(e.target.value)
-                    }
+                    onChange={(e) => setName(e.target.value)}
                     autoComplete="name"
+                    onFocus={scrollFieldIntoView}
                     disabled={loading}
                     required
                   />
-
                 </div>
 
                 <div className="auth-field">
-
-                  <label htmlFor="signup-email">
-                    Email
-                  </label>
-
+                  <label htmlFor="signup-email">Email Address</label>
                   <input
                     id="signup-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Enter your email address"
                     value={email}
-                    onChange={(e) =>
-                      setEmail(e.target.value)
-                    }
+                    onChange={(e) => setEmail(e.target.value)}
                     autoComplete="email"
+                    onFocus={scrollFieldIntoView}
                     disabled={loading}
                     required
                   />
-
+                  <span className="auth-field-hint">
+                    Your verification OTP will be sent here.
+                  </span>
                 </div>
 
                 <div className="auth-field">
-
-                  <label htmlFor="signup-phone">
-                    Mobile Number
-                  </label>
-
+                  <label htmlFor="signup-phone">Mobile Number</label>
                   <input
                     id="signup-phone"
                     type="tel"
                     value={phone}
                     disabled
+                    aria-readonly="true"
                   />
-
                 </div>
 
                 <div className="auth-field">
-
                   <label htmlFor="signup-referral">
-                    Referral Code
-                    <span className="auth-optional">
-                      {" "}Optional
-                    </span>
+                    Referral Code{" "}
+                    <span className="auth-optional">Optional</span>
                   </label>
-
                   <input
                     id="signup-referral"
                     type="text"
@@ -1033,15 +921,12 @@ export default function AuthModal({
                     value={referralCode}
                     onChange={(e) =>
                       setReferralCode(
-                        e.target.value
-                          .trim()
-                          .toUpperCase()
+                        e.target.value.trim().toUpperCase()
                       )
                     }
                     autoComplete="off"
                     disabled={loading}
                   />
-
                 </div>
 
                 <button
@@ -1049,15 +934,11 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Sending OTP..."
-                    : "Continue"}
+                  {loading ? "Sending OTP..." : "Continue"}
                 </button>
 
                 <div className="auth-bottom-text">
-
                   Already have an account?{" "}
-
                   <button
                     type="button"
                     className="auth-link-button"
@@ -1066,57 +947,31 @@ export default function AuthModal({
                   >
                     Login
                   </button>
-
                 </div>
-
               </form>
             )}
-
-            {/* =================================
-                SIGNUP VERIFY OTP
-            ================================= */}
 
             {mode === "signup-verify" && (
               <form
                 onSubmit={handleSignupVerifyOtp}
                 className="auth-form"
               >
-
                 <div className="auth-info-box">
-
-                  We've sent a 6-digit OTP to:
-
-                  <strong>
-                    {email}
-                  </strong>
-
+                  <span>Verification code sent to</span>
+                  <strong>{email}</strong>
                 </div>
 
-                <div className="auth-field">
-
-                  <label htmlFor="signup-verify-otp">
-                    6-Digit OTP
-                  </label>
-
-                  <input
-                    id="signup-verify-otp"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    placeholder="Enter OTP"
+                <div className="auth-pin-field">
+                  <label>6-Digit OTP</label>
+                  <DigitBoxes
                     value={otp}
-                    onChange={(e) =>
-                      setOtp(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 6)
-                      )
-                    }
-                    autoComplete="one-time-code"
+                    onChange={setOtp}
                     disabled={loading}
-                    required
+                    namePrefix="signup-otp"
+                    length={6}
+                    label="Email verification OTP"
+                    autoComplete="one-time-code"
                   />
-
                 </div>
 
                 <button
@@ -1124,98 +979,51 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Verifying..."
-                    : "Verify OTP"}
+                  {loading ? "Verifying..." : "Verify Email"}
                 </button>
 
                 <button
                   type="button"
                   className="auth-secondary-link"
-                  onClick={() =>
-                    changeMode("signup")
-                  }
+                  onClick={() => changeMode("signup")}
                   disabled={loading}
                 >
-                  ← Back
+                  ← Edit Details
                 </button>
-
               </form>
             )}
 
-            {/* =================================
-                SIGNUP PIN
-            ================================= */}
-
             {mode === "signup-pin" && (
-              <form
-                onSubmit={handleSignupComplete}
-                className="auth-form"
-              >
-
-                <div className="auth-info-box">
-
-                  Email verified successfully.
-
-                  <br />
-
-                  Create your 4-digit PIN to finish
-                  setting up your account.
-
+              <form onSubmit={handleSignupComplete} className="auth-form">
+                <div className="auth-info-box auth-info-box-success">
+                  <span>Email verified</span>
+                  <strong>{email}</strong>
                 </div>
 
-                <div className="auth-field">
-
-                  <label htmlFor="signup-pin">
-                    4-Digit PIN
-                  </label>
-
-                  <input
-                    id="signup-pin"
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="••••"
+                <div className="auth-pin-field">
+                  <label>Create 4-Digit PIN</label>
+                  <DigitBoxes
                     value={pin}
-                    onChange={(e) =>
-                      setPin(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 4)
-                      )
-                    }
-                    autoComplete="new-password"
+                    onChange={setPin}
                     disabled={loading}
-                    required
+                    namePrefix="signup-pin"
+                    length={4}
+                    label="Create PIN"
+                    autoComplete="new-password"
                   />
-
                 </div>
 
-                <div className="auth-field">
-
-                  <label htmlFor="signup-confirm-pin">
-                    Confirm PIN
-                  </label>
-
-                  <input
-                    id="signup-confirm-pin"
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="••••"
+                <div className="auth-pin-field">
+                  <label>Confirm PIN</label>
+                  <DigitBoxes
                     value={confirmPin}
-                    onChange={(e) =>
-                      setConfirmPin(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 4)
-                      )
-                    }
-                    autoComplete="new-password"
+                    onChange={setConfirmPin}
                     disabled={loading}
-                    required
+                    namePrefix="signup-confirm-pin"
+                    length={4}
+                    label="Confirm PIN"
+                    autoComplete="new-password"
                   />
-
                 </div>
 
                 <button
@@ -1223,50 +1031,34 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Creating Account..."
-                    : "Create Account"}
+                  {loading ? "Creating Account..." : "Create Account"}
                 </button>
 
+                <p className="auth-secure-note">
+                  Your PIN will be used for future logins.
+                </p>
               </form>
             )}
 
-            {/* =================================
-                FORGOT PIN
-            ================================= */}
-
             {mode === "forgot-pin" && (
-              <form
-                onSubmit={handleRequestOtp}
-                className="auth-form"
-              >
-
+              <form onSubmit={handleRequestOtp} className="auth-form">
                 <div className="auth-info-box">
-
-                  Enter the email address registered
-                  with your Mithora Kitchen account.
-
+                  <span>Use the email linked to your account.</span>
                 </div>
 
                 <div className="auth-field">
-
-                  <label htmlFor="forgot-email">
-                    Registered Email
-                  </label>
-
+                  <label htmlFor="forgot-email">Registered Email</label>
                   <input
                     id="forgot-email"
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(e) =>
-                      setEmail(e.target.value)
-                    }
+                    onChange={(e) => setEmail(e.target.value)}
                     autoComplete="email"
+                    onFocus={scrollFieldIntoView}
                     disabled={loading}
                     required
                   />
-
                 </div>
 
                 <button
@@ -1274,9 +1066,7 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Sending OTP..."
-                    : "Send OTP"}
+                  {loading ? "Sending OTP..." : "Send OTP"}
                 </button>
 
                 <button
@@ -1287,55 +1077,27 @@ export default function AuthModal({
                 >
                   ← Back to Login
                 </button>
-
               </form>
             )}
 
-            {/* =================================
-                VERIFY RESET OTP
-            ================================= */}
-
             {mode === "verify-otp" && (
-              <form
-                onSubmit={handleVerifyOtp}
-                className="auth-form"
-              >
-
+              <form onSubmit={handleVerifyOtp} className="auth-form">
                 <div className="auth-info-box">
-
-                  We've sent a 6-digit OTP to:
-
-                  <strong>
-                    {email}
-                  </strong>
-
+                  <span>Verification code sent to</span>
+                  <strong>{email}</strong>
                 </div>
 
-                <div className="auth-field">
-
-                  <label htmlFor="verify-otp">
-                    6-Digit OTP
-                  </label>
-
-                  <input
-                    id="verify-otp"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    placeholder="Enter OTP"
+                <div className="auth-pin-field">
+                  <label>6-Digit OTP</label>
+                  <DigitBoxes
                     value={otp}
-                    onChange={(e) =>
-                      setOtp(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 6)
-                      )
-                    }
-                    autoComplete="one-time-code"
+                    onChange={setOtp}
                     disabled={loading}
-                    required
+                    namePrefix="reset-otp"
+                    length={6}
+                    label="PIN reset OTP"
+                    autoComplete="one-time-code"
                   />
-
                 </div>
 
                 <button
@@ -1345,72 +1107,35 @@ export default function AuthModal({
                 >
                   Verify OTP
                 </button>
-
               </form>
             )}
 
-            {/* =================================
-                RESET PIN
-            ================================= */}
-
             {mode === "reset-pin" && (
-              <form
-                onSubmit={handleResetPin}
-                className="auth-form"
-              >
-
-                <div className="auth-field">
-
-                  <label htmlFor="reset-pin">
-                    New 4-Digit PIN
-                  </label>
-
-                  <input
-                    id="reset-pin"
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="••••"
+              <form onSubmit={handleResetPin} className="auth-form">
+                <div className="auth-pin-field">
+                  <label>New 4-Digit PIN</label>
+                  <DigitBoxes
                     value={pin}
-                    onChange={(e) =>
-                      setPin(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 4)
-                      )
-                    }
-                    autoComplete="new-password"
+                    onChange={setPin}
                     disabled={loading}
-                    required
+                    namePrefix="reset-pin"
+                    length={4}
+                    label="New PIN"
+                    autoComplete="new-password"
                   />
-
                 </div>
 
-                <div className="auth-field">
-
-                  <label htmlFor="reset-confirm-pin">
-                    Confirm New PIN
-                  </label>
-
-                  <input
-                    id="reset-confirm-pin"
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="••••"
+                <div className="auth-pin-field">
+                  <label>Confirm New PIN</label>
+                  <DigitBoxes
                     value={confirmPin}
-                    onChange={(e) =>
-                      setConfirmPin(
-                        e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 4)
-                      )
-                    }
-                    autoComplete="new-password"
+                    onChange={setConfirmPin}
                     disabled={loading}
-                    required
+                    namePrefix="reset-confirm-pin"
+                    length={4}
+                    label="Confirm new PIN"
+                    autoComplete="new-password"
                   />
-
                 </div>
 
                 <button
@@ -1418,9 +1143,7 @@ export default function AuthModal({
                   className="auth-primary-button"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Resetting PIN..."
-                    : "Reset PIN"}
+                  {loading ? "Resetting PIN..." : "Reset PIN"}
                 </button>
 
                 <button
@@ -1431,25 +1154,10 @@ export default function AuthModal({
                 >
                   ← Back to Login
                 </button>
-
               </form>
             )}
-
           </>
         )}
-
-        {/* ==================================
-            FOOTER
-        ================================== */}
-
-        <div className="auth-modal-footer">
-
-          <span>
-            Homemade food, made with care.
-          </span>
-
-        </div>
-
       </div>
     </div>
   );
