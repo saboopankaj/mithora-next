@@ -11,7 +11,6 @@ function money(value: number | undefined) {
 }
 
 type Props = {
-  onLogin?: () => void;
   onAddAddress?: () => void;
   onPlaceOrder?: () => void;
   canPlaceOrder?: boolean;
@@ -20,7 +19,6 @@ type Props = {
 };
 
 export default function CartSummary({
-  onLogin,
   onAddAddress,
   addressReady,
 }: Props) {
@@ -171,22 +169,8 @@ const hasAvailableItems = validatedCart?.items?.some(
         </div>
 
         {!isAuthenticated && cart.items.length ? (
-          <div className="mk-summary-login">
-            <div className="mk-summary-login-icon">
-              🔐
-            </div>
-            <strong>Login to continue</strong>
-            <p>
-              Your cart is saved. Sign in to add a
-              delivery address and continue.
-            </p>
-            <button
-              type="button"
-              className="mk-primary-button mk-full-button"
-              onClick={onLogin}
-            >
-              LOGIN TO CONTINUE
-            </button>
+          <div className="mk-summary-updating">
+            <span>Order totals appear after a delivery address is added.</span>
           </div>
         ) : cart.items.length ? (
           <div className="mk-summary-updating">

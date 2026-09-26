@@ -598,7 +598,7 @@ export default function CartPage() {
                   ? "Calculating your delivery…"
                   : isAuthenticated
                     ? "Add a delivery address to see your total."
-                    : "Login to review your cart."}
+                    : "Cart details will appear after a delivery address is added."}
               </div>
             )}
 
@@ -616,7 +616,6 @@ export default function CartPage() {
 
         <aside className="mk-cart-side-column">
           <CartSummary
-            onLogin={() => openAuth("mobile")}
             onAddAddress={addAddress}
             onPlaceOrder={placeOrder}
             canPlaceOrder={canPlaceOrder}
