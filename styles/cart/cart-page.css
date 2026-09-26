@@ -195,6 +195,39 @@
   min-height: 104px;
 }
 
+.mk-address-login-card {
+  min-height: 132px;
+  padding: 20px 22px;
+  border-color: rgba(255, 107, 53, 0.28);
+  background: linear-gradient(115deg, #fffaf5, #fff 76%);
+  box-shadow:
+    0 18px 42px rgba(45, 27, 20, 0.08),
+    0 0 0 3px rgba(255, 107, 53, 0.055);
+}
+
+.mk-address-login-card .mk-address-card-copy p {
+  max-width: 560px;
+  white-space: normal;
+}
+
+.mk-address-login-action {
+  min-height: 44px;
+  padding: 0 17px;
+  border-radius: 12px;
+  background: var(--mk-orange);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(255, 107, 53, 0.2);
+}
+
+.mk-address-login-action:hover {
+  background: #e9572b;
+}
+
+.mk-address-login-action:focus-visible {
+  outline: 3px solid rgba(255, 107, 53, 0.3);
+  outline-offset: 3px;
+}
+
 .mk-address-not-serviceable {
   margin: -3px 0 14px;
   padding: 12px 14px;
@@ -536,6 +569,11 @@ body:has(.mk-cart-page) #site-footer {
     gap: 10px;
   }
 
+  .mk-address-login-card {
+    min-height: 128px;
+    padding: 16px 14px;
+  }
+
   .mk-address-card-icon {
     width: 36px;
     height: 36px;
@@ -552,6 +590,12 @@ body:has(.mk-cart-page) #site-footer {
   }
 
   .mk-address-card-action {
+    font-size: 10px;
+  }
+
+  .mk-address-login-action {
+    min-height: 42px;
+    padding: 0 13px;
     font-size: 10px;
   }
 

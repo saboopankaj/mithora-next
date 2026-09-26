@@ -23,18 +23,18 @@ export default function DeliveryAddress({
         <div className="mk-address-card-icon">⌖</div>
         <div className="mk-address-card-copy">
           <span className="mk-cart-eyebrow">DELIVERY ADDRESS</span>
-          <h2>Login to continue</h2>
+          <h2>Sign in to continue</h2>
           <p>
-            Sign in to choose your delivery address and review
-            your order.
+            Your cart is saved. Sign in to add a delivery address and
+            continue checkout.
           </p>
         </div>
         <button
           type="button"
-          className="mk-address-card-action"
+          className="mk-address-card-action mk-address-login-action"
           onClick={onLogin}
         >
-          LOGIN
+          SIGN IN
         </button>
       </section>
     );

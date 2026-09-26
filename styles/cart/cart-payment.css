@@ -36,6 +36,12 @@
   letter-spacing: -0.035em;
 }
 
+.mk-payment-total .mk-payment-total-pending {
+  max-width: 250px;
+  font-size: 15px;
+  letter-spacing: -0.015em;
+}
+
 .mk-payment-footer-action {
   display: flex;
   align-items: center;
@@ -72,6 +78,12 @@
 
   .mk-payment-total strong {
     font-size: 19px;
+  }
+
+  .mk-payment-total .mk-payment-total-pending {
+    max-width: 145px;
+    font-size: 12px;
+    line-height: 1.2;
   }
 
   .mk-payment-footer-action {

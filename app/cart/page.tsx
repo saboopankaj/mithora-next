@@ -62,7 +62,7 @@ function loadRazorpay() {
 
 export default function CartPage() {
   const router = useRouter();
-  const { isAuthenticated, openAuth } = useAuth();
+  const { isAuthenticated, authReady, openAuth } = useAuth();
   const {
     cart,
     validatedCart,
@@ -633,6 +633,9 @@ export default function CartPage() {
         }
         disabled={!canPlaceOrder}
         loading={paymentLoading}
+        loginRequired={
+          authReady && !isAuthenticated && cart.items.length > 0
+        }
         onPay={placeOrder}
       />
 
