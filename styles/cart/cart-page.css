@@ -393,68 +393,83 @@
   z-index: 240;
   left: 50%;
   bottom: max(16px, env(safe-area-inset-bottom));
-  width: min(390px, calc(100% - 28px));
+  width: auto;
+  max-width: calc(100vw - 28px);
   transform: translateX(-50%);
   pointer-events: none;
 }
 
-.mk-cart-sticky-inner {
-  min-height: 56px;
-  padding: 7px 8px 7px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border: 1px solid rgba(45, 27, 20, 0.11);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow:
-    0 14px 42px rgba(45, 27, 20, 0.18),
-    0 2px 8px rgba(45, 27, 20, 0.08);
-  backdrop-filter: blur(18px);
-  pointer-events: auto;
-}
-
-.mk-cart-sticky-info {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-}
-
-.mk-cart-sticky-count {
-  color: var(--mk-ink);
-  font-size: 13px;
-  font-weight: 850;
-}
-
-.mk-cart-sticky-dot {
-  color: #b6a59d;
-}
-
-.mk-cart-sticky-info strong {
-  font-size: 14px;
-}
-
-.mk-cart-sticky-button {
-  min-height: 42px;
-  padding: 0 16px;
+.mk-cart-sticky-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  border-radius: 12px;
-  background: var(--mk-orange);
-  color: #fff;
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 950;
-  letter-spacing: 0.02em;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  pointer-events: auto;
   white-space: nowrap;
 }
 
-.mk-cart-sticky-button span {
-  font-size: 17px;
+.mk-cart-sticky-count {
+  display: inline-flex;
+  align-items: center;
+  color: #5a3428;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mk-cart-sticky-button {
+  min-height: 44px;
+  padding: 0 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #ed8150;
+  border-radius: 999px;
+  background: #fff8f1;
+  color: #8c472e;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  box-shadow: 0 5px 14px rgba(76, 45, 32, 0.08);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.mk-cart-sticky-arrow {
+  display: inline-flex;
+  align-items: center;
+  color: #d96b3b;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform 160ms ease;
+}
+
+.mk-cart-sticky-button:hover {
+  background: #fff3e8;
+  border-color: #e87543;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 17px rgba(76, 45, 32, 0.10);
+}
+
+.mk-cart-sticky-button:hover .mk-cart-sticky-arrow {
+  transform: translate(2px, -1px);
+}
+
+.mk-cart-sticky-button:active {
+  transform: translateY(0);
 }
 
 body:has(.mk-cart-page) #site-footer {
@@ -561,12 +576,24 @@ body:has(.mk-cart-page) #site-footer {
 
   .mk-cart-sticky {
     bottom: max(12px, env(safe-area-inset-bottom));
-    width: min(390px, calc(100% - 24px));
   }
 
-  .mk-cart-sticky-inner {
-    min-height: 53px;
-    border-radius: 17px;
+  .mk-cart-sticky-content {
+    gap: 10px;
+  }
+
+  .mk-cart-sticky-count {
+    font-size: 12px;
+  }
+
+  .mk-cart-sticky-button {
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 11.5px;
+  }
+
+  .mk-cart-sticky-arrow {
+    font-size: 17px;
   }
 }
 
@@ -579,8 +606,12 @@ body:has(.mk-cart-page) #site-footer {
     display: none;
   }
 
-  .mk-cart-sticky-inner {
-    padding-left: 13px;
+  .mk-cart-sticky-content {
+    gap: 8px;
+  }
+
+  .mk-cart-sticky-count {
+    font-size: 11.5px;
   }
 
   .mk-cart-sticky-button {
@@ -745,4 +776,243 @@ body:has(.mk-cart-page) #site-footer {
   .mk-cart-price-change b {
     display: none;
   }
+}
+/* =========================================================
+   MITHORA — FLOATING CART
+   ONE SINGLE CAPSULE
+   ========================================================= */
+
+.mk-cart-sticky {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: max(16px, env(safe-area-inset-bottom)) !important;
+
+  transform: translateX(-50%) !important;
+
+  z-index: 999 !important;
+
+  width: auto !important;
+  max-width: calc(100vw - 24px) !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   THE ONLY CAPSULE
+   ========================================================= */
+
+.mk-cart-sticky-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+
+  height: 46px !important;
+  min-height: 46px !important;
+
+  padding: 0 19px !important;
+
+  gap: 14px !important;
+
+  background: #fff8f1 !important;
+
+  border: 1px solid #ed8150 !important;
+  border-radius: 999px !important;
+
+  color: #5a3428 !important;
+
+  text-decoration: none !important;
+
+  font-size: 12px !important;
+  font-weight: 750 !important;
+
+  white-space: nowrap !important;
+
+  box-shadow:
+    0 6px 18px rgba(76, 45, 32, 0.10) !important;
+
+  pointer-events: auto !important;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease !important;
+}
+
+
+/* =========================================================
+   ITEM COUNT — INSIDE THE CAPSULE
+   ========================================================= */
+
+.mk-cart-sticky-count {
+  display: inline-flex !important;
+  align-items: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+  border: 0 !important;
+
+  color: #7d422d !important;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+
+/* =========================================================
+   VIEW CART
+   ========================================================= */
+
+.mk-cart-sticky-label {
+  display: inline-flex !important;
+  align-items: center !important;
+
+  color: #5a3428 !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+
+  line-height: 1 !important;
+  letter-spacing: 0.025em !important;
+
+  white-space: nowrap !important;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.mk-cart-sticky-arrow {
+  display: inline-flex !important;
+  align-items: center !important;
+
+  margin-left: -7px !important;
+
+  color: #d96b3b !important;
+
+  font-size: 17px !important;
+  font-weight: 500 !important;
+
+  line-height: 1 !important;
+
+  transition: transform 160ms ease !important;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.mk-cart-sticky-button:hover {
+  background: #fff3e8 !important;
+  border-color: #e87543 !important;
+
+  transform: translateY(-1px) !important;
+
+  box-shadow:
+    0 8px 20px rgba(76, 45, 32, 0.12) !important;
+}
+
+.mk-cart-sticky-button:hover .mk-cart-sticky-arrow {
+  transform: translateX(2px) !important;
+}
+
+
+/* =========================================================
+   ACTIVE
+   ========================================================= */
+
+.mk-cart-sticky-button:active {
+  transform: translateY(0) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .mk-cart-sticky {
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .mk-cart-sticky-button {
+    height: 43px !important;
+    min-height: 43px !important;
+
+    padding: 0 16px !important;
+
+    gap: 12px !important;
+
+    font-size: 11.5px !important;
+  }
+
+  .mk-cart-sticky-count,
+  .mk-cart-sticky-label {
+    font-size: 11.5px !important;
+  }
+
+  .mk-cart-sticky-arrow {
+    font-size: 16px !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .mk-cart-sticky-button {
+    height: 41px !important;
+    min-height: 41px !important;
+
+    padding: 0 14px !important;
+
+    gap: 10px !important;
+  }
+
+  .mk-cart-sticky-count,
+  .mk-cart-sticky-label {
+    font-size: 11px !important;
+  }
+}
+
+
+/* =========================================================
+   KILL ANY OLD WRAPPERS
+   ========================================================= */
+
+.mk-cart-sticky-content,
+.mk-cart-sticky-inner {
+  display: contents !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
 }

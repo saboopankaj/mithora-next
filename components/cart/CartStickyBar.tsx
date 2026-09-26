@@ -7,7 +7,7 @@ import { useCart } from "./CartProvider";
 
 export default function CartStickyBar() {
   const pathname = usePathname();
-  const { itemCount, validatedCart } = useCart();
+  const { itemCount } = useCart();
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -17,33 +17,21 @@ export default function CartStickyBar() {
   if (pathname === "/cart") return null;
   if (!hydrated || !itemCount) return null;
 
-  const total =
-    validatedCart?.total != null
-      ? `₹${validatedCart.total.toFixed(0)}`
-      : "";
-
   return (
-    <div className="mk-cart-sticky">
-      <div className="mk-cart-sticky-inner">
-        <div className="mk-cart-sticky-info">
-          <span className="mk-cart-sticky-count">
-            {itemCount} {itemCount === 1 ? "item" : "items"}
-          </span>
-          {total ? (
-            <>
-              <span className="mk-cart-sticky-dot">•</span>
-              <strong>{total}</strong>
-            </>
-          ) : null}
-        </div>
+    <div className="mk-cart-sticky" aria-label="Cart">
+      <Link href="/cart" className="mk-cart-sticky-button">
+        <span className="mk-cart-sticky-count">
+          {itemCount} {itemCount === 1 ? "item" : "items"}
+        </span>
 
-        <Link
-          href="/cart"
-          className="mk-cart-sticky-button"
-        >
-          VIEW CART <span>›</span>
-        </Link>
-      </div>
+        <span className="mk-cart-sticky-label">
+          VIEW CART
+        </span>
+
+        <span className="mk-cart-sticky-arrow" aria-hidden="true">
+          →
+        </span>
+      </Link>
     </div>
   );
 }

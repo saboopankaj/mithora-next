@@ -16,3 +16,6 @@
 @import "./menu/responsive.css";
 @import "./menu/product-card-alignment.css";
 @import "./menu/mobile.css";
+
+/* Mithora Premium Soft Brand Refresh — MUST be last */
+@import "./menu/brand-refresh.css";

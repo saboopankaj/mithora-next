@@ -1,6 +1,6 @@
 /* =========================================================
    MITHORA MENU — CATEGORY NAVIGATION
-   Responsive / clean / transparent
+   Clean / transparent / compact / responsive
    ========================================================= */
 
 
@@ -62,7 +62,7 @@
 }
 
 
-/* Remove accidental pseudo-elements */
+/* Remove any accidental pseudo-elements */
 
 .menu-categories-wrapper::before,
 .menu-categories-wrapper::after,
@@ -84,7 +84,7 @@
   flex-direction: column;
   align-items: center;
 
-  width: 90px;
+  width: 82px;
 
   margin: 0 !important;
   padding: 0 !important;
@@ -110,8 +110,8 @@
    ========================================================= */
 
 .menu-category-image {
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
 
   flex-shrink: 0;
 
@@ -160,17 +160,17 @@
 
   width: 100%;
 
-  margin: 7px 0 0;
+  margin: 6px 0 0;
   padding: 0;
 
   overflow: hidden;
 
   color: #4d4038;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 
-  line-height: 15px;
+  line-height: 14px;
 
   text-align: center;
 
@@ -210,7 +210,7 @@
 
 
 /* =========================================================
-   LARGE DESKTOP
+   DESKTOP
    ========================================================= */
 
 @media (min-width: 1200px) {
@@ -228,57 +228,30 @@
   .menu-categories {
     justify-content: center;
 
-    gap: 32px;
+    gap: 30px;
 
     padding: 12px 4px 7px;
+
+    background: transparent !important;
+
+    border: 0 !important;
+    box-shadow: none !important;
   }
 
   .menu-category-item {
-    width: 100px;
+    width: 92px;
   }
 
   .menu-category-image {
-    width: 76px;
-    height: 76px;
-  }
-
-  .menu-category-item > span {
-    margin-top: 7px;
-
-    font-size: 13px;
-    line-height: 16px;
-  }
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (min-width: 768px) and (max-width: 1199px) {
-
-  .menu-categories {
-    justify-content: center;
-
-    gap: 24px;
-
-    padding: 10px 12px 6px;
-  }
-
-  .menu-category-item {
-    width: 86px;
-  }
-
-  .menu-category-image {
-    width: 66px;
-    height: 66px;
+    width: 72px;
+    height: 72px;
   }
 
   .menu-category-item > span {
     margin-top: 6px;
 
-    font-size: 11.5px;
-    line-height: 14px;
+    font-size: 12px;
+    line-height: 15px;
   }
 }
 
@@ -317,11 +290,11 @@
     height: auto !important;
     min-height: 0 !important;
 
-    gap: 14px;
+    gap: 12px;
 
     margin: 0 !important;
 
-    padding: 8px 10px 4px !important;
+    padding: 7px 10px 3px !important;
 
     overflow-x: auto;
     overflow-y: hidden;
@@ -336,7 +309,7 @@
   }
 
   .menu-category-item {
-    width: 72px;
+    width: 64px;
 
     margin: 0 !important;
     padding: 0 !important;
@@ -348,19 +321,19 @@
   }
 
   .menu-category-image {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
 
     border-width: 2px;
   }
 
   .menu-category-item > span {
-    margin-top: 5px;
+    margin-top: 4px;
 
-    font-size: 10px;
-    line-height: 12px;
+    font-size: 9px;
+    line-height: 11px;
 
-    min-height: 12px;
+    min-height: 11px;
 
     color: #4d4038;
   }
@@ -368,38 +341,36 @@
 
 
 /* =========================================================
-   SMALL MOBILE
+   VERY SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 380px) {
 
   .menu-categories {
-    gap: 11px;
+    gap: 10px;
 
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
 
   .menu-category-item {
-    width: 68px;
+    width: 62px;
   }
 
   .menu-category-image {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
   }
 
   .menu-category-item > span {
-    margin-top: 5px;
-
-    font-size: 9.5px;
-    line-height: 11px;
+    font-size: 8.5px;
+    line-height: 10px;
   }
 }
 
 
 /* =========================================================
-   REMOVE DIVIDERS
+   REMOVE DIVIDERS AROUND CATEGORY SECTION
    ========================================================= */
 
 .menu-categories-wrapper,
@@ -409,21 +380,17 @@
 }
 
 
-/* =========================================================
-   REMOVE ARTIFICIAL GAP AFTER CATEGORIES
-   ========================================================= */
+/* If the category wrapper is immediately followed by
+   the intro/hero, don't create an artificial gap. */
 
 .menu-categories-wrapper + section,
 .menu-categories-wrapper + div {
   margin-top: 0 !important;
-
-  border-top: 0 !important;
-  box-shadow: none !important;
 }
 
 
 /* =========================================================
-   MOBILE — FINAL GAP RESET
+   MOBILE — PREVENT CATEGORY SECTION FROM CREATING GAP
    ========================================================= */
 
 @media (max-width: 767px) {

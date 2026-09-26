@@ -9,7 +9,7 @@ export default function Footer() {
 
           <a href="/" className="footer-logo">
             <img
-              src="/images/mithora-logo.webp"
+              src="/images/logo/mithora-light.webp"
               alt="Mithora Kitchen"
             />
           </a>

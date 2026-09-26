@@ -74,7 +74,7 @@ export default function Header() {
           }}
         >
           <img
-            src="/images/mithora-logo.webp"
+            src="/images/logo/mithora-dark.webp"
             alt="Mithora Kitchen"
           />
         </a>

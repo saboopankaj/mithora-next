@@ -77,10 +77,10 @@
     display: flex;
     flex-direction: column;
 
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
 
-    text-align: left;
+    text-align: center;
 }
 
 .hero-badge-container {
@@ -174,7 +174,7 @@
     width: 100%;
     max-width: 720px;
 
-    margin: 0 0 26px;
+    margin: 0 auto 26px;
 
     color: rgba(255, 255, 255, 0.92);
 
@@ -190,6 +190,8 @@
 
     line-height: 1.65;
 
+    text-align: center;
+
     text-shadow:
         0 2px 8px rgba(0, 0, 0, 0.45);
 }
@@ -197,18 +199,18 @@
 .hero-seo-glass {
     width: min(760px, 100%);
 
-    margin: 0 0 28px;
+    margin: 0 auto 28px;
 
     padding: 17px 21px;
 
-    border-left: 3px solid var(--hero-gold);
+    border-left: 1px solid rgba(255, 255, 255, 0.13);
     border-top: 1px solid rgba(255, 255, 255, 0.13);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
-    border-radius: 0 12px 12px 0;
+    border-radius: 14px;
 
-    background: rgba(10, 7, 5, 0.40);
+    background: rgba(30, 30, 30, 0.48);
 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -229,6 +231,8 @@
     font-weight: 500;
 
     line-height: 1.65;
+
+    text-align: center;
 }
 
 .hero-seo-glass strong {
@@ -240,16 +244,21 @@
     display: flex;
     align-items: center;
 
-    gap: 14px;
+    gap: 24px;
 
-    width: auto;
+    width: 100%;
+
+    margin-top: 20px;
+
+    justify-content: center;
 }
 
 .hero-buttons .btn {
-    min-width: 220px;
-    height: 56px;
+    width: 350px;
+    min-width: 350px;
+    height: 82px;
 
-    padding: 0 27px;
+    padding: 0 30px;
 
     display: inline-flex;
     align-items: center;
@@ -261,7 +270,7 @@
 
     font-family: var(--hero-body);
 
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 800;
 
     line-height: 1;
@@ -419,7 +428,10 @@
     }
 
     .hero-buttons .btn {
-        height: 52px;
+        width: 320px;
+        min-width: 320px;
+        height: 64px;
+        font-size: 17px;
     }
 
     .scroll-indicator {
@@ -538,31 +550,40 @@
     .hero-subtitle {
         max-width: 100%;
 
-        margin-bottom: 20px;
+        margin:
+            0 0 20px;
 
         font-size: 14px;
 
         line-height: 1.6;
+
+        text-align: left;
     }
 
     .hero-seo-glass {
         width: 100%;
 
-        margin-bottom: 21px;
+        margin:
+            0 0 21px;
 
         padding: 13px 14px;
 
-        border-left-width: 2px;
+        border-left:
+            2px solid var(--hero-gold);
 
         border-radius: 0 10px 10px 0;
 
         background: rgba(10, 7, 5, 0.48);
+
+        text-align: left;
     }
 
     .hero-seo-glass p {
         font-size: 11px;
 
         line-height: 1.55;
+
+        text-align: left;
     }
 
     .mobile-hide {
@@ -570,25 +591,55 @@
     }
 
     .hero-buttons {
-        width: 100%;
+        width: calc(100% - 14px);
 
+        margin-left: 7px;
+        margin-right: 7px;
+
+        display: flex;
         flex-direction: column;
 
         align-items: stretch;
 
-        gap: 10px;
+        gap: 11px;
+
+        margin-top: 2px;
     }
 
     .hero-buttons .btn {
         width: 100%;
-
         min-width: 0;
 
-        height: 54px;
+        height: 56px;
 
-        font-size: 14px;
+        padding: 0 20px;
 
-        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 999px;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        line-height: 1;
+    }
+
+    .hero-buttons .btn-primary {
+        background: var(--hero-gold);
+        color: #1b140d;
+
+        box-shadow:
+            0 8px 22px rgba(244, 196, 48, 0.22);
+    }
+
+    .hero-buttons .btn-wa-green {
+        background: #16b957;
+        color: #ffffff;
+
+        box-shadow:
+            0 8px 22px rgba(22, 185, 87, 0.20);
     }
 
     .scroll-indicator {
@@ -645,8 +696,8 @@
     }
 
     .hero-buttons .btn {
-        height: 52px;
-        font-size: 13px;
+        height: 56px;
+        font-size: 15px;
     }
 }
 
@@ -669,7 +720,8 @@
     }
 
     .hero-buttons .btn {
-        height: 49px;
+        height: 54px;
+        font-size: 14px;
     }
 
 }

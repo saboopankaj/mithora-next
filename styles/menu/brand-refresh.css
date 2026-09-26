@@ -1,0 +1,552 @@
+/* =========================================================
+   MITHORA — PREMIUM SOFT BRAND REFRESH
+   Purpose: calmer, more premium ordering UI without changing markup.
+   Brand language:
+   - Mithora yellow / saffron for primary actions
+   - Terracotta orange for action / attention
+   - Herb green for fresh/success states
+   - Warm ivory surfaces instead of heavy orange fills
+========================================================= */
+
+:root {
+  --mk-brand-gold: #D9A91E;
+  --mk-brand-gold-dark: #805F00;
+  --mk-brand-gold-soft: #FFF6D9;
+  --mk-brand-orange: #E96B3D;
+  --mk-brand-orange-dark: #9B4525;
+  --mk-brand-orange-soft: #FFF0E9;
+  --mk-brand-green: #4F805A;
+  --mk-brand-green-dark: #315E3A;
+  --mk-brand-green-soft: #EDF6EE;
+  --mk-brand-ink: #2E241F;
+  --mk-brand-muted: #756960;
+  --mk-brand-line: #E8DED4;
+  --mk-brand-surface: #FFFCF8;
+  --mk-brand-page: #FBF7F1;
+  --mk-brand-shadow: 0 12px 34px rgba(58, 39, 26, .07);
+  --mk-brand-shadow-hover: 0 18px 42px rgba(58, 39, 26, .11);
+}
+
+/* ---------- MENU SHELL ---------- */
+.menu-page-shell {
+  background:
+    radial-gradient(circle at 5% 8%, rgba(217,169,30,.07), transparent 27%),
+    radial-gradient(circle at 96% 20%, rgba(233,107,61,.045), transparent 28%),
+    var(--mk-brand-page);
+  color: var(--mk-brand-ink);
+}
+
+.menu-shell-container {
+  width: min(1320px, calc(100% - 40px));
+}
+
+/* ---------- SEARCH ---------- */
+.menu-search-box {
+  border: 1px solid var(--mk-brand-line) !important;
+  background: rgba(255,255,255,.92) !important;
+  box-shadow: 0 4px 18px rgba(58,39,26,.045) !important;
+}
+
+.menu-search-box:focus-within,
+.menu-search-box-focused {
+  border-color: rgba(217,169,30,.65) !important;
+  box-shadow: 0 0 0 4px rgba(217,169,30,.09), 0 8px 24px rgba(58,39,26,.06) !important;
+}
+
+.menu-search-icon,
+.menu-search-clear {
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+/* ---------- CATEGORY STRIP ---------- */
+.menu-categories,
+.menu-categories-wrapper {
+  background: rgba(255,252,248,.92) !important;
+  border-color: var(--mk-brand-line) !important;
+}
+
+.menu-category-item {
+  color: var(--mk-brand-muted) !important;
+}
+
+.menu-category-item.active {
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+.menu-category-item.active .menu-category-image {
+  border-color: var(--mk-brand-gold) !important;
+  box-shadow: 0 0 0 3px rgba(217,169,30,.10) !important;
+}
+
+.menu-category-image {
+  border: 1px solid transparent;
+}
+
+/* ---------- CATEGORY HEADINGS ---------- */
+.menu-category-heading h2,
+.menu-category-heading-main h2 {
+  color: var(--mk-brand-ink) !important;
+}
+
+.menu-fresh-badge {
+  background: var(--mk-brand-green-soft) !important;
+  color: var(--mk-brand-green-dark) !important;
+  border: 1px solid rgba(79,128,90,.16);
+}
+
+/* ---------- PRODUCT GRID ---------- */
+.menu-product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.menu-product-card {
+  border: 1px solid var(--mk-brand-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.96) !important;
+  box-shadow: var(--mk-brand-shadow) !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+
+.menu-product-card:hover {
+  transform: translateY(-3px);
+  border-color: #E0D2C5 !important;
+  box-shadow: var(--mk-brand-shadow-hover) !important;
+}
+
+.menu-product-image-button {
+  height: 198px;
+  flex-basis: 198px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(255,255,255,.7), transparent 48%),
+    linear-gradient(145deg, #FFF8E8 0%, #F8EBD6 100%) !important;
+}
+
+.menu-product-image-button img {
+  filter: drop-shadow(0 10px 15px rgba(65,42,20,.16));
+}
+
+.menu-product-body {
+  padding: 17px 17px 16px;
+}
+
+.menu-product-title-row {
+  min-height: 46px;
+}
+
+.menu-product-title-row h3 {
+  color: var(--mk-brand-ink) !important;
+  font-size: 17px;
+  line-height: 1.28;
+}
+
+.menu-product-description {
+  color: var(--mk-brand-muted) !important;
+  font-size: 12.5px;
+}
+
+.menu-product-tag {
+  background: var(--mk-brand-green-soft) !important;
+  color: var(--mk-brand-green-dark) !important;
+  border: 1px solid rgba(79,128,90,.10);
+}
+
+.menu-card-featured-badge {
+  background: rgba(255,255,255,.92) !important;
+  color: var(--mk-brand-gold-dark) !important;
+  border: 1px solid rgba(217,169,30,.20);
+}
+
+.menu-discount-badge {
+  background: var(--mk-brand-green-soft) !important;
+  color: var(--mk-brand-green-dark) !important;
+  border: 1px solid rgba(79,128,90,.14);
+  box-shadow: none !important;
+}
+
+.menu-price-block strong,
+.menu-selling-price {
+  color: var(--mk-brand-ink) !important;
+}
+
+.menu-old-price,
+.menu-price-block span {
+  color: #A29890 !important;
+}
+
+/* ---------- ACTION BUTTONS: SOFT, OUTLINED BRAND ---------- */
+.menu-btn-primary,
+.menu-btn-notify,
+.menu-variant-add {
+  height: 40px;
+  min-width: 108px;
+  padding: 0 15px;
+  border-radius: 999px !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: .055em !important;
+  box-shadow: none !important;
+}
+
+.menu-btn-primary {
+  border: 1px solid var(--mk-brand-gold) !important;
+  background: var(--mk-brand-gold-soft) !important;
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+.menu-btn-primary:hover {
+  background: #FFF0BC !important;
+  transform: translateY(-1px);
+}
+
+.menu-btn-notify {
+  border: 1px solid rgba(233,107,61,.62) !important;
+  background: var(--mk-brand-orange-soft) !important;
+  color: var(--mk-brand-orange-dark) !important;
+}
+
+.menu-btn-notify:hover {
+  background: #FFE7DD !important;
+  transform: translateY(-1px);
+}
+
+.menu-options-link {
+  color: var(--mk-brand-gold-dark) !important;
+  background: var(--mk-brand-gold-soft) !important;
+  border: 1px solid rgba(217,169,30,.25) !important;
+  border-radius: 999px !important;
+}
+
+/* ---------- QUANTITY ---------- */
+.menu-quantity-control {
+  border: 1px solid var(--mk-brand-line) !important;
+  background: #fff !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+.menu-quantity-control button {
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+/* ---------- PRODUCT MODAL ---------- */
+.menu-modal-overlay {
+  padding: 18px;
+  background: rgba(39,28,21,.50) !important;
+  backdrop-filter: blur(10px);
+}
+
+.menu-product-modal {
+  width: min(620px, 100%);
+  max-height: min(820px, 92vh);
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 24px !important;
+  background: var(--mk-brand-surface) !important;
+  box-shadow: 0 30px 90px rgba(34,22,14,.22) !important;
+}
+
+.menu-modal-close {
+  width: 38px;
+  height: 38px;
+  top: 13px;
+  right: 13px;
+  border: 1px solid var(--mk-brand-line) !important;
+  background: rgba(255,255,255,.94) !important;
+  color: var(--mk-brand-ink) !important;
+  box-shadow: 0 5px 15px rgba(58,39,26,.08) !important;
+}
+
+.menu-modal-image {
+  height: 250px;
+  background: linear-gradient(145deg, #FFF8E8, #F7E8D4) !important;
+}
+
+.menu-modal-content {
+  padding: 24px;
+}
+
+.menu-modal-label {
+  color: var(--mk-brand-orange-dark) !important;
+}
+
+.menu-modal-title-row h2 {
+  color: var(--mk-brand-ink) !important;
+}
+
+.menu-modal-badge,
+.menu-modal-rating {
+  background: var(--mk-brand-gold-soft) !important;
+  color: var(--mk-brand-gold-dark) !important;
+  border: 1px solid rgba(217,169,30,.16);
+}
+
+.menu-modal-tag {
+  background: var(--mk-brand-green-soft) !important;
+  color: var(--mk-brand-green-dark) !important;
+}
+
+.menu-modal-description {
+  color: var(--mk-brand-muted) !important;
+}
+
+.menu-variant-list {
+  gap: 8px;
+}
+
+.menu-variant-row {
+  padding: 13px 14px;
+  border: 1px solid var(--mk-brand-line) !important;
+  border-radius: 15px !important;
+  background: #fff !important;
+}
+
+.menu-variant-row:hover {
+  border-color: rgba(217,169,30,.38) !important;
+  background: #FFFCF5 !important;
+}
+
+.menu-variant-row.selected {
+  border-color: rgba(217,169,30,.62) !important;
+  background: var(--mk-brand-gold-soft) !important;
+  box-shadow: inset 3px 0 0 var(--mk-brand-gold);
+}
+
+.menu-variant-info > strong,
+.menu-variant-price > strong {
+  color: var(--mk-brand-ink) !important;
+}
+
+.menu-variant-info p,
+.menu-variant-price del {
+  color: var(--mk-brand-muted) !important;
+}
+
+.menu-variant-price span {
+  background: var(--mk-brand-green-soft) !important;
+  color: var(--mk-brand-green-dark) !important;
+}
+
+.menu-variant-add {
+  border: 1px solid var(--mk-brand-gold) !important;
+  background: var(--mk-brand-gold-soft) !important;
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+.menu-modal-done {
+  min-height: 46px;
+  border: 1px solid var(--mk-brand-gold) !important;
+  border-radius: 999px !important;
+  background: var(--mk-brand-gold-soft) !important;
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+@media (max-width: 1180px) {
+  .menu-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .menu-shell-container { width: min(100% - 24px, 640px); }
+  .menu-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .menu-product-image-button { height: 155px; flex-basis: 155px; padding: 14px; }
+  .menu-product-body { padding: 13px 13px 14px; }
+  .menu-product-title-row h3 { font-size: 15px; }
+  .menu-product-description { font-size: 11.5px; height: 37px; }
+  .menu-btn-primary,
+  .menu-btn-notify { width: 100%; min-width: 0; height: 38px; }
+  .menu-product-bottom { gap: 8px; align-items: flex-end; }
+  .menu-price-block strong { font-size: 18px; }
+  .menu-product-action { width: 48%; }
+  .menu-modal-overlay { padding: 10px; align-items: flex-end; }
+  .menu-product-modal { max-height: 92svh; border-radius: 22px !important; }
+  .menu-modal-image { height: 205px; }
+  .menu-modal-content { padding: 19px; }
+  .menu-variant-row { align-items: center; gap: 10px; padding: 12px; }
+  .menu-variant-add { min-width: 82px; }
+}
+
+@media (max-width: 420px) {
+  .menu-product-grid { gap: 10px; }
+  .menu-product-image-button { height: 142px; flex-basis: 142px; }
+  .menu-product-title-row { min-height: 42px; }
+  .menu-product-title-row h3 { font-size: 14px; }
+  .menu-product-description { font-size: 11px; }
+  .menu-price-block strong { font-size: 17px; }
+  .menu-btn-primary,
+  .menu-btn-notify { font-size: 9.5px !important; }
+}
+
+/* =========================================================
+   V2 — PREMIUM SOFT / MORE REFINED
+   Keep the Mithora orange visible, but use it as a border/accent
+   rather than a heavy solid fill.
+========================================================= */
+:root {
+  --mk-brand-gold: #DCAF2D;
+  --mk-brand-gold-dark: #765719;
+  --mk-brand-gold-soft: #FFF8E8;
+  --mk-brand-orange: #EE7447;
+  --mk-brand-orange-dark: #7F3E28;
+  --mk-brand-orange-soft: #FFF2EC;
+  --mk-brand-ink: #302620;
+  --mk-brand-muted: #776C64;
+  --mk-brand-line: #E9E0D8;
+}
+
+/* Product actions: premium outlined treatment */
+.menu-btn-primary,
+.menu-btn-notify,
+.menu-variant-add,
+.menu-modal-done {
+  position: relative;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 10px rgba(74, 45, 29, .045) !important;
+  transition: background-color .18s ease, border-color .18s ease,
+              color .18s ease, transform .18s ease, box-shadow .18s ease !important;
+}
+
+.menu-btn-primary {
+  background: var(--mk-brand-gold-soft) !important;
+  border-color: rgba(220,175,45,.72) !important;
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+.menu-btn-primary:hover {
+  background: #FFF3D2 !important;
+  border-color: rgba(220,175,45,.9) !important;
+  box-shadow: 0 6px 16px rgba(126,91,25,.09) !important;
+}
+
+.menu-btn-notify {
+  background: var(--mk-brand-orange-soft) !important;
+  border-color: rgba(238,116,71,.62) !important;
+  color: var(--mk-brand-orange-dark) !important;
+}
+
+.menu-btn-notify:hover {
+  background: #FFECE4 !important;
+  border-color: rgba(238,116,71,.82) !important;
+  box-shadow: 0 6px 16px rgba(127,62,40,.08) !important;
+}
+
+/* Quantity control — make the count impossible to miss */
+.menu-quantity-control {
+  width: 118px !important;
+  min-width: 118px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(238,116,71,.58) !important;
+  border-radius: 999px !important;
+  background: var(--mk-brand-orange-soft) !important;
+  color: var(--mk-brand-orange-dark) !important;
+  box-shadow: 0 3px 10px rgba(127,62,40,.055) !important;
+}
+
+.menu-quantity-control button {
+  width: 38px !important;
+  height: 100% !important;
+  flex: 0 0 38px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--mk-brand-orange-dark) !important;
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+.menu-quantity-control button:hover {
+  background: rgba(238,116,71,.09) !important;
+}
+
+.menu-quantity-control strong {
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 28px !important;
+  width: auto !important;
+  margin: 0 !important;
+  text-align: center !important;
+  color: var(--mk-brand-orange-dark) !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Mobile quantity: retain a readable centre count */
+@media (max-width: 760px) {
+  .menu-quantity-control {
+    width: 88px !important;
+    min-width: 88px !important;
+    height: 36px !important;
+  }
+  .menu-quantity-control button {
+    width: 27px !important;
+    flex-basis: 27px !important;
+    font-size: 16px !important;
+  }
+  .menu-quantity-control strong {
+    min-width: 24px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* Variant selection — subtle selected state, not a heavy fill */
+.menu-variant-row.selected {
+  border-color: rgba(220,175,45,.70) !important;
+  background: #FFF9ED !important;
+  box-shadow: inset 3px 0 0 rgba(220,175,45,.72), 0 4px 12px rgba(73,47,29,.035) !important;
+}
+
+.menu-variant-add {
+  background: var(--mk-brand-gold-soft) !important;
+  border-color: rgba(220,175,45,.68) !important;
+  color: var(--mk-brand-gold-dark) !important;
+}
+
+.menu-variant-add:hover,
+.menu-modal-done:hover {
+  background: #FFF3D2 !important;
+}
+
+/* Product cards — more editorial/premium, less app-like */
+.menu-product-card {
+  border-color: #E9E0D8 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 26px rgba(67,45,30,.055) !important;
+}
+
+.menu-product-card:hover {
+  border-color: #E1D2C6 !important;
+  box-shadow: 0 14px 34px rgba(67,45,30,.085) !important;
+}
+
+.menu-product-image-button {
+  background: linear-gradient(145deg, #FFF9ED 0%, #F9EFE3 100%) !important;
+}
+
+/* Modal: calm, premium and compact */
+.menu-modal-overlay {
+  background: rgba(45,32,25,.46) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.menu-product-modal {
+  border-radius: 26px !important;
+  box-shadow: 0 28px 80px rgba(35,24,17,.20) !important;
+}
+
+.menu-modal-content {
+  padding: 22px !important;
+}
+
+.menu-modal-done {
+  background: var(--mk-brand-orange-soft) !important;
+  border-color: rgba(238,116,71,.58) !important;
+  color: var(--mk-brand-orange-dark) !important;
+}

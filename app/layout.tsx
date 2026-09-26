@@ -21,6 +21,8 @@ import "../styles/home/home-taste-box.css";
 import "../styles/home/home-vrat.css";
 import "../styles/home/home-why-mithora.css";
 import "../styles/home/home-youtube.css";
+import "../styles/menu/brand-refresh.css";
+import "../styles/cart/brand-refresh.css";
 import "@/styles/auth.css";
 import "@/styles/account.css";
 //import "@/styles/menu.css";
