@@ -101,10 +101,10 @@ const productTags: ProductTag[] = Array.isArray(product.tags)
   ? product.tags
   : [];
 
-const primaryBadge =
+const sortedProductBadges =
   [...productBadges].sort(
     (a, b) => (a.priority ?? 999) - (b.priority ?? 999)
-  )[0];
+  );
 
   return (
     <article
@@ -129,11 +129,15 @@ const primaryBadge =
           loading="lazy"
         />
 
-{primaryBadge && (
-  <span className="menu-card-featured-badge">
-    {primaryBadge.icon ? `${primaryBadge.icon} ` : "★ "}
-    {primaryBadge.display_text}
-  </span>
+{sortedProductBadges.length > 0 && (
+  <div className="menu-card-badges">
+    {sortedProductBadges.map((badge) => (
+      <span key={String(badge.id)} className="menu-card-featured-badge">
+        {badge.icon && <span aria-hidden="true">{badge.icon}</span>}
+        {badge.display_text?.trim() || badge.name}
+      </span>
+    ))}
+  </div>
 )}
 
       </div>
@@ -168,28 +172,6 @@ const primaryBadge =
 )}
 
 
-        {/* DESCRIPTION */}
-
-        <div className="menu-description-area">
-
-          <p className="menu-product-description">
-            {product.description || ""}
-          </p>
-
-          {product.description && (
-            <button
-              type="button"
-              className="menu-read-more"
-              onClick={(event) => {
-                event.stopPropagation();
-                onOpen(product);
-              }}
-            >
-              Read more
-            </button>
-          )}
-
-        </div>
 
 
         {/* =================================================
@@ -238,6 +220,18 @@ const primaryBadge =
               event.stopPropagation()
             }
           >
+
+            {isMulti && (
+              <span className="menu-product-action-badge menu-variant-count-badge">
+                {variants.length} OPTIONS
+              </span>
+            )}
+
+            {isSubscription && (
+              <span className="menu-product-action-badge menu-subscription-badge">
+                SUBSCRIPTION
+              </span>
+            )}
 
             {quantity > 0 ? (
 

@@ -1060,3 +1060,51 @@ body:has(.mk-cart-page) #site-footer {
 
   box-shadow: none !important;
 }
+
+/* A clearer cart shortcut with a quiet, on-brand presence */
+.mk-cart-sticky-button {
+  gap: 12px !important;
+  border-color: rgba(190, 105, 54, 0.58) !important;
+  background: rgba(255, 249, 241, 0.98) !important;
+  box-shadow: 0 8px 23px rgba(73, 48, 31, 0.16) !important;
+}
+
+.mk-cart-sticky-count {
+  padding: 7px 10px !important;
+  border-radius: 999px !important;
+  background: #f8ead9 !important;
+  color: #784326 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+.mk-cart-sticky-label {
+  color: #493329 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.045em !important;
+}
+
+.mk-cart-sticky-arrow {
+  margin-left: -5px !important;
+  color: #bd5b2f !important;
+  font-size: 18px !important;
+}
+
+.mk-cart-sticky-button:hover {
+  border-color: #bf7047 !important;
+  background: #fffaf4 !important;
+  box-shadow: 0 10px 25px rgba(73, 48, 31, 0.2) !important;
+}
+
+@media (max-width: 640px) {
+  .mk-cart-sticky-button {
+    gap: 10px !important;
+    padding: 0 14px !important;
+    box-shadow: 0 7px 20px rgba(73, 48, 31, 0.17) !important;
+  }
+
+  .mk-cart-sticky-count,
+  .mk-cart-sticky-label {
+    font-size: 10.5px !important;
+  }
+}
