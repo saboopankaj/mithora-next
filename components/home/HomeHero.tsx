@@ -40,7 +40,7 @@ export default function HomeHero() {
 
         {/* Main Heading */}
         <h1 className="hero-title">
-          Homemade Food Across Jaipur
+          Best Homemade Food Across Jaipur
           <br />
 
           <span className="highlight-text">
